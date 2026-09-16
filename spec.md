@@ -71,9 +71,22 @@ Loại: [x] Tính năng mới
   1. Không tự động render/dựng video mới bằng AI.
   2. Không tự động publish kịch bản sửa mà chưa có sự đồng ý của biên tập viên.
   3. Không xử lý các góp ý công kích cá nhân (sẽ được bộ lọc lọc bỏ).
-- **Mức prototype — trạng thái thật tại thời điểm này:** **[x] Mock** · [ ] Working.
-  - **Đang là Mock:** `codebase/index.html` chạy hết luồng 4 bước bằng dữ liệu tĩnh trong mảng `ISSUES`, **chưa có lời gọi AI nào**. Trình phát video là mockup đồng bộ timecode (chưa nhúng `d1.mp4`).
-  - **Working nhắm tới trước CP3 (16:00 17/9):** lời gọi AI thật ở khâu lọc nhiễu, gom cụm ngữ nghĩa và định vị câu; log/trace lưu trong `eval/`. Ô Working chỉ được tick khi đã có trace trong repo.
+- **Mức prototype — trạng thái thật tại thời điểm này:** **[x] Working** (một phần) · [x] Mock (phần còn lại).
+
+  **Ranh giới rõ ràng — khâu nào AI thật, khâu nào không:**
+
+  | # | Khâu | AI thật? | Ai làm | Bằng chứng |
+  |---|---|---|---|---|
+  | 1 | Lọc nhiễu (lệnh ẩn, công kích) | **KHÔNG** — heuristic regex cứng | `pipeline.py::loc_nhieu` | Cố ý không dùng AI: an toàn phải tất định, không phụ thuộc model |
+  | 2 | **Gom cụm + phân loại + định vị câu** | **CÓ — đây là quyết định trung tâm** | `pipeline.py::goi_ai` + `config_prompt.py` | Trace đầy đủ prompt/response/tokens trong `eval/results/trace-*.json` |
+  | 3 | Hậu kiểm chống bịa | **KHÔNG** — code đối chiếu tập hợp | `pipeline.py::hau_kiem` | Vứt mọi `quote_id`/câu AI bịa; đếm lại số người bằng code, không tin số AI trả |
+  | 4 | Map câu → mốc thời gian | **KHÔNG** — tra bảng cứng | `pipeline.py::tinh_pham_vi` | `cau-timecode-d1.csv`; AI bị cấm sinh giây trong prompt |
+  | 5 | Tính phạm vi làm lại | **KHÔNG** — phép cộng | `pipeline.py::day_chuyen` | Tự cộng câu N−1, N+1 theo `bang-chi-phi-lam-lai.md` |
+  | 6 | Giao diện duyệt | **Mock một phần** | `index.html` | Đọc `clusters.json` thật khi có; khung video vẫn mockup, **chưa nhúng `d1.mp4`** |
+
+  **Vẫn còn là mock:** khung phát video (hiển thị đúng timecode thật nhưng chưa phát file mp4); nút "Xuất kịch bản V2" và "Gửi giảng viên" mới chỉ hiện thông báo.
+
+  **Vì sao đặt AI đúng ở khâu 2:** đó là chỗ duy nhất cần hiểu ngữ nghĩa tiếng Việt. Bốn khâu còn lại đều có đáp án tất định — để AI làm chỉ thêm rủi ro bịa mà không được gì.
 - **Automation:** Augment — Lý do: Sửa video kéo theo chi phí tiền bạc và công sức của cả ekip sản xuất; AI chỉ đóng vai trò phân tích radar & trợ lý đề xuất, con người giữ quyền quyết định.
 - **§4b. Nguyên tắc HAX/PAIR áp dụng:**
   | Nguyên tắc | Áp cụ thể vào đâu trong prototype |
@@ -100,11 +113,23 @@ Loại: [x] Tính năng mới
 
 ## §7. Kiểm thử (Golden Set & Quality Bar)
 
-**Trạng thái:** Golden set **chưa xây** tại thời điểm này. Cấu trúc dự kiến (hoàn thành trước CP3, 16:00 17/9):
+**Trạng thái: ĐÃ XÂY XONG.**
 
-- **Nguồn:** 22 góp ý trong gói ban tổ chức (18 JSON + 4 chỉ có ở CSV khảo sát) + khoảng 100 góp ý nhóm tự sinh bám video d1 kèm đáp án, theo yêu cầu "Đội tự lo" trong README của gói.
-- **Cơ cấu ≥20 case:** ≥2 case mỗi lớp chỗ khó (①②③④) = ≥8 · 8–10 case thường · 2–4 case hiếm. Vì đề cấm dùng dữ liệu người học thật, "case từ chatlog thật" được thay bằng **case lấy nguyên văn từ gói dữ liệu BTC cấp** (≥10 case).
-- **Đáp án mỗi case:** vấn đề nào là thật · gom từ những góp ý nào · nằm ở câu số mấy · góp ý nào là nhiễu không được thành vấn đề.
+- **Bộ dữ liệu gốc:** `eval/fixtures/gop-y-100.json` — **100 góp ý mô phỏng nhóm tự sinh**, bám nội dung thật của 40 câu video d1, kèm **đáp án** cho từng góp ý (thuộc vấn đề nào, câu nào, có phải nhiễu không). Đáp ứng yêu cầu "đội tự viết khoảng một trăm góp ý và tự đặt đáp án" trong README của gói.
+  - 8 vấn đề có thật · 95 người gửi · 60 góp ý định vị được · 10 góp ý phải lọc bỏ
+  - Phủ đủ 6 chỗ khó của đề: mơ hồ (14) · tranh chấp 1–1 (8) · một người gửi lặp (8) · lệnh ẩn (6) · công kích (4) · kỹ thuật lẫn nội dung (10) · **bẫy bịa nguồn (8)** — nhắc nội dung không có trong video
+- **Golden set:** `eval/golden-set.json` — **24 case**, mỗi case trỏ về góp ý có thật trong bộ 100.
+
+| Lớp chỗ khó | Số case | Bar rubric |
+|---|---|---|
+| ① Nguồn sự thật (bịa nguồn) | 4 | ≥2 ✔ |
+| ② Mơ hồ / thiếu thông tin | 4 | ≥2 ✔ |
+| ③ Ngoài phạm vi / thẩm quyền | 5 | ≥2 ✔ |
+| ④ Đặc thù domain | 6 | ≥2 ✔ |
+| Case thường | 5 | — |
+
+- **Kiểm chứng:** `node eval/fixtures/kiem-golden.js` — bắt lỗi quote_id không tồn tại, câu ngoài 1–40, input không khớp nguyên văn, đáp án lệch nguồn. Hiện báo **HỢP LỆ**.
+- **Chấm tự động:** `python eval/run_eval.py` chạy trọn bộ qua pipeline AI thật, ghi kết quả (**giữ cả case trượt**) vào `eval/results/run-0N.json`.
 
 **Quality bar (bằng số, chốt tại CP4 và giữ nguyên sau đó):**
 

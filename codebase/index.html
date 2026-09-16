@@ -269,7 +269,8 @@
         <div class="kpi green"><div class="num" id="kpiAcc">0</div><div class="lab">Đã duyệt (accept)</div></div>
         <div class="kpi red"><div class="num" id="kpiCost">0</div><div class="lab">Ký tự phải thu lại giọng</div></div>
       </div>
-      <div class="banner info mt">2 góp ý bị <b>lọc bỏ</b> trước khi phân tích: <code>gy-011</code> (cài lệnh ẩn) và <code>gy-012</code> (công kích cá nhân) — ghi vào log an toàn, không sinh đề xuất sửa nào. Góp ý là dữ liệu để đọc, không phải lệnh để làm theo.</div>
+      <div class="banner warn mt" id="nguon-du-lieu">⚠️ <b>Đang dùng dữ liệu MOCK</b> — chưa tìm thấy <code>clusters.json</code>. Chạy <code>python codebase/pipeline.py</code> rồi mở lại qua <code>python codebase/run_local.py</code> để thấy kết quả AI thật.</div>
+      <div class="banner info mt">Góp ý chứa <b>lệnh ẩn</b> hoặc <b>công kích cá nhân</b> bị lọc bỏ trước khi gửi cho AI — ghi vào log an toàn, không sinh đề xuất sửa nào. Góp ý là dữ liệu để đọc, không phải lệnh để làm theo.</div>
       <div class="mt"></div>
     </div>
 
@@ -414,6 +415,80 @@ const ISSUES = [
 // Tổng công thu giọng của cả video — nguồn: bang-chi-phi-lam-lai.md, đã đếm lại từ cau-timecode-d1.csv
 const TONG_KY_TU = 3637;
 const TONG_CANH = 40;
+
+// ---------------------------------------------------------------------------
+// Nối kết quả AI THẬT: nếu có clusters.json (do pipeline.py sinh ra) thì dùng,
+// không có thì giữ nguyên 4 cụm mock ở trên.
+// Mở qua:  python codebase/run_local.py   → http://localhost:8000/index.html
+// ---------------------------------------------------------------------------
+const LOAI_TEN = {
+  'kho-hieu': 'Khó hiểu · nội dung',
+  'noi-dung-sai': 'Nội dung sai',
+  'nhip-nhanh-cham': 'Nhịp nhanh chậm',
+  'giong-doc': 'Giọng đọc',
+  'hinh-anh': 'Hình ảnh',
+  'loi-ky-thuat': 'Kỹ thuật',
+  'khen': 'Lời khen',
+  'khong-dinh-vi-duoc': 'Chưa định vị được'
+};
+const MAU = ['violet', 'blue', 'green', 'red'];
+
+function tuClusters(data){
+  return (data.van_de || []).map((c, i) => {
+    const pv = c.pham_vi_lam_lai || {};
+    const tc = c.timecode || [];
+    const si = c.sentence_indices || [];
+    const thuLai = pv.cau_thu_lai_giong || [];
+    return {
+      idx: i + 1,
+      color: MAU[i % MAU.length],
+      title: c.summary || '(không có mô tả)',
+      loai: LOAI_TEN[c.error_type] || c.error_type || '—',
+      so: (c.so_nguoi_doc_lap || 0) + ' người độc lập',
+      v: tc.length ? tc[0].batDau : '—',
+      cau: si.length ? ('Câu ' + (si.length > 1 ? si[0] + '–' + si[si.length - 1] : si[0])) : 'chưa định vị',
+      chat: (c.quote_ids || []).length + ' góp ý · ' + (c.so_nguoi_doc_lap || 0) + ' người',
+      tin: c.tranh_chap ? 'tranh chấp' : (c.muc_tin_cay === 'cao' ? 'cao' : 'thấp'),
+      thuLai: thuLai,
+      kyTu: pv.so_ky_tu || 0,
+      canh: pv.so_canh || 0,
+      doiLoi: thuLai.length > 0,
+      khongSua: !c.recommended_fix,
+      quotes: (c.quote_ids || []).map((q, k) => ({
+        t: '(mã ' + q + ')',
+        src: q + ((c.nguoi_gui && c.nguoi_gui[k]) ? ' · ' + c.nguoi_gui[k] : '')
+      })),
+      canhBao: c.tranh_chap
+        ? 'Hai phía nói ngược nhau, số người cân nhau → <b>không đủ cơ sở để đổi</b>.'
+        : (c.so_nguoi_doc_lap === 1
+            ? 'Chỉ <b>1 người</b> nhắc tới → tin cậy thấp, không thổi thành vấn đề chung.'
+            : null),
+      transcript: si.map(n => ({ n: n, t: '(câu ' + n + ')', bad: thuLai.includes(n) })),
+      fix: c.recommended_fix || 'KHÔNG sửa.'
+    };
+  });
+}
+
+async function napAI(){
+  try {
+    const r = await fetch('clusters.json', { cache: 'no-store' });
+    if(!r.ok) return false;
+    const data = await r.json();
+    const moi = tuClusters(data);
+    if(!moi.length) return false;
+    ISSUES.length = 0;
+    moi.forEach(x => ISSUES.push(x));
+    const b = document.getElementById('nguon-du-lieu');
+    if(b){
+      b.className = 'banner ok mt';
+      b.innerHTML = '✅ <b>Đang dùng kết quả AI THẬT</b> — đọc từ <code>clusters.json</code> (model: '
+        + (data.model || '?') + ', ' + (data.input ? data.input.so_gop_y : '?') + ' góp ý đầu vào, '
+        + (data.loc_bo || []).length + ' góp ý bị lọc trước khi gửi AI).';
+    }
+    activateIssues();
+    return true;
+  } catch(e){ return false; }
+}
 
 
 let screening = 0, activeIssue = 0, accepted = {};
@@ -610,6 +685,9 @@ function goVid(i){
 document.querySelectorAll('.steps .step').forEach(el=>{
   el.onclick = ()=> go(+el.dataset.step);
 });
+
+// Thử nạp kết quả AI thật ngay khi mở trang
+napAI();
 
 function togglePlay(){
   const b = document.querySelector('.playbtn');

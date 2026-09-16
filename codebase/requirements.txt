@@ -1,0 +1,2 @@
+# FeedbackRadar — thư viện cần cho pipeline AI
+openai>=1.40.0
