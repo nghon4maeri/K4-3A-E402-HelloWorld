@@ -7,14 +7,25 @@ import re
 from typing import List, Dict, Any, Tuple
 
 # ==========================================
-# 1. ĐƠN GIÁ TÍNH CHI PHÍ (THEO BANG-CHI-PHI-LAM-LAI.MD & CP3 PLAN)
+# 1. THƯỚC ĐO PHẠM VI LÀM LẠI
 # ==========================================
-DON_GIA = {
-    "thu_loi": 50000,        # 50k / câu thu lại giọng
-    "dung_canh": 150000,     # 150k / cảnh dựng lại hình ảnh
-    "sua_phu_de": 30000,     # 30k / câu chỉnh timecode phụ đề
-    "full_video_cost": 8000000  # Chi phí chuẩn nếu làm lại toàn bộ video 4 phút
-}
+# NGUỒN: data/studio-pack/c5-feedbackradar/bang-chi-phi-lam-lai.md
+#
+# Ban tổ chức KHÔNG cấp đơn giá tiền. File đó nói rõ:
+#   "Giọng tính tiền theo SỐ KÝ TỰ của lời đọc"
+#   "Đội tự chọn cách quy đổi, miễn là nhất quán và nói rõ đã quy đổi ra sao"
+#   "Rồi đặt cạnh con số của việc làm lại toàn bộ — 3 637 ký tự và 40 cảnh"
+#
+# Vì vậy nhóm đo bằng đúng hai đại lượng ban tổ chức cấp — SỐ KÝ TỰ phải thu
+# lại giọng và SỐ CẢNH phải dựng lại — không tự đặt giá tiền.
+#
+# Số gốc của video d1, nhóm đã đếm lại từ cau-timecode-d1.csv và khớp 100%:
+TONG_KY_TU_CA_VIDEO = 3637   # tổng ký tự lời đọc (39 câu có lời; câu 35 là dừng 5 giây)
+TONG_CANH_CA_VIDEO = 40      # tổng số cảnh
+
+# Ảnh hưởng dây chuyền: đổi lời câu N buộc thu lại cả N-1 và N+1, vì máy đọc
+# lấy câu trước/sau làm ngữ cảnh. Bỏ qua điều này là báo thiếu gần nửa chi phí.
+DAY_CHUYEN = 1
 
 # ==========================================
 # 2. BỘ LỌC HEURISTIC AN TOÀN (SAFETY & INJECTION FILTER)

@@ -242,7 +242,7 @@ def run_benchmark():
 
     print("=" * 65)
     print("  BENCHMARK FEEDBACKRADAR — LƯỢT %d" % args.lan)
-    print("  %d case · model=%s" % (len(cases), os.environ.get("GEMINI_MODEL", "gemini-2.5-flash")))
+    print("  %d case · model=%s" % (len(cases), os.environ.get("GEMINI_MODEL", "gemini-3.6-flash")))
     print("=" * 65)
 
     ket = []

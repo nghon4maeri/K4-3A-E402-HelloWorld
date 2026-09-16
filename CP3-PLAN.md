@@ -24,7 +24,7 @@ Quyết định trung tâm của sản phẩm = gom cụm + phân loại lỗi +
 feedback.json (30 dòng, có ID gy-xxx)
 transcript.json (40 câu ↔ câu index)
 timecode.json  (câu index ↔ phút/giây)   ← BẢNG CỨNG, KHÔNG cho AI sinh giây
-bảng giá (thu lời 50k/câu · dựng cảnh 150k/cảnh)
+bảng chi phí (ký tự thu lại giọng + số cảnh dựng lại — BTC không cấp đơn giá tiền)
         │
         ▼
 [1] LỌC NHIỄU (heuristic cứng, KHÔNG AI):
@@ -36,7 +36,7 @@ bảng giá (thu lời 50k/câu · dựng cảnh 150k/cảnh)
         │  (prompt buộc: mọi quote_id phải nằm trong danh sách đầu vào — chống bịa)
         ▼
 [3] MAP câu_index → timecode bằng bảng cứng (không đúng giây gì)
-[4] TÍNH CHI PHÍ: Σ (số câu thu × 50k) + (số cảnh × 150k) — phép cộng, không AI
+[4] TÍNH PHẠM VI: Σ ký tự câu phải thu lại + Σ số cảnh dựng lại — phép cộng, không AI
         │
         ▼
 clusters.json  →  UI (index.html) hiển thị + Accept/Reject

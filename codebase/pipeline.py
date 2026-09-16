@@ -28,7 +28,9 @@ if sys.stdout and hasattr(sys.stdout, "reconfigure"):
 # Load prompt configuration & rules
 from config_prompt import (
     SYSTEM_PROMPT,
-    DON_GIA,
+    TONG_KY_TU_CA_VIDEO,
+    TONG_CANH_CA_VIDEO,
+    DAY_CHUYEN,
     filter_feedbacks,
     build_user_prompt
 )
@@ -80,7 +82,7 @@ def run_gemini_call(safe_feedbacks: List[Dict[str, Any]], transcript: List[Dict[
     đánh dấu nguon="fallback-dung-san" để không ai nhầm.
     """
     api_key = os.environ.get("GEMINI_API_KEY", "").strip()
-    model_name = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash").strip()
+    model_name = os.environ.get("GEMINI_MODEL", "gemini-3.6-flash").strip()
 
     if not api_key:
         LAST_RUN.update(nguon="fallback-dung-san", model=None,
@@ -209,7 +211,7 @@ def run_fallback_engine(safe_feedbacks: List[Dict[str, Any]], transcript: List[D
             "loai_loi": "Nội dung",
             "ui_color": "blue",
             "so_nguoi": 3,
-            "quote_ids": ["gy-002", "gy-003", "gy-018", "gy-019"],
+            "quote_ids": ["gy-002", "gy-003", "gy-018", "ns-001"],
             "cau_index": [20, 21, 22, 23],
             "cau_trong_tam": 22,
             "loai_sua": "thu lời + dựng",
@@ -222,7 +224,7 @@ def run_fallback_engine(safe_feedbacks: List[Dict[str, Any]], transcript: List[D
             "loai_loi": "Kỹ thuật",
             "ui_color": "green",
             "so_nguoi": 2,
-            "quote_ids": ["gy-008", "gy-022"],
+            "quote_ids": ["gy-008", "ns-004"],
             "cau_index": [20],
             "cau_trong_tam": 20,
             "loai_sua": "thu lời",
@@ -235,7 +237,7 @@ def run_fallback_engine(safe_feedbacks: List[Dict[str, Any]], transcript: List[D
             "loai_loi": "Kỹ thuật",
             "ui_color": "violet",
             "so_nguoi": 2,
-            "quote_ids": ["gy-010", "gy-021"],
+            "quote_ids": ["gy-010", "ns-003"],
             "cau_index": [24, 25, 26, 27, 28, 29],
             "cau_trong_tam": 24,
             "loai_sua": "dựng hình",
@@ -248,7 +250,7 @@ def run_fallback_engine(safe_feedbacks: List[Dict[str, Any]], transcript: List[D
             "loai_loi": "Sư phạm (tốc độ/giọng)",
             "ui_color": "red",
             "so_nguoi": 3,
-            "quote_ids": ["gy-005", "gy-006", "gy-028"],
+            "quote_ids": ["gy-005", "gy-006", "ns-010"],
             "cau_index": [35],
             "cau_trong_tam": 35,
             "loai_sua": "dựng hình",
@@ -261,7 +263,7 @@ def run_fallback_engine(safe_feedbacks: List[Dict[str, Any]], transcript: List[D
             "loai_loi": "Nội dung",
             "ui_color": "blue",
             "so_nguoi": 2,
-            "quote_ids": ["gy-016", "gy-024"],
+            "quote_ids": ["gy-016", "ns-006"],
             "cau_index": [40],
             "cau_trong_tam": 40,
             "loai_sua": "thu lời",
@@ -274,7 +276,7 @@ def run_fallback_engine(safe_feedbacks: List[Dict[str, Any]], transcript: List[D
             "loai_loi": "Kỹ thuật",
             "ui_color": "violet",
             "so_nguoi": 2,
-            "quote_ids": ["gy-017", "gy-023"],
+            "quote_ids": ["gy-017", "ns-005"],
             "cau_index": [18, 19],
             "cau_trong_tam": 18,
             "loai_sua": "sửa phụ đề",
@@ -287,7 +289,7 @@ def run_fallback_engine(safe_feedbacks: List[Dict[str, Any]], transcript: List[D
             "loai_loi": "Nội dung",
             "ui_color": "blue",
             "so_nguoi": 2,
-            "quote_ids": ["gy-007", "gy-020"],
+            "quote_ids": ["gy-007", "ns-002"],
             "cau_index": [14],
             "cau_trong_tam": 14,
             "loai_sua": "thu lời",
@@ -300,7 +302,7 @@ def run_fallback_engine(safe_feedbacks: List[Dict[str, Any]], transcript: List[D
             "loai_loi": "Nội dung",
             "ui_color": "blue",
             "so_nguoi": 2,
-            "quote_ids": ["gy-015", "gy-029"],
+            "quote_ids": ["gy-015", "ns-011"],
             "cau_index": [10],
             "cau_trong_tam": 10,
             "loai_sua": "thu lời",
@@ -334,12 +336,12 @@ def run_fallback_engine(safe_feedbacks: List[Dict[str, Any]], transcript: List[D
             "ly_do_khong_dinh_vi": "Khen ngợi chung chung, không có yêu cầu điều chỉnh kịch bản"
         },
         {
-            "quote_id": "gy-027",
+            "quote_id": "ns-009",
             "noi_dung": "Video nhìn chung rất trực quan và dễ hiểu, em cảm ơn thầy cô.",
             "ly_do_khong_dinh_vi": "Đánh giá tích cực tổng thể, không chỉ ra vị trí cần sửa"
         },
         {
-            "quote_id": "gy-030",
+            "quote_id": "ns-012",
             "noi_dung": "Đoạn giữa clip xem thấy mông lung quá chả hiểu gì.",
             "ly_do_khong_dinh_vi": "Cảm nhận chủ quan, không định vị được phân đoạn lỗi"
         }
@@ -353,54 +355,58 @@ def run_fallback_engine(safe_feedbacks: List[Dict[str, Any]], transcript: List[D
 
 def calculate_cluster_cost(cau_indices: List[int], loai_sua: str, transcript_map: Dict[int, Dict[str, Any]]) -> Dict[str, Any]:
     """
-    Tính chi phí sửa tối thiểu cho cụm vấn đề theo quy tắc chuẩn:
-    - Nếu có 'thu lời': Áp dụng quy tắc ảnh hưởng dây chuyền (câu N -> phải thu cả N-1, N, N+1).
-      Đơn giá: 50,000 VND / câu.
-    - Nếu có 'dựng hình': Đơn giá 150,000 VND / cảnh.
-    - Nếu là 'sửa phụ đề': Đơn giá 30,000 VND / câu.
+    Tính phạm vi phải làm lại cho một cụm vấn đề.
+
+    ĐƠN VỊ: số ký tự phải thu lại giọng + số cảnh phải dựng lại.
+    Ban tổ chức KHÔNG cấp đơn giá tiền (xem bang-chi-phi-lam-lai.md), nên ở đây
+    không quy ra tiền — đo bằng đúng hai đại lượng mà đề cấp.
+
+    Quy tắc:
+    - Đổi lời  : thu lại câu N và cả N-1, N+1 (ảnh hưởng dây chuyền) + dựng lại
+                 đúng những cảnh đó.
+    - Đổi hình : 0 ký tự (giữ nguyên giọng đã thu), chỉ dựng lại cảnh.
+    - Phụ đề   : 0 ký tự, 0 cảnh — chỉ chỉnh file phụ đề, không đụng kịch bản.
+    - Giữ nguyên / lỗi kỹ thuật thuần: không phát sinh gì.
     """
+    rong = {"so_ky_tu": 0, "so_canh": 0, "cau_thu_lai": [], "cau_dung_lai": [],
+            "phan_tram_cong_thu": 0.0}
+
     if "giữ nguyên" in loai_sua:
-        return {
-            "chi_phi": 0,
-            "cau_thu_lai": [],
-            "cau_dung_lai": []
-        }
-        
-    cau_set = set(cau_indices)
-    cau_thu_lai = set()
-    cau_dung_lai = set()
-    
+        return rong
+
+    cau_set = {int(c) for c in cau_indices if 1 <= int(c) <= TONG_CANH_CA_VIDEO}
+    cau_thu_lai, cau_dung_lai = set(), set()
+
     is_voice = "thu lời" in loai_sua
     is_visual = "dựng" in loai_sua
     is_sub = "phụ đề" in loai_sua
-    
+
+    if is_sub:
+        # Chỉnh timecode phụ đề: không thu lại giọng, không dựng lại cảnh.
+        return rong
+
     if is_voice:
         for c in cau_set:
-            cau_thu_lai.add(c)
-            # Dây chuyền ngữ cảnh trước và sau (nếu câu hợp lệ trong khoảng 1..40)
-            if c - 1 >= 1:
-                cau_thu_lai.add(c - 1)
-            if c + 1 <= 40:
-                cau_thu_lai.add(c + 1)
-        cau_dung_lai.update(cau_thu_lai)  # Thu lại lời kéo theo phải dựng lại khớp giọng
+            for x in (c - DAY_CHUYEN, c, c + DAY_CHUYEN):
+                if 1 <= x <= TONG_CANH_CA_VIDEO:
+                    cau_thu_lai.add(x)
+        cau_dung_lai.update(cau_thu_lai)  # thu lại lời kéo theo dựng lại cho khớp giọng
     elif is_visual:
-        cau_dung_lai.update(cau_set)
-        
-    cost = 0
-    if is_voice:
-        cost += len(cau_thu_lai) * DON_GIA["thu_loi"]
-        cost += len(cau_dung_lai) * DON_GIA["dung_canh"]
-    elif is_visual:
-        cost += len(cau_dung_lai) * DON_GIA["dung_canh"]
-    elif is_sub:
-        cost += len(cau_set) * DON_GIA["sua_phu_de"]
-    else:
-        cost += len(cau_set) * DON_GIA["thu_loi"]
+        cau_dung_lai.update(cau_set)      # đổi hình: giữ giọng, chỉ dựng lại cảnh
+
+    # Số ký tự lấy từ transcript thật, không ước lượng
+    so_ky_tu = 0
+    for c in cau_thu_lai:
+        item = transcript_map.get(c) or {}
+        loi = item.get("loi", "")
+        so_ky_tu += 0 if loi.strip() == "(dừng 5 giây)" else len(loi)
 
     return {
-        "chi_phi": cost,
-        "cau_thu_lai": sorted(list(cau_thu_lai)),
-        "cau_dung_lai": sorted(list(cau_dung_lai))
+        "so_ky_tu": so_ky_tu,
+        "so_canh": len(cau_dung_lai),
+        "cau_thu_lai": sorted(cau_thu_lai),
+        "cau_dung_lai": sorted(cau_dung_lai),
+        "phan_tram_cong_thu": round(so_ky_tu / TONG_KY_TU_CA_VIDEO * 100, 1),
     }
 
 
@@ -475,12 +481,15 @@ def build_final_clusters(ai_output: Dict[str, Any], feedbacks: List[Dict[str, An
             "v": v_time,
             "cau": cau_str,
             "chat": f"{c.get('so_nguoi', len(valid_quotes))} học viên độc lập",
-            "price": cost_info["chi_phi"],
+            "kyTu": cost_info["so_ky_tu"],
+            "canh": cost_info["so_canh"],
+            "phanTramCongThu": cost_info["phan_tram_cong_thu"],
             "type": c.get("loai_sua", "thu lời"),
             "quotes": quote_objs,
             "transcript": transcript_snippet,
             "fix": c.get("de_xuat_sua", ""),
             "cau_indices": cau_list,
+            "thuLai": cost_info["cau_thu_lai"],
             "cau_thu_lai": cost_info["cau_thu_lai"],
             "cau_dung_lai": cost_info["cau_dung_lai"],
             "ghi_chu": c.get("ghi_chu", "")
@@ -526,9 +535,12 @@ def run_pipeline():
     final_clusters = build_final_clusters(ai_raw_output, all_feedbacks, transcript)
     
     # Tính tổng ngân sách
-    total_rework_cost = sum(c["price"] for c in final_clusters)
-    savings = DON_GIA["full_video_cost"] - total_rework_cost
-    savings_pct = round((savings / DON_GIA["full_video_cost"]) * 100, 1)
+    # Tổng phạm vi làm lại — đo bằng ký tự thu lại giọng và số cảnh dựng lại,
+    # đặt cạnh con số làm lại toàn bộ (3 637 ký tự / 40 cảnh) như đề yêu cầu.
+    tong_ky_tu = sum(c["kyTu"] for c in final_clusters)
+    tong_canh = sum(c["canh"] for c in final_clusters)
+    phan_tram_cong_thu = round(tong_ky_tu / TONG_KY_TU_CA_VIDEO * 100, 1)
+    tiet_kiem_pct = round(100 - phan_tram_cong_thu, 1)
 
     # Đóng gói xuất bản
     la_ai_that = LAST_RUN.get("nguon") == "ai-that"
@@ -554,9 +566,14 @@ def run_pipeline():
             "soGopYHopLe": len(safe_feedbacks),
             "soGopYBiChieuLoc": len(safety_log),
             "soCumPhatHien": len(final_clusters),
-            "tongChiPhiSuaDuKien": total_rework_cost,
-            "chiPhiLamLaiToanBo": DON_GIA["full_video_cost"],
-            "tietKiemSoVoiLamLai": f"{savings:,} VND ({savings_pct}%)",
+            "phamViLamLai": {
+                "soKyTuThuLai": tong_ky_tu,
+                "soCanhDungLai": tong_canh,
+                "phanTramCongThu": phan_tram_cong_thu,
+                "tietKiemPhanTram": tiet_kiem_pct,
+                "_donVi": "ký tự thu lại giọng + số cảnh dựng lại — ban tổ chức không cấp đơn giá tiền",
+            },
+            "toanBoVideo": {"soKyTu": TONG_KY_TU_CA_VIDEO, "soCanh": TONG_CANH_CA_VIDEO},
             "thoiGianChayGiay": round(time.time() - start_time, 2)
         },
         "clusters": final_clusters,
@@ -582,9 +599,11 @@ def run_pipeline():
     print("  KẾT QUẢ PHÂN TÍCH TỔNG HỢP:")
     print(f"  • Số cụm vấn đề xác định: {len(final_clusters)}")
     for c in final_clusters:
-        print(f"    [{c['idx']}] {c['title']} ({c['loai']}) - {c['cau']} [{c['v']}] - {c['price']:,}đ")
-    print(f"  • Tổng chi phí sửa đề xuất: {total_rework_cost:,} VND")
-    print(f"  • Tiết kiệm so với làm lại trọn bài: {savings_pct}%")
+        print(f"    [{c['idx']}] {c['title']} ({c['loai']}) - {c['cau']} [{c['v']}]"
+              f" - {c['kyTu']} ký tự · {c['canh']} cảnh")
+    print(f"  • Tổng phạm vi làm lại: {tong_ky_tu} ký tự · {tong_canh} cảnh")
+    print(f"  • So với làm lại toàn bộ ({TONG_KY_TU_CA_VIDEO} ký tự / {TONG_CANH_CA_VIDEO} cảnh):"
+          f" chỉ {phan_tram_cong_thu}% công thu giọng — tiết kiệm {tiet_kiem_pct}%")
     print("=" * 65)
 
 
