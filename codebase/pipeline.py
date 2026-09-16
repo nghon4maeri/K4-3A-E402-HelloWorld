@@ -66,55 +66,135 @@ def load_inputs():
     return transcript, feedbacks
 
 
+# Ghi lại nguồn của kết quả lần chạy gần nhất — để clusters.json và UI
+# nói đúng sự thật là kết quả do AI sinh hay do dữ liệu dựng sẵn.
+LAST_RUN = {"nguon": None, "model": None, "so_giay": None, "tokens": None, "ly_do_fallback": None}
+
+
 def run_gemini_call(safe_feedbacks: List[Dict[str, Any]], transcript: List[Dict[str, Any]]) -> Dict[str, Any]:
     """
-    Gọi Gemini API để gom cụm và định vị câu.
-    Nếu không có GEMINI_API_KEY, chuyển sang chế độ mô phỏng suy luận cục bộ (Deterministic Fallback)
-    để đảm bảo pipeline luôn chạy thông suốt khi test offline.
+    Gọi Gemini API để gom cụm và định vị câu — ĐÂY LÀ QUYẾT ĐỊNH TRUNG TÂM.
+
+    Nếu không có key hoặc API lỗi, trả về bộ dữ liệu DỰNG SẴN để luồng không gãy
+    khi test offline. Bộ dựng sẵn KHÔNG phải kết quả AI — mọi đầu ra đều được
+    đánh dấu nguon="fallback-dung-san" để không ai nhầm.
     """
     api_key = os.environ.get("GEMINI_API_KEY", "").strip()
     model_name = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash").strip()
 
     if not api_key:
-        print("[!] Không tìm thấy GEMINI_API_KEY trong biến môi trường hoặc .env")
-        print("[i] Chạy chế độ fallback thông minh (Semantic Fallback Engine) để kiểm thử luồng...")
+        LAST_RUN.update(nguon="fallback-dung-san", model=None,
+                        ly_do_fallback="Chưa điền GEMINI_API_KEY trong codebase/.env")
+        canh_bao_fallback("Chưa điền GEMINI_API_KEY trong codebase/.env")
         return run_fallback_engine(safe_feedbacks, transcript)
 
     print(f"[*] Khởi tạo kết nối Google GenAI với model: {model_name}...")
     user_content = build_user_prompt(safe_feedbacks, transcript)
-    
+
+    loi_cuoi = None
+    for lan in range(1, 4):
+        try:
+            from google import genai
+            client = genai.Client(api_key=api_key)
+
+            t0 = time.time()
+            response = client.models.generate_content(
+                model=model_name,
+                contents=user_content,
+                config={
+                    "system_instruction": SYSTEM_PROMPT,
+                    "response_mime_type": "application/json",
+                    "temperature": 0.2
+                }
+            )
+            so_giay = round(time.time() - t0, 2)
+
+            raw_text = response.text.strip()
+            # Loại bỏ markdown fence nếu model có bọc lại
+            if raw_text.startswith("```json"):
+                raw_text = raw_text[7:]
+            if raw_text.startswith("```"):
+                raw_text = raw_text[3:]
+            if raw_text.endswith("```"):
+                raw_text = raw_text[:-3]
+
+            result = json.loads(raw_text.strip())
+
+            tokens = None
+            try:
+                um = response.usage_metadata
+                tokens = {
+                    "prompt": um.prompt_token_count,
+                    "completion": um.candidates_token_count,
+                    "tong": um.total_token_count,
+                }
+            except Exception:
+                pass
+
+            LAST_RUN.update(nguon="ai-that", model=model_name, so_giay=so_giay,
+                            tokens=tokens, ly_do_fallback=None)
+
+            print(f"[✓] Gọi Gemini THÀNH CÔNG — model={model_name} · {so_giay}s"
+                  + (f" · {tokens['tong']} tokens" if tokens else ""))
+
+            # Lưu trace để chứng minh AI chạy thật (bằng chứng cho CP3)
+            luu_trace(model_name, so_giay, tokens, user_content, raw_text, len(safe_feedbacks))
+            return result
+
+        except Exception as e:
+            loi_cuoi = e
+            if lan < 3:
+                cho = 2 ** lan
+                print(f"[!] Lần {lan} lỗi: {e}")
+                print(f"    Thử lại sau {cho}s...")
+                time.sleep(cho)
+
+    LAST_RUN.update(nguon="fallback-dung-san", model=None,
+                    ly_do_fallback=f"Gọi Gemini lỗi sau 3 lần: {loi_cuoi}")
+    canh_bao_fallback(f"Gọi Gemini lỗi sau 3 lần: {loi_cuoi}")
+    return run_fallback_engine(safe_feedbacks, transcript)
+
+
+def canh_bao_fallback(ly_do: str):
+    """In cảnh báo to, không thể bỏ qua, khi kết quả KHÔNG phải do AI sinh."""
+    print("")
+    print("!" * 65)
+    print("!!  CẢNH BÁO: KẾT QUẢ DƯỚI ĐÂY KHÔNG PHẢI DO AI SINH RA")
+    print("!!")
+    print(f"!!  Lý do: {ly_do}")
+    print("!!")
+    print("!!  Đang dùng bộ dữ liệu DỰNG SẴN trong run_fallback_engine().")
+    print("!!  Chỉ để kiểm thử luồng khi offline.")
+    print("!!  KHÔNG dùng lần chạy này để quay video CP3 hay ghi vào bảng đo.")
+    print("!!")
+    print("!!  Cách chạy AI thật:")
+    print("!!    1. Lấy key miễn phí: https://aistudio.google.com/apikey")
+    print("!!    2. Dán vào dòng GEMINI_API_KEY= trong codebase/.env")
+    print("!!    3. Chạy lại lệnh này")
+    print("!" * 65)
+    print("")
+
+
+def luu_trace(model_name, so_giay, tokens, user_content, raw_text, so_gop_y):
+    """Ghi lại prompt + response thật để làm bằng chứng AI đã chạy."""
     try:
-        from google import genai
-        client = genai.Client(api_key=api_key)
-        
-        # Cấu hình gọi model với JSON output
-        response = client.models.generate_content(
-            model=model_name,
-            contents=user_content,
-            config={
-                "system_instruction": SYSTEM_PROMPT,
-                "response_mime_type": "application/json",
-                "temperature": 0.2
-            }
-        )
-        
-        raw_text = response.text.strip()
-        # Loại bỏ markdown fence nếu model có bọc lại
-        if raw_text.startswith("```json"):
-            raw_text = raw_text[7:]
-        if raw_text.startswith("```"):
-            raw_text = raw_text[3:]
-        if raw_text.endswith("```"):
-            raw_text = raw_text[:-3]
-            
-        result = json.loads(raw_text.strip())
-        print("[✓] Gọi Gemini API thành công! Đã nhận kết quả JSON cấu trúc.")
-        return result
-        
+        thu_muc = BASE_DIR.parent / "eval" / "results"
+        thu_muc.mkdir(parents=True, exist_ok=True)
+        ten = "trace-%s.json" % time.strftime("%Y%m%d-%H%M%S")
+        (thu_muc / ten).write_text(json.dumps({
+            "nguon": "ai-that",
+            "model": model_name,
+            "thoi_diem": time.strftime("%Y-%m-%d %H:%M:%S"),
+            "thoi_gian_giay": so_giay,
+            "tokens": tokens,
+            "so_gop_y_gui": so_gop_y,
+            "system_prompt": SYSTEM_PROMPT,
+            "user_prompt": user_content,
+            "raw_response": raw_text,
+        }, ensure_ascii=False, indent=2), encoding="utf-8")
+        print(f"[✓] Đã lưu bằng chứng AI: eval/results/{ten}")
     except Exception as e:
-        print(f"[X] Lỗi khi gọi Gemini API: {e}")
-        print("[i] Tự động chuyển tiếp sang Semantic Fallback Engine...")
-        return run_fallback_engine(safe_feedbacks, transcript)
+        print(f"[!] Không lưu được trace: {e}")
 
 
 def run_fallback_engine(safe_feedbacks: List[Dict[str, Any]], transcript: List[Dict[str, Any]]) -> Dict[str, Any]:
@@ -451,7 +531,23 @@ def run_pipeline():
     savings_pct = round((savings / DON_GIA["full_video_cost"]) * 100, 1)
 
     # Đóng gói xuất bản
+    la_ai_that = LAST_RUN.get("nguon") == "ai-that"
     pipeline_result = {
+        # Trường này nói rõ kết quả do đâu mà có — UI và người chấm đọc trường này.
+        "nguon_ket_qua": {
+            "loai": LAST_RUN.get("nguon") or "khong-xac-dinh",
+            "la_ai_that": la_ai_that,
+            "model": LAST_RUN.get("model"),
+            "thoi_gian_goi_giay": LAST_RUN.get("so_giay"),
+            "tokens": LAST_RUN.get("tokens"),
+            "ly_do_fallback": LAST_RUN.get("ly_do_fallback"),
+            "_ghiChu": (
+                "Khâu gom cụm + phân loại + định vị câu do AI thật quyết định."
+                if la_ai_that else
+                "KHÔNG PHẢI KẾT QUẢ AI — dữ liệu dựng sẵn trong run_fallback_engine(), "
+                "chỉ dùng để kiểm thử luồng khi offline."
+            ),
+        },
         "metadata": {
             "kichBanId": "d1",
             "tongSoGopY": len(all_feedbacks),
@@ -474,6 +570,15 @@ def run_pipeline():
         
     print(f" -> Đã ghi thành công file: {CLUSTERS_OUTPUT_PATH.name}")
     print("\n" + "=" * 65)
+    if la_ai_that:
+        tk = LAST_RUN.get("tokens")
+        print(f"  NGUỒN KẾT QUẢ: AI THẬT — model={LAST_RUN.get('model')}"
+              f" · {LAST_RUN.get('so_giay')}s"
+              + (f" · {tk['tong']} tokens" if tk else ""))
+    else:
+        print("  NGUỒN KẾT QUẢ: *** DỮ LIỆU DỰNG SẴN, KHÔNG PHẢI AI ***")
+        print(f"  Lý do: {LAST_RUN.get('ly_do_fallback')}")
+    print("=" * 65)
     print("  KẾT QUẢ PHÂN TÍCH TỔNG HỢP:")
     print(f"  • Số cụm vấn đề xác định: {len(final_clusters)}")
     for c in final_clusters:
@@ -485,3 +590,9 @@ def run_pipeline():
 
 if __name__ == "__main__":
     run_pipeline()
+
+    # --require-ai: thoát với mã lỗi nếu lần chạy này KHÔNG dùng AI thật.
+    # Dùng khi quay video CP3 hoặc chạy đo, để không vô tình lấy kết quả dựng sẵn.
+    if "--require-ai" in sys.argv and LAST_RUN.get("nguon") != "ai-that":
+        print("\n[X] --require-ai: lần chạy này KHÔNG gọi được AI thật. Dừng.")
+        sys.exit(1)

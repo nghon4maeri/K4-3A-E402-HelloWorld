@@ -1,2 +1,9 @@
 # FeedbackRadar — thư viện cần cho pipeline AI
-openai>=1.40.0
+#
+# Cài:  python -m pip install -r codebase/requirements.txt
+
+google-genai>=1.0.0      # SDK Gemini — dùng ở khâu gom cụm (quyết định trung tâm)
+python-dotenv>=1.0.0     # đọc khoá API từ codebase/.env
+
+# Dự phòng, chỉ cần nếu chuyển lại sang OpenAI:
+# openai>=1.40.0

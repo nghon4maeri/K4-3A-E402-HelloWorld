@@ -580,12 +580,30 @@ function loadRealClusters() {
             $('safetyBanner').innerHTML = `<b>${data.metadata.soGopYBiChieuLoc}</b> góp ý bị <b>lọc bỏ</b> (công kích cá nhân, prompt injection) — đã ghi vào log an toàn, không hiện trong cụm.`;
           }
         }
+        // Banner phải nói đúng kết quả do đâu mà có — AI thật hay dữ liệu dựng sẵn.
+        const ng = data.nguon_ket_qua || {};
+        const b = $('nguon-du-lieu');
+        if(b){
+          if(ng.la_ai_that){
+            const tk = ng.tokens ? (' · ' + ng.tokens.tong + ' tokens') : '';
+            b.className = 'banner ok mt';
+            b.innerHTML = '✅ <b>Kết quả do AI THẬT sinh ra</b> — model <code>'
+              + (ng.model || '?') + '</code> · ' + (ng.thoi_gian_goi_giay || '?') + 's' + tk
+              + '. Khâu gom cụm, phân loại và định vị câu do AI quyết định; timecode tra bảng cứng, chi phí do code cộng.';
+          } else {
+            b.className = 'banner warn mt';
+            b.innerHTML = '⚠️ <b>KHÔNG PHẢI kết quả AI</b> — đang hiển thị dữ liệu dựng sẵn để kiểm thử luồng.'
+              + (ng.ly_do_fallback ? ' Lý do: ' + ng.ly_do_fallback + '.' : '')
+              + ' Điền <code>GEMINI_API_KEY</code> vào <code>codebase/.env</code> rồi chạy lại <code>python codebase/pipeline.py</code>.';
+          }
+        }
         activateIssues();
-        console.log('[FeedbackRadar] Đã tải thành công ' + ISSUES.length + ' cụm từ clusters.json!');
+        console.log('[FeedbackRadar] Đã tải ' + ISSUES.length + ' cụm — nguồn: '
+          + (ng.la_ai_that ? 'AI THẬT (' + ng.model + ')' : 'dữ liệu dựng sẵn'));
       }
     })
     .catch(err => {
-      console.log('[FeedbackRadar] Đang chạy với dữ liệu dự phòng cục bộ.');
+      console.log('[FeedbackRadar] Chưa có clusters.json — đang dùng dữ liệu mock trong trang.');
     });
 }
 window.addEventListener('DOMContentLoaded', loadRealClusters);
