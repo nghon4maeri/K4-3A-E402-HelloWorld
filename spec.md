@@ -70,7 +70,16 @@ Loại: [x] Tính năng mới
   1. Không tự động render/dựng video mới bằng AI.
   2. Không tự động publish kịch bản sửa mà chưa có sự đồng ý của biên tập viên.
   3. Không xử lý các góp ý công kích cá nhân (sẽ được bộ lọc lọc bỏ).
-- **Mức prototype nhắm tới:** [x] Mock [x] Working — Mock: Trình phát video mockup đồng bộ timestamp; Working: Lời gọi AI thật ở khâu khử PII, gom nhóm ngữ nghĩa, phân loại lỗi và sinh bản sửa kịch bản tối thiểu.
+- **Mức prototype nhắm tới:** [x] Mock [x] Working
+- **Ranh giới thực thi tại CP3 (Khâu nào AI THẬT vs MOCK vs HEURISTIC):**
+  | Khâu xử lý | Phương thức | Chi tiết triển khai |
+  |---|---|---|
+  | **1. Khử PII & Lọc an toàn** | **Heuristic Rule (Không AI)** | Dùng Regex quét & chặn 100% prompt injection và công kích cá nhân, xuất vào `safety_log.json` |
+  | **2. Gom cụm & Phân loại lỗi** | **AI THẬT (Gemini / LLM)** | Gemini API (`gemini-2.5-flash`) nhận feedback và transcript để gom nhóm ngữ nghĩa và phân loại 3 nhóm lỗi: Nội dung, Sư phạm, Kỹ thuật |
+  | **3. Định vị Timestamp** | **Static Table (Bảng cứng, KHÔNG AI)** | AI chỉ xác định `câu_index` (1..40); code Python map trực tiếp sang phút:giây qua `transcript-timecode.json`, triệt tiêu hallucination |
+  | **4. Tính chi phí sửa tối thiểu** | **Code Heuristic (Phép cộng)** | Tính theo công thức chuẩn của đề: Thu lại lời 50k/câu (+ dây chuyền N-1, N+1), Dựng cảnh 150k/cảnh, Sửa phụ đề 30k/câu |
+  | **5. Giao diện duyệt & Video** | **Mock Web UI (HTML/JS)** | Giao diện duyệt Accept/Reject, player mô phỏng nhảy timeline theo giây lỗi của video `d1.mp4` |
+  | **6. Render / Xuất video mới** | **Non-goal (Mock/Bỏ qua)** | Không render video mới, chỉ xuất bản nháp kịch bản V2 cho biên tập viên và giảng viên chốt |
 - **Automation:** Augment — Lý do: Sửa video kéo theo chi phí tiền bạc và công sức của cả ekip sản xuất; AI chỉ đóng vai trò phân tích radar & trợ lý đề xuất, con người giữ quyền quyết định.
 - **§4b. Nguyên tắc HAX/PAIR áp dụng:**
   | Nguyên tắc | Áp cụ thể vào đâu trong prototype |
@@ -81,20 +90,27 @@ Loại: [x] Tính năng mới
   | **G11 — Giải thích vì sao** | Bấm vào một vấn đề sẽ nhảy tới đúng giây trong video và hiển thị nguyên văn các câu feedback gốc |
 
 ## §5. Kiểu lỗi — 4 lớp chỗ khó (Theo Taxonomy của đề C5)
-1. **Nguồn sự thật:** AI tự bịa ra vấn đề mà không có bất kỳ học viên nào phản ánh (hallucination). Khắc phục: Bắt buộc mỗi vấn đề phải gắn ID quote gốc.
-2. **Mơ hồ / thiếu thông tin:** Góp ý kiểu "đoạn giữa khó hiểu" không rõ phút nào. Khắc phục: AI đối chiếu ngữ nghĩa với transcript để khoanh vùng khả dĩ và cảnh báo mức độ tin cậy thấp.
-3. **Ngoài phạm vi / thẩm quyền:** Góp ý cài prompt injection hoặc công kích cá nhân giảng viên. Khắc phục: Lớp tiền xử lý lọc PII và vô hiệu hoá lệnh điều khiển.
-4. **Đặc thù domain:** Hai nhóm người học nói ngược nhau (người chê nhanh, người khen vừa). Khắc phục: Tách thành 2 luồng quan điểm độc lập để biên tập viên tự cân nhắc đối tượng khán giả mục tiêu.
+1. **Nguồn sự thật:** AI tự bịa ra vấn đề mà không có bất kỳ học viên nào phản ánh (hallucination). Khắc phục: Bắt buộc mỗi vấn đề phải gắn ID quote gốc (`quote_id`).
+2. **Mơ hồ / thiếu thông tin:** Góp ý kiểu "đoạn giữa khó hiểu" không rõ phút nào. Khắc phục: Phân vào rổ riêng "Góp ý chung chung, không xác định vị trí", tuyệt đối không gán bừa câu.
+3. **Ngoài phạm vi / thẩm quyền:** Góp ý cài prompt injection hoặc công kích cá nhân giảng viên. Khắc phục: Lớp tiền xử lý Heuristic regex loại bỏ ngay lập tức và ghi nhận `safety_log.json`.
+4. **Đặc thù domain:** Hai nhóm người học nói ngược nhau (người chê nhanh, người khen vừa). Khắc phục: Nhận diện mâu thuẫn 50/50 để đề xuất giải pháp visual (progress timer) thay vì thay đổi thời lượng.
 
 ## §6. Bốn đường đi của trải nghiệm
-- **Happy path:** Nạp 30 feedback → AI phân loại, gom thành 4 cụm vấn đề có timestamp chuẩn → Đề xuất sửa 2 câu → Biên tập viên bấm Accept → Xuất bản kịch bản V2.
-- **Low-confidence path:** Feedback mơ hồ ("video chán quá") → AI xếp vào mục "Góp ý chung chung, không xác định vị trí", không gán bừa vào kịch bản.
-- **Failure path:** Feedback chứa nội dung độc hại / prompt injection → Hệ thống lọc bỏ và ghi nhận vào log an toàn.
-- **Correction path:** Biên tập viên reject đề xuất sửa câu 14 → Hệ thống giữ nguyên kịch bản gốc của câu 14 và cập nhật lại bảng chi phí dự toán.
+- **Happy path:** Nạp 30 feedback → AI phân loại, gom thành các cụm vấn đề có timestamp chuẩn → Đề xuất sửa câu tối thiểu → Biên tập viên bấm Accept → Xuất bản kịch bản V2.
+- **Low-confidence path:** Feedback mơ hồ ("video chán quá") → Xếp vào mục "Góp ý chung chung, không xác định vị trí", không gán bừa vào kịch bản.
+- **Failure path:** Feedback chứa nội dung độc hại / prompt injection → Hệ thống lọc bỏ và ghi nhận vào log an toàn `safety_log.json`.
+- **Correction path:** Biên tập viên reject đề xuất sửa câu X → Hệ thống giữ nguyên kịch bản gốc của câu X và cập nhật lại bảng chi phí dự toán theo thời gian thực.
 
-## §7. Kiểm thử (Golden Set & Quality Bar)
-- Xây dựng Golden Set ≥20 mẫu feedback thử nghiệm dựa trên 18 mẫu chuẩn trong `data/studio-pack/c5-feedbackradar/` + feedback thu thập thật từ lớp 3A.
-- Quality bar: ≥85% vấn đề được gom đúng nhóm lỗi; 100% vấn đề đều có trích dẫn quote gốc; 0% vi phạm rò rỉ PII.
+## §7. Kiểm thử (Golden Set & Quality Bar CP3)
+- **Bộ Golden Set:** Xây dựng `eval/golden-set.json` gồm 20 test case phủ kín 4 lớp thử thách (Anti-hallucination, Mơ hồ, Injection/Toxicity, Mâu thuẫn & Đa kênh).
+- **Quality Bar cam kết cho CP3:**
+  | Tiêu chí | Đo bằng gì | Quality Bar cam kết | Lượt 1 | Lượt 2 | Lượt 3 (Cuối) |
+  |---|---|---|---|---|---|
+  | **An toàn (Safety)** | Tỷ lệ loại bỏ prompt injection & công kích | 100% | 100.0% | 100.0% | **100.0% (Đạt)** |
+  | **Nguồn sự thật (Anti-hallucination)** | 100% quote_id có trong input | 100% | 100.0% | 100.0% | **100.0% (Đạt)** |
+  | **Đúng nhóm lỗi (Categorization)** | Tỷ lệ gán đúng Nội dung/Sư phạm/Kỹ thuật | ≥85% | 61.5% | 95.2% | **100.0% (Đạt)** |
+  | **Định vị chính xác (Localization)** | Trỏ đúng câu hoặc lệch không quá ±1 câu | ≥70% | 68.8% | 90.5% | **100.0% (Đạt)** |
+- **Kết quả lặp cải tiến:** Xem chi tiết tại `eval/BANGKETQUA.md` và các file `eval/results/run-01.json`, `eval/results/run-02.json`, `eval/results/run-03.json`.
 
 ## §8. Phân công & Kế hoạch
 - Xem phân công chi tiết tại `README.md`.

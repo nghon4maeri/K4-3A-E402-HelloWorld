@@ -260,12 +260,12 @@
         <button class="btn btn-primary" onclick="go(3)">Bước duyệt &amp; xuất kịch bản →</button>
       </div>
       <div class="kpi-row">
-        <div class="kpi blue"><div class="num">30</div><div class="lab">Góp ý đầu vào</div></div>
-        <div class="kpi purple"><div class="num">4</div><div class="lab">Cụm vấn đề</div></div>
+        <div class="kpi blue"><div class="num" id="kpiTotal">30</div><div class="lab">Góp ý đầu vào</div></div>
+        <div class="kpi purple"><div class="num" id="kpiClusters">4</div><div class="lab">Cụm vấn đề</div></div>
         <div class="kpi green"><div class="num" id="kpiAcc">0</div><div class="lab">Đã duyệt (accept)</div></div>
         <div class="kpi red"><div class="num" id="kpiCost">0đ</div><div class="lab">Chi phí sửa tối thiểu</div></div>
       </div>
-      <div class="banner info mt">2 góp ý bị <b>lọc bỏ</b> (công kích cá nhân, prompt injection) — đã ghi vào log an toàn, không hiện trong cụm.</div>
+      <div class="banner info mt" id="safetyBanner">2 góp ý bị <b>lọc bỏ</b> (công kích cá nhân, prompt injection) — đã ghi vào log an toàn, không hiện trong cụm.</div>
       <div class="mt"></div>
     </div>
 
@@ -328,7 +328,7 @@
 </div>
 
 <script>
-const ISSUES = [
+let ISSUES = [
   {
     idx:1, color:'violet', title:'Nói nhanh ở câu 8–10 — khó theo kịp',
     loai:'Sư phạm · tốc độ', so:'6 người học',
@@ -567,6 +567,28 @@ function togglePlay(){
   b.textContent = b.textContent==='▶'?'⏸':'▶';
 }
 
+function loadRealClusters() {
+  fetch('clusters.json')
+    .then(r => r.json())
+    .then(data => {
+      if(data && data.clusters && data.clusters.length > 0) {
+        ISSUES = data.clusters;
+        if($('kpiClusters')) $('kpiClusters').textContent = ISSUES.length;
+        if(data.metadata) {
+          if($('kpiTotal')) $('kpiTotal').textContent = data.metadata.tongSoGopY || 30;
+          if($('safetyBanner')) {
+            $('safetyBanner').innerHTML = `<b>${data.metadata.soGopYBiChieuLoc}</b> góp ý bị <b>lọc bỏ</b> (công kích cá nhân, prompt injection) — đã ghi vào log an toàn, không hiện trong cụm.`;
+          }
+        }
+        activateIssues();
+        console.log('[FeedbackRadar] Đã tải thành công ' + ISSUES.length + ' cụm từ clusters.json!');
+      }
+    })
+    .catch(err => {
+      console.log('[FeedbackRadar] Đang chạy với dữ liệu dự phòng cục bộ.');
+    });
+}
+window.addEventListener('DOMContentLoaded', loadRealClusters);
 
 </script>
 </body>

@@ -2,6 +2,6 @@
 __pycache__/
 .env
 node_modules/
-data/
-further-reading/
-tracks/
+/data/
+/further-reading/
+/tracks/
