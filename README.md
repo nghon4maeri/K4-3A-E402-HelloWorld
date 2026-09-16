@@ -4,14 +4,14 @@
 
 ## 👥 Thành viên nhóm & Phân công vai trò
 
-**Lớp:** 3A · **Phòng:** ____ · **Cụm:** ____ · **Track:** ____
+**Lớp:** 3A · **Phòng:** E402 · **Cụm:** ____ · **Track:** Track C — Lesson Studio (C3 · ScriptScout)
 
 | Họ và Tên | Mã Học Viên | Vai trò chính | Phần việc đảm nhiệm trong dự án |
 |---|---|---|---|
-|  |  |  |  |
-|  |  |  |  |
-|  |  |  |  |
-|  |  |  |  |
+| **Nguyễn Hồ Nam** | **2A202602788** | **Đội trưởng** / AI Lead & System Flow | Quản trị tiến độ, thiết kế luồng hệ thống agent, tổng hợp và nộp form 5 mốc CP1–CP5 |
+| **Nguyễn Văn Chiến** | **2A202602926** | Product & Spec Lead | Nghiên cứu JTBD, khảo sát người dùng (Mom Test), viết AI Spec và Canvas |
+| **Nguyễn Cảnh Duy** | **2A202602815** | Dev / Agent Engineer | Xây dựng Agent tìm kiếm tài liệu, đánh giá độ tin cậy nguồn và trích xuất kịch bản |
+| **Vũ Văn Hà** | **2A202602589** | Eval & Prompt Engineer | Xây dựng bộ test Golden Set, thiết kế prompt kiểm soát trích dẫn nguồn, UI prototype |
 
 > Nhóm copy nguyên file README này về repo của mình, rồi điền bảng trên. Cột **Phần việc đảm nhiệm** ghi càng cụ thể càng tốt.
 
