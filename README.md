@@ -4,14 +4,14 @@
 
 ## 👥 Thành viên nhóm & Phân công vai trò
 
-**Lớp:** 3A · **Phòng:** E402 · **Cụm:** ____ · **Track:** Track C — Lesson Studio (C3 · ScriptScout)
+**Lớp:** 3A · **Phòng:** E402 · **Cụm:** ____ · **Track:** Track C — Lesson Studio (C5 · FeedbackRadar)
 
 | Họ và Tên | Mã Học Viên | Vai trò chính | Phần việc đảm nhiệm trong dự án |
 |---|---|---|---|
-| **Nguyễn Hồ Nam** | **2A202602788** | **Đội trưởng** / AI Lead & System Flow | Quản trị tiến độ, thiết kế luồng hệ thống agent, tổng hợp và nộp form 5 mốc CP1–CP5 |
-| **Nguyễn Văn Chiến** | **2A202602926** | Product & Spec Lead | Nghiên cứu JTBD, khảo sát người dùng (Mom Test), viết AI Spec và Canvas |
-| **Nguyễn Cảnh Duy** | **2A202602815** | Dev / Agent Engineer | Xây dựng Agent tìm kiếm tài liệu, đánh giá độ tin cậy nguồn và trích xuất kịch bản |
-| **Vũ Văn Hà** | **2A202602589** | Eval & Prompt Engineer | Xây dựng bộ test Golden Set, thiết kế prompt kiểm soát trích dẫn nguồn, UI prototype |
+| **Nguyễn Hồ Nam** | **2A202602788** | **Đội trưởng** / AI Lead & System Flow | Quản trị tiến độ, thiết kế luồng gom cụm feedback & mapping video, nộp form 5 mốc CP1–CP5 |
+| **Nguyễn Văn Chiến** | **2A202602926** | Product & Spec Lead | Khảo sát học viên (Mom Test), thu thập feedback thật, viết AI Spec & Canvas |
+| **Nguyễn Cảnh Duy** | **2A202602815** | Dev / Agent Engineer | Xây dựng Agent xử lý gom nhóm feedback, phân loại lỗi và định vị timestamp câu/cảnh |
+| **Vũ Văn Hà** | **2A202602589** | Eval & Prompt Engineer | Xây dựng Golden Set (18+ feedback mẫu có bẫy), prompt tính chi phí sửa tối thiểu, UI prototype |
 
 > Nhóm copy nguyên file README này về repo của mình, rồi điền bảng trên. Cột **Phần việc đảm nhiệm** ghi càng cụ thể càng tốt.
 

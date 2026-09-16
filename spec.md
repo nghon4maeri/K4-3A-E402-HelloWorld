@@ -1,6 +1,6 @@
-# AI SPEC — ScriptScout (Tìm tài liệu & viết kịch bản video có dẫn nguồn) · Nhóm HelloWorld · Lớp 3A · Phòng E402
+# AI SPEC — FeedbackRadar (Chuyển góp ý học viên thành bản sửa video tối thiểu) · Nhóm HelloWorld · Lớp 3A · Phòng E402
 
-Hướng: [x] Track C — Lesson Studio (C3 · ScriptScout)  
+Hướng: [x] Track C — Lesson Studio (C5 · FeedbackRadar)  
 Loại: [x] Tính năng mới
 
 ---
@@ -8,87 +8,96 @@ Loại: [x] Tính năng mới
 ## 📌 CANVAS CP1 (Nộp lúc 19:30 · 16/9)
 
 ### Canvas 7 dòng (Theo Guide §1.5)
-1. **Hướng:** Track C — Lesson Studio (Đề C3: ScriptScout — Agent tự tìm tài liệu và viết kịch bản video có dẫn nguồn).
-2. **Job executor:** Người viết kịch bản video giáo dục (Studio Team / Content Creator) & Giảng viên / Lab Coach duyệt kịch bản.
-3. **Pain cụ thể (1 câu):** Người viết kịch bản video AI khi soạn nội dung từ tài liệu/web mất nhiều giờ tổng hợp nhưng câu viết ra không chứng minh được lấy từ nguồn nào, khiến người duyệt không thể kiểm chứng tính chính xác, kịch bản dễ chứa ảo giác (hallucination) hoặc số liệu lỗi thời.
+1. **Hướng:** Track C — Lesson Studio (Đề C5: FeedbackRadar — Agent biến góp ý của người học thành bản sửa video).
+2. **Job executor:** Biên tập viên video / Đội sản xuất bài giảng VLearn (Studio team) & Giảng viên phụ trách môn học.
+3. **Pain cụ thể (1 câu):** Đội sản xuất video sau mỗi khoá học nhận hàng chục phản hồi rời rạc, mơ hồ hoặc trái chiều từ học viên (trộn lẫn lỗi nội dung và lỗi kỹ thuật) nhưng phải đọc tay toàn bộ, không định vị được phản hồi ứng với câu nào/phút nào của video, dẫn đến việc phải làm lại gần như cả video dù chỉ vài câu có vấn đề (tốn kém chi phí thu âm lại giọng và dựng lại cảnh).
 4. **1-2 Bằng chứng đầu tiên:**
-   - *Mining dữ liệu mẫu (`data/studio-pack/c3-scriptscout/`):* Kịch bản chuẩn 40 câu tốn từ 2-3 ngày nghiên cứu thủ công; 100% tài liệu hiện tại chỉ để danh sách nguồn ở cuối, không ánh xạ được từng câu thoại cụ thể tới đoạn trích gốc.
-   - *Khảo sát nhanh trong khoá:* Khi soạn bài giảng về AI, thông tin kỹ thuật thay đổi liên tục hàng tháng; người duyệt mất trung bình 30-45 phút fact-check một kịch bản ngắn nếu không có trích dẫn trực tiếp.
+   - *Mining dữ liệu mẫu (`data/studio-pack/c5-feedbackradar/`):* Bộ dữ liệu mẫu 18 góp ý (`gy-001` đến `gy-018`) cho thấy: góp ý mơ hồ ("đoạn giữa hơi nhanh"), mâu thuẫn ("giải thích chậm buồn ngủ" vs "nói nhanh quá"), lẫn lộn kỹ thuật và nội dung; bảng chi phí `bang-chi-phi-lam-lai.md` xác nhận thu lại lời tốn 50k/câu và dựng lại cảnh tốn 150k/cảnh — sửa tràn lan tốn gấp 5–10 lần so với sửa đúng điểm.
+   - *Khảo sát nhanh người học trong lớp 3A:* ~80% học viên khi học video gặp chỗ khó hiểu hoặc lỗi phụ đề thường bỏ qua hoặc chỉ comment chung chung "phần này khó hiểu" mà không ghi timestamp, khiến đội sản xuất không biết chính xác cần sửa ở đâu.
 5. **Lát cắt MỘT CÂU:**
-   > **Một người viết kịch bản · cần 5 câu mở đầu cho 1 chủ đề AI · AI tìm tài liệu trên mạng, đánh giá độ tin cậy và viết 5 câu văn nói kèm link trích dẫn nguồn gốc chính xác · người duyệt loại 1 nguồn thì AI chỉ viết lại các câu phụ thuộc nguồn đó.**
+   > **Một biên tập viên video · có 30 góp ý của người học về một video bài giảng · AI gom nhóm thành các cụm vấn đề có bằng chứng quote gốc, định vị đúng câu/mốc thời gian và đề xuất kế hoạch sửa tối thiểu (thu lại lời / dựng lại hình) · biên tập viên duyệt (accept/reject) từng đề xuất sửa.**
 6. **Automation dự kiến & Lý do:**
-   - **Augment (AI gợi ý + trích dẫn, Người duyệt quyết định)**.
-   - *Lý do theo cost-of-error:* Sai sót kiến thức trong bài giảng giáo dục có chi phí sửa chữa rất lớn (ảnh hưởng đến niềm tin và hiểu biết của hàng nghìn học viên). AI đóng vai trò tìm kiếm và đề xuất nguồn/câu viết, con người luôn có quyền kiểm soát duyệt/loại nguồn trước khi xuất bản.
+   - **Augment (AI gom nhóm & đề xuất điểm sửa tối thiểu, Người duyệt quyết định)**.
+   - *Lý do theo cost-of-error:* Làm lại video tốn tiền và công sức (thu âm voice talent, dựng animation). AI không được tự ý sửa kịch bản hay tự chốt kế hoạch dựng lại; biên tập viên/giảng viên phải là người quyết định cuối cùng dựa trên các bằng chứng quote học viên mà AI tập hợp.
 7. **Willing users dự kiến (≥2 người ngoài nhóm):**
    - Đào Xuân Anh (Học viên lớp 3A / Content Creator)
    - Trần Đức Mạnh (Học viên lớp 3A / Trợ giảng)
 8. **Phân công nhóm:**
-   - **Nguyễn Hồ Nam (2A202602788)** — Đội trưởng: Điều phối tiến độ, kiến trúc hệ thống Agent, nộp bài các mốc CP1–CP5.
-   - **Nguyễn Văn Chiến (2A202602926)** — Product & Spec Lead: Khảo sát Mom Test, viết AI Spec, Canvas, phân tích JTBD.
-   - **Nguyễn Cảnh Duy (2A202602815)** — Dev / Agent Engineer: Xây dựng Search Agent, thẩm định nguồn và module sinh kịch bản.
-   - **Vũ Văn Hà (2A202602589)** — Eval & Prompt Engineer: Thiết kế Golden Set, prompt chống bịa trích dẫn, UI prototype.
+   - **Nguyễn Hồ Nam (2A202602788)** — Đội trưởng: Điều phối tiến độ, kiến trúc luồng hệ thống Feedback Clustered Pipeline, nộp form các mốc CP1–CP5.
+   - **Nguyễn Văn Chiến (2A202602926)** — Product & Spec Lead: Khảo sát Mom Test người học & TA, thu thập log góp ý thật, viết AI Spec và Canvas.
+   - **Nguyễn Cảnh Duy (2A202602815)** — Dev / Agent Engineer: Xây dựng Agent gom cụm feedback, phân loại lỗi (Nội dung/Hình ảnh/Kỹ thuật) và map timestamp câu/cảnh.
+   - **Vũ Văn Hà (2A202602589)** — Eval & Prompt Engineer: Thiết kế Golden Set (18+ feedback bẫy), prompt tính toán chi phí sửa tối thiểu, UI prototype bảng duyệt.
+
+---
+
+### Canvas 4 ô (Dành cho Form nộp nếu hỏi 4 ô)
+* **Ô 1 — Người dùng & Bối cảnh (Who & When):** Biên tập viên bài giảng trong Studio team khi nhận hàng loạt feedback của học viên sau khi kết thúc một bài giảng video 4 phút trên VLearn.
+* **Ô 2 — Vấn đề & Hậu quả (Pain & Cost):** Feedback nằm rải rác, mơ hồ ("đoạn giữa nhanh"), mâu thuẫn; biên tập viên phải lọc tay và thường sửa lại toàn bộ video thay vì sửa cục bộ, làm chi phí dựng lại tăng vọt (150k/cảnh, 50k/câu lồng tiếng).
+* **Ô 3 — Giải pháp & Lát cắt AI (Solution & Slice):** FeedbackRadar — Nhận 30 feedback + transcript video có timestamp; AI tự động ẩn danh PII, gom thành 3–5 cụm vấn đề có dẫn chứng quote gốc, trỏ thẳng tới số câu/phút bị lỗi và gợi ý phạm vi sửa tối thiểu để biên tập viên click duyệt/bỏ qua.
+* **Ô 4 — Đo lường thành công (Success Metric):** 100% vấn đề đề xuất đều trỏ về được quote gốc; định vị chính xác câu cần sửa đạt ≥80%; giảm chi phí/thời gian làm lại video từ 2 ngày xuống 2 giờ review.
 
 ---
 
 ## §1. User & Job
-- **Job executor + workflow:** Người viết kịch bản trong Studio Team. Workflow hiện tại: Nhận chủ đề → Tìm kiếm Google/tài liệu → Đọc và ghi chép rời rạc → Viết bản nháp kịch bản → Gửi Giảng viên duyệt → Giảng viên đọc lại từ đầu để fact-check → Sửa qua lại nhiều vòng.
-- **Core JTBD (không tên sản phẩm/AI):** Soạn thảo kịch bản bài giảng nói ngắn gọn, chính xác và có thể kiểm chứng nguồn gốc thông tin trong thời gian ngắn nhất.
-- **Problem statement (KHÔNG chữ AI):** Người soạn nội dung mất nhiều ngày để tra cứu và viết kịch bản bài giảng, nhưng người duyệt không có cách nào đối chiếu nhanh từng câu nói với nguồn tham khảo gốc để đảm bảo tính đúng đắn trước khi ghi hình.
+- **Job executor + workflow:** Biên tập viên video / Giảng viên. Workflow hiện tại: Xuất feedback từ Google Form/Discord → Đọc thủ công từng dòng → Tự ghi chú vào sổ → Mở video xem lại để đoán xem học viên nói đoạn nào → Viết lại kịch bản mới → Thu âm lại toàn bộ.
+- **Core JTBD (không tên sản phẩm/AI):** Cải tiến chất lượng bài giảng video từ phản hồi của người học với chi phí và thời gian làm lại thấp nhất.
+- **Problem statement (KHÔNG chữ AI):** Đội sản xuất video mất nhiều ngày rà soát các góp ý cảm tính, rời rạc và mâu thuẫn của người học mà không biết chính xác câu nào, hình nào trong video gây ra vấn đề, dẫn đến việc phải quay dựng lại toàn bộ bài giảng một cách lãng phí.
 - **Evidence:**
-  - Bằng chứng A (Khảo sát): Đang thực hiện với giảng viên/TA và học viên tạo nội dung trong khoá.
-  - Bằng chứng B (Mining): Phân tích 8 chủ đề mẫu và kịch bản 40 câu trong `data/studio-pack/c3-scriptscout/`, xác định 100% các câu có số liệu cần có chứng cứ kèm theo.
+  - Bằng chứng B (Mining data fixture): Phân tích 18 feedback trong `data/studio-pack/c5-feedbackradar/` cho thấy sự phân mảnh giữa lỗi kỹ thuật (âm thanh nhỏ, phụ đề lệch) với lỗi sư phạm (khó hiểu, nói nhanh).
+  - Bằng chứng A (Khảo sát): Khảo sát người học lớp 3A (cả lớp là user của video bài giảng VLearn).
 
 ## §2. Impact & quyết định chọn
 - **Bảng impact ≥3 ứng viên:**
   | Ứng viên bài toán | Người gặp | Tần suất | Mỗi lần tốn | Khả thi hackathon | Chọn? |
   |---|---|---|---|---|---|
-  | 1. ScriptScout (Tìm nguồn & viết kịch bản gắn citation) | Studio team & Giảng viên (~15-20 người) | Hàng tuần / mỗi bài giảng | 8-12 tiếng viết + 2 tiếng duyệt fact-check | Cao (agent search + citation RAG) | **CHỌN** |
-  | 2. StoryboardAI (Kế hoạch hình ảnh cho video) | Studio animator / scriptwriter | Mỗi bài giảng | 4-6 tiếng phác thảo hình | Trung bình (cần model sinh ảnh/layout) | Loại (khó kiểm soát style trong 48h) |
-  | 3. QA Spoken-Script (Đo độ mượt văn nói tiếng Việt) | Biên tập viên kịch bản | Hàng tuần | 1-2 tiếng đọc soát lỗi | Cao | Loại (chưa giải quyết tận gốc khâu tìm tư liệu) |
-- **Ứng viên ĐÃ LOẠI + vì sao:** Loại StoryboardAI vì phụ thuộc nhiều vào visual style consistency khó đo lường khách quan; loại Spoken-Script QA vì người viết vẫn tốn nhiều thời gian nhất ở khâu tra cứu thông tin ban đầu.
-- **Ứng viên CHỌN + vì sao:** ScriptScout đánh thẳng vào nút thắt cổ chai lớn nhất: tốn thời gian nghiên cứu và nỗi sợ thông tin sai lệch/lỗi thời khi phát hành bài giảng AI.
+  | 1. FeedbackRadar (Gom feedback → Bản sửa tối thiểu) | Studio video editor & Giảng viên (~10-15 người) | Sau mỗi bài giảng/khóa học | 8-16 tiếng đọc soát + chi phí thu/dựng lại (hàng triệu VNĐ/video) | Rất cao (đã có sẵn video mẫu 4 phút, kịch bản 40 câu & 18 feedback) | **CHỌN** |
+  | 2. ScriptScout (Tìm tài liệu & viết kịch bản từ đầu) | Scriptwriter | Khi mở môn mới | 2-3 ngày | Cao | Loại (C5 có data fixture video sẵn và user ngay trong lớp) |
+  | 3. StoryboardAI (Lên kế hoạch hình ảnh) | Animator | Khi kịch bản đã chốt | 4-6 tiếng | Trung bình | Loại (khó đánh giá style nhất quán) |
+- **Ứng viên ĐÃ LOẠI + vì sao:** Loại C3 và C4 vì C5 có sẵn toàn bộ hệ sinh thái dữ liệu hoàn chỉnh (`data/studio-pack/c5-feedbackradar/` có cả video mp4, kịch bản câu ↔ timestamp, bảng chi phí sửa), và người dùng thực tế chính là bạn học cùng lớp (dễ thu thập bằng chứng kiểm chứng nhất).
+- **Ứng viên CHỌN + vì sao:** FeedbackRadar giải quyết đúng bài toán chi phí thật: giảm lãng phí tài nguyên dựng lại video và biến phản hồi vô hình của người học thành hành động sửa cụ thể.
 
 ## §3. Giải pháp tương tự đã nghiên cứu
-- **Perplexity / Genspark:** Search & cite tốt, nhưng output dạng báo cáo nghiên cứu đọc bằng mắt, không phải kịch bản văn nói phân cảnh (spoken dialogue).
-- **NotebookLM:** Nối nguồn rất chặt, nhưng chỉ nhận nguồn người dùng tải lên, không tự tìm và đánh giá nguồn mới trên Internet theo chủ đề.
-- **Điểm khác biệt của ScriptScout:** Tự động tìm nguồn → chấm độ tin cậy → viết kịch bản văn nói có gắn từng câu vào span tài liệu → hỗ trợ loại nguồn và viết lại cục bộ.
+- **YouTube Creator Analytics / Timed Comments:** Cho phép xem comment theo mốc thời gian nhưng chỉ dừng ở hiển thị rời rạc, không gom cụm vấn đề và không chỉ ra câu kịch bản cần sửa.
+- **ChatGPT / Claude (Prompt thủ công):** Đưa feedback vào tóm tắt được ý chung nhưng không ánh xạ được vào timestamp của video và không tính toán được phạm vi chi phí sửa tối thiểu.
+- **Điểm khác biệt của FeedbackRadar:** Tích hợp trực tiếp Kịch bản ↔ Timestamp ↔ Feedback; tự động tính phạm vi sửa tối thiểu (chỉ câu X, cảnh Y) kèm trích dẫn quote làm chứng cứ.
 
 ## §4. Thiết kế
-- **Lát cắt MỘT CÂU:** Một người viết kịch bản · cần 5 câu mở đầu cho 1 chủ đề AI · AI tìm tài liệu trên mạng, đánh giá độ tin cậy và viết 5 câu văn nói kèm link trích dẫn nguồn gốc chính xác · người duyệt loại 1 nguồn thì AI chỉ viết lại các câu phụ thuộc nguồn đó.
+- **Lát cắt MỘT CÂU:** Một biên tập viên video · có 30 góp ý của người học về một video bài giảng · AI gom nhóm thành các cụm vấn đề có bằng chứng quote gốc, định vị đúng câu/mốc thời gian và đề xuất kế hoạch sửa tối thiểu (thu lại lời / dựng lại hình) · biên tập viên duyệt (accept/reject) từng đề xuất sửa.
 - **Non-goals (≥3 thứ KHÔNG build):**
-  1. Không sinh video hoàn chỉnh hay voice TTS.
-  2. Không tự động publish kịch bản mà không có sự phê duyệt của con người.
-  3. Không thay thế toàn bộ kịch bản dài 40-50 phút (chỉ tập trung lát cắt micro-learning 5 câu mở đầu/phân cảnh quan trọng).
-- **Mức prototype nhắm tới:** [x] Mock [x] Working — Phần mock: Bộ crawl web có thể dùng fixture/search API có sẵn; Phần thật: Lời gọi LLM đánh giá độ tin cậy nguồn, trích xuất span bằng chứng và sinh kịch bản văn nói gắn citation.
-- **Automation:** Augment — Lý do: Cost-of-error trong giáo dục là cao; người duyệt luôn là chốt chặn cuối cùng.
-- **§4b. Nguyên tắc HAX/PAIR dự kiến:**
+  1. Không tự động render/dựng video mới bằng AI.
+  2. Không tự động publish kịch bản sửa mà chưa có sự đồng ý của biên tập viên.
+  3. Không xử lý các góp ý công kích cá nhân (sẽ được bộ lọc lọc bỏ).
+- **Mức prototype nhắm tới:** [x] Mock [x] Working — Mock: Trình phát video mockup đồng bộ timestamp; Working: Lời gọi AI thật ở khâu khử PII, gom nhóm ngữ nghĩa, phân loại lỗi và sinh bản sửa kịch bản tối thiểu.
+- **Automation:** Augment — Lý do: Sửa video kéo theo chi phí tiền bạc và công sức của cả ekip sản xuất; AI chỉ đóng vai trò phân tích radar & trợ lý đề xuất, con người giữ quyền quyết định.
+- **§4b. Nguyên tắc HAX/PAIR áp dụng:**
   | Nguyên tắc | Áp cụ thể vào đâu trong prototype |
   |---|---|
-  | **G1 — Làm rõ năng lực** | Màn hình nhập chủ đề thông báo rõ: Agent chỉ tìm tài liệu công khai và viết kịch bản 5 câu có căn cứ |
-  | **G2 — Làm rõ mức độ tin cậy** | Mỗi nguồn tìm được đều có điểm tin cậy (High/Medium/Low) kèm lý do giải thích |
-  | **G9 — Sửa đổi dễ dàng** | Người duyệt bấm nút "Bỏ nguồn" trực tiếp trên UI, hệ thống chỉ cập nhật các câu liên quan |
-  | **G11 — Giải thích vì sao** | Bấm vào bất kỳ câu nào trong kịch bản sẽ highlight chính xác đoạn trích gốc chứng minh |
+  | **G1 — Làm rõ năng lực** | Giao diện nêu rõ: Hệ thống phân tích feedback để chỉ ra vị trí câu/cảnh cần sửa và ước tính chi phí |
+  | **G2 — Làm rõ mức độ tin cậy** | Mỗi vấn đề gom được đều hiện số lượng người phản hồi (ví dụ: "Được phản ánh bởi 5 học viên") kèm quote chứng cứ |
+  | **G9 — Sửa đổi dễ dàng** | Biên tập viên có nút Accept / Reject cho từng đề xuất sửa câu kịch bản |
+  | **G11 — Giải thích vì sao** | Bấm vào một vấn đề sẽ nhảy tới đúng giây trong video và hiển thị nguyên văn các câu feedback gốc |
 
-## §5. Kiểu lỗi — 4 lớp chỗ khó (Sẽ hoàn thiện ở CP2–CP4)
-1. **Nguồn sự thật:** Web chứa thông tin sai lệch, hoặc AI bịa trích dẫn không có trong trang web.
-2. **Mơ hồ / thiếu thông tin:** Chủ đề quá mới chưa có tài liệu tiếng Việt hoặc tài liệu mâu thuẫn số liệu.
-3. **Ngoài phạm vi / thẩm quyền:** Prompt injection ẩn trong trang web cố tình ép AI sinh nội dung quảng cáo/sai lệch.
-4. **Đặc thù domain:** Văn phong kịch bản bị mang tính báo cáo hàn lâm khó đọc thành lời, hoặc kiến thức AI bị cũ.
+## §5. Kiểu lỗi — 4 lớp chỗ khó (Theo Taxonomy của đề C5)
+1. **Nguồn sự thật:** AI tự bịa ra vấn đề mà không có bất kỳ học viên nào phản ánh (hallucination). Khắc phục: Bắt buộc mỗi vấn đề phải gắn ID quote gốc.
+2. **Mơ hồ / thiếu thông tin:** Góp ý kiểu "đoạn giữa khó hiểu" không rõ phút nào. Khắc phục: AI đối chiếu ngữ nghĩa với transcript để khoanh vùng khả dĩ và cảnh báo mức độ tin cậy thấp.
+3. **Ngoài phạm vi / thẩm quyền:** Góp ý cài prompt injection hoặc công kích cá nhân giảng viên. Khắc phục: Lớp tiền xử lý lọc PII và vô hiệu hoá lệnh điều khiển.
+4. **Đặc thù domain:** Hai nhóm người học nói ngược nhau (người chê nhanh, người khen vừa). Khắc phục: Tách thành 2 luồng quan điểm độc lập để biên tập viên tự cân nhắc đối tượng khán giả mục tiêu.
 
-## §6. Bốn đường đi của trải nghiệm (Sẽ hoàn thiện ở CP2–CP4)
-- Happy path: Nhập chủ đề → Ra 3 nguồn uy tín → Sinh 5 câu kịch bản chuẩn văn nói kèm link trích dẫn.
-- Low-confidence: Nguồn ít hoặc mâu thuẫn → Cảnh báo người duyệt và yêu cầu xác nhận.
-- Failure: Không tìm thấy nguồn đáng tin → Từ chối sinh kịch bản và đề xuất người dùng cung cấp link tài liệu.
-- Correction: Người duyệt loại 1 nguồn → AI chỉ viết lại các câu dựa trên nguồn bị loại.
+## §6. Bốn đường đi của trải nghiệm
+- **Happy path:** Nạp 30 feedback → AI phân loại, gom thành 4 cụm vấn đề có timestamp chuẩn → Đề xuất sửa 2 câu → Biên tập viên bấm Accept → Xuất bản kịch bản V2.
+- **Low-confidence path:** Feedback mơ hồ ("video chán quá") → AI xếp vào mục "Góp ý chung chung, không xác định vị trí", không gán bừa vào kịch bản.
+- **Failure path:** Feedback chứa nội dung độc hại / prompt injection → Hệ thống lọc bỏ và ghi nhận vào log an toàn.
+- **Correction path:** Biên tập viên reject đề xuất sửa câu 14 → Hệ thống giữ nguyên kịch bản gốc của câu 14 và cập nhật lại bảng chi phí dự toán.
 
-## §7. Kiểm thử (Golden set & Quality Bar - CP3–CP4)
-- Sẽ xây dựng bộ test ≥20 ca thử thách bao gồm: Prompt injection web, tài liệu mâu thuẫn, chủ đề thiếu tài liệu tiếng Việt, và chủ đề kỹ thuật AI thay đổi nhanh.
+## §7. Kiểm thử (Golden Set & Quality Bar)
+- Xây dựng Golden Set ≥20 mẫu feedback thử nghiệm dựa trên 18 mẫu chuẩn trong `data/studio-pack/c5-feedbackradar/` + feedback thu thập thật từ lớp 3A.
+- Quality bar: ≥85% vấn đề được gom đúng nhóm lỗi; 100% vấn đề đều có trích dẫn quote gốc; 0% vi phạm rò rỉ PII.
 
-## §8. Phân công & kế hoạch
-- Xem bảng phân công chi tiết tại `README.md`.
+## §8. Phân công & Kế hoạch
+- Xem phân công chi tiết tại `README.md`.
 - Willing users: Đào Xuân Anh, Trần Đức Mạnh.
 
 ## §9. Changelog
 | Thời điểm | Đổi gì | Vì sao |
 |---|---|---|
-| 16/9 19:15 | Khởi tạo Spec & Canvas CP1 | Chốt bài toán Track C3 ScriptScout và phân công nhóm |
+| 16/9 18:50 | Đổi đề tài sang Track C5 FeedbackRadar | Tận dụng bộ dữ liệu fixture video mẫu có sẵn, bám sát nỗi đau chi phí sửa video và khảo sát trực tiếp học viên trong lớp |
