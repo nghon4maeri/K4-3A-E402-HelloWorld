@@ -30,11 +30,14 @@ Loại: [x] Tính năng mới
 
 ---
 
-### Canvas 4 ô (Dành cho Form nộp nếu hỏi 4 ô)
-* **Ô 1 — Người dùng & Bối cảnh (Who & When):** Biên tập viên bài giảng trong Studio team khi nhận hàng loạt feedback của học viên sau khi kết thúc một bài giảng video 4 phút trên VLearn.
-* **Ô 2 — Vấn đề & Hậu quả (Pain & Cost):** Feedback nằm rải rác, mơ hồ ("đoạn giữa nhanh"), mâu thuẫn; biên tập viên phải lọc tay và thường sửa lại toàn bộ video thay vì sửa cục bộ, làm chi phí dựng lại tăng vọt (150k/cảnh, 50k/câu lồng tiếng).
-* **Ô 3 — Giải pháp & Lát cắt AI (Solution & Slice):** FeedbackRadar — Nhận 30 feedback + transcript video có timestamp; AI tự động ẩn danh PII, gom thành 3–5 cụm vấn đề có dẫn chứng quote gốc, trỏ thẳng tới số câu/phút bị lỗi và gợi ý phạm vi sửa tối thiểu để biên tập viên click duyệt/bỏ qua.
-* **Ô 4 — Đo lường thành công (Success Metric):** 100% vấn đề đề xuất đều trỏ về được quote gốc; định vị chính xác câu cần sửa đạt ≥80%; giảm chi phí/thời gian làm lại video từ 2 ngày xuống 2 giờ review.
+### Canvas 4 ô (Theo chuẩn hướng dẫn 01-challenge-brief.md)
+
+| Ô | Nội dung | Chi tiết |
+|---|---|---|
+| **Ô 1: Thông tin chung** | **Người thực hiện & Quy trình** | **Tên hướng:** Track C — Lesson Studio (C5: FeedbackRadar).<br>**Job executor:** Biên tập viên video / Đội sản xuất bài giảng VLearn (Studio team) & Giảng viên phụ trách bài giảng.<br>**Quy trình hiện tại:** Nhận feedback từ Google Form/Discord → Đọc thủ công từng dòng → Mở video xem lại để đoán vị trí → Viết lại kịch bản mới → Thu âm và dựng lại toàn bộ video. |
+| **Ô 2: Nỗi đau cốt lõi** | **Pain có bằng chứng (KHÔNG chữ AI)** | **Nỗi đau 1 câu:** Đội sản xuất bài giảng mất 8–16 giờ rà soát hàng chục phản hồi cảm tính, mâu thuẫn của người học mà không biết chính xác câu nào, cảnh nào bị lỗi, dẫn đến việc phải quay dựng lại toàn bộ video với chi phí cao thay vì sửa cục bộ.<br>**Dẫn chứng số liệu:**<br>• *Chuẩn B (Data Mining):* Khai phá 18 feedback trong `data/studio-pack/c5-feedbackradar/` cho thấy: 22.2% feedback mơ hồ không có timestamp (`gy-001`), 16.7% lẫn lộn lỗi kỹ thuật vào nội dung (`gy-008`), 11.1% mâu thuẫn trực tiếp (`gy-005` vs `gy-006`), và việc thu âm lại cả bài tốn gấp 10 lần so với sửa cục bộ (theo `bang-chi-phi-lam-lai.md`).<br>• *Chuẩn A (Khảo sát):* Khảo sát 20 học viên lớp 3A: 90% (18/20) từng gặp đoạn video khó hiểu/lỗi; 85% (17/20) không nhớ timestamp khi gửi góp ý khiến đội sản xuất không thể định vị (chi tiết xem tại `eval/evidence-log.md`). |
+| **Ô 3: Lát cắt giải pháp** | **Đúng chuẩn MỘT CÂU** | **[Biên tập viên video]** cần **[rà soát 30 phản hồi của người học về một video bài giảng]** được **[AI gom nhóm vấn đề, định vị chính xác câu/mốc thời gian và đề xuất kế hoạch sửa tối thiểu]** giúp **[biên tập viên duyệt (accept/reject) từng đề xuất và xuất bản kịch bản sửa gọn nhất mà không phải làm lại cả video]**. |
+| **Ô 4: Cam kết triển khai** | **Automation, Phân công & Willing Users** | **Mức tự động hoá:** Augment (AI phân tích gom cụm và đề xuất, con người giữ quyền duyệt để đảm bảo chất lượng sư phạm).<br>**Phân công:**<br>• Nguyễn Hồ Nam (2A202602788) - Lead: Luồng gom cụm & pipeline.<br>• Nguyễn Văn Chiến (2A202602926) - Product: Spec, khảo sát Mom Test, evidence log.<br>• Nguyễn Cảnh Duy (2A202602815) - Dev: Agent phân loại lỗi & map timestamp.<br>• Vũ Văn Hà (2A202602589) - Eval: Golden set, prompt cost & UI prototype.<br>**Willing Users (≥2 người ngoài nhóm):** Đào Xuân Anh (HV lớp 3A), Trần Đức Mạnh (HV lớp 3A). |
 
 ---
 
@@ -42,9 +45,9 @@ Loại: [x] Tính năng mới
 - **Job executor + workflow:** Biên tập viên video / Giảng viên. Workflow hiện tại: Xuất feedback từ Google Form/Discord → Đọc thủ công từng dòng → Tự ghi chú vào sổ → Mở video xem lại để đoán xem học viên nói đoạn nào → Viết lại kịch bản mới → Thu âm lại toàn bộ.
 - **Core JTBD (không tên sản phẩm/AI):** Cải tiến chất lượng bài giảng video từ phản hồi của người học với chi phí và thời gian làm lại thấp nhất.
 - **Problem statement (KHÔNG chữ AI):** Đội sản xuất video mất nhiều ngày rà soát các góp ý cảm tính, rời rạc và mâu thuẫn của người học mà không biết chính xác câu nào, hình nào trong video gây ra vấn đề, dẫn đến việc phải quay dựng lại toàn bộ bài giảng một cách lãng phí.
-- **Evidence:**
-  - Bằng chứng B (Mining data fixture): Phân tích 18 feedback trong `data/studio-pack/c5-feedbackradar/` cho thấy sự phân mảnh giữa lỗi kỹ thuật (âm thanh nhỏ, phụ đề lệch) với lỗi sư phạm (khó hiểu, nói nhanh).
-  - Bằng chứng A (Khảo sát): Khảo sát người học lớp 3A (cả lớp là user của video bài giảng VLearn).
+- **Evidence (Chi tiết tại `eval/evidence-log.md`):**
+  - **Bằng chứng B (Data Mining):** Phân tích tập 18 feedback trong `data/studio-pack/c5-feedbackradar/vi-du/gop-y-mau.json`: 22.2% mơ hồ (`gy-001`), 16.7% lẫn kỹ thuật (`gy-008`), 11.1% mâu thuẫn (`gy-005` vs `gy-006`), 16.7% trùng lặp (`gy-002`, `gy-003`, `gy-018` cùng của `hv-011`). Chi phí sửa theo `bang-chi-phi-lam-lai.md` tiết kiệm 93% công thu âm nếu sửa đúng câu liền kề (269 ký tự vs 3.637 ký tự).
+  - **Bằng chứng A (Khảo sát n = 20 học viên lớp 3A):** 90% (18/20) gặp video khó hiểu; 70% (14/20) bỏ qua không phản hồi vì nghĩ khó được sửa; 85% (17/20) thừa nhận không ghi mốc thời gian khi góp ý.
 
 ## §2. Impact & quyết định chọn
 - **Bảng impact ≥3 ứng viên:**
