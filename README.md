@@ -8,9 +8,9 @@
 
 | Họ và Tên | Mã Học Viên | Vai trò chính | Phần việc đảm nhiệm trong dự án |
 |---|---|---|---|
-| **Nguyễn Hồ Nam** | **2A202602788** | **Đội trưởng** / AI Lead & System Flow | Quản trị tiến độ, thiết kế luồng gom cụm feedback & mapping video, nộp form 5 mốc CP1–CP5 |
+| **Nguyễn Hồ Nam** | **2A202602788** | Dev / Agent Engineer | Xây dựng Agent xử lý gom nhóm feedback, phân loại lỗi và định vị timestamp câu/cảnh |
 | **Nguyễn Văn Chiến** | **2A202602926** | Product & Spec Lead | Khảo sát học viên (Mom Test), thu thập feedback thật, viết AI Spec & Canvas |
-| **Nguyễn Cảnh Duy** | **2A202602815** | Dev / Agent Engineer | Xây dựng Agent xử lý gom nhóm feedback, phân loại lỗi và định vị timestamp câu/cảnh |
+| **Nguyễn Cảnh Duy** | **2A202602815** | **Đội trưởng** / AI Lead & System Flow | Quản trị tiến độ, thiết kế luồng gom cụm feedback & mapping video, nộp form 5 mốc CP1–CP5 |
 | **Vũ Văn Hà** | **2A202602589** | Eval & Prompt Engineer | Xây dựng Golden Set (18+ feedback mẫu có bẫy), prompt tính chi phí sửa tối thiểu, UI prototype |
 
 > Nhóm copy nguyên file README này về repo của mình, rồi điền bảng trên. Cột **Phần việc đảm nhiệm** ghi càng cụ thể càng tốt.

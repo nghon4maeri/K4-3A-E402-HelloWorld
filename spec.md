@@ -23,9 +23,9 @@ Loại: [x] Tính năng mới
    - Đào Xuân Anh (Học viên lớp 3A / Content Creator)
    - Trần Đức Mạnh (Học viên lớp 3A / Trợ giảng)
 8. **Phân công nhóm:**
-   - **Nguyễn Hồ Nam (2A202602788)** — Đội trưởng: Điều phối tiến độ, kiến trúc luồng hệ thống Feedback Clustered Pipeline, nộp form các mốc CP1–CP5.
+   - **Nguyễn Cảnh Duy (2A202602815)** — Đội trưởng: Điều phối tiến độ, kiến trúc luồng hệ thống Feedback Clustered Pipeline, nộp form các mốc CP1–CP5.
    - **Nguyễn Văn Chiến (2A202602926)** — Product & Spec Lead: Khảo sát Mom Test người học & TA, thu thập log góp ý thật, viết AI Spec và Canvas.
-   - **Nguyễn Cảnh Duy (2A202602815)** — Dev / Agent Engineer: Xây dựng Agent gom cụm feedback, phân loại lỗi (Nội dung/Hình ảnh/Kỹ thuật) và map timestamp câu/cảnh.
+   - **Nguyễn Hồ Nam (2A202602788)** — Dev / Agent Engineer: Xây dựng Agent gom cụm feedback, phân loại lỗi (Nội dung/Hình ảnh/Kỹ thuật) và map timestamp câu/cảnh.
    - **Vũ Văn Hà (2A202602589)** — Eval & Prompt Engineer: Thiết kế Golden Set (18+ feedback bẫy), prompt tính toán chi phí sửa tối thiểu, UI prototype bảng duyệt.
 
 ---
@@ -37,7 +37,7 @@ Loại: [x] Tính năng mới
 | **Ô 1: Thông tin chung** | **Người thực hiện & Quy trình** | **Tên hướng:** Track C — Lesson Studio (C5: FeedbackRadar).<br>**Job executor:** Biên tập viên video / Đội sản xuất bài giảng VLearn (Studio team) & Giảng viên phụ trách bài giảng.<br>**Quy trình hiện tại:** Nhận feedback từ Google Form/Discord → Đọc thủ công từng dòng → Mở video xem lại để đoán vị trí → Viết lại kịch bản mới → Thu âm và dựng lại toàn bộ video. |
 | **Ô 2: Nỗi đau cốt lõi** | **Pain có bằng chứng (KHÔNG chữ AI)** | **Nỗi đau 1 câu:** Đội sản xuất bài giảng mất 8–16 giờ rà soát hàng chục phản hồi cảm tính, mâu thuẫn của người học mà không biết chính xác câu nào, cảnh nào bị lỗi, dẫn đến việc phải quay dựng lại toàn bộ video với chi phí cao thay vì sửa cục bộ.<br>**Dẫn chứng số liệu:**<br>• *Chuẩn B (Data Mining):* Khai phá 18 feedback trong `data/studio-pack/c5-feedbackradar/` cho thấy: 22.2% feedback mơ hồ không có timestamp (`gy-001`), 16.7% lẫn lộn lỗi kỹ thuật vào nội dung (`gy-008`), 11.1% mâu thuẫn trực tiếp (`gy-005` vs `gy-006`), và việc thu âm lại cả bài tốn gấp 10 lần so với sửa cục bộ (theo `bang-chi-phi-lam-lai.md`).<br>• *Chuẩn A (Khảo sát):* Khảo sát 20 học viên lớp 3A: 90% (18/20) từng gặp đoạn video khó hiểu/lỗi; 85% (17/20) không nhớ timestamp khi gửi góp ý khiến đội sản xuất không thể định vị (chi tiết xem tại `eval/evidence-log.md`). |
 | **Ô 3: Lát cắt giải pháp** | **Đúng chuẩn MỘT CÂU** | **[Biên tập viên video]** cần **[rà soát 30 phản hồi của người học về một video bài giảng]** được **[AI gom nhóm vấn đề, định vị chính xác câu/mốc thời gian và đề xuất kế hoạch sửa tối thiểu]** giúp **[biên tập viên duyệt (accept/reject) từng đề xuất và xuất bản kịch bản sửa gọn nhất mà không phải làm lại cả video]**. |
-| **Ô 4: Cam kết triển khai** | **Automation, Phân công & Willing Users** | **Mức tự động hoá:** Augment (AI phân tích gom cụm và đề xuất, con người giữ quyền duyệt để đảm bảo chất lượng sư phạm).<br>**Phân công:**<br>• Nguyễn Hồ Nam (2A202602788) - Lead: Luồng gom cụm & pipeline.<br>• Nguyễn Văn Chiến (2A202602926) - Product: Spec, khảo sát Mom Test, evidence log.<br>• Nguyễn Cảnh Duy (2A202602815) - Dev: Agent phân loại lỗi & map timestamp.<br>• Vũ Văn Hà (2A202602589) - Eval: Golden set, prompt cost & UI prototype.<br>**Willing Users (≥2 người ngoài nhóm):** Đào Xuân Anh (HV lớp 3A), Trần Đức Mạnh (HV lớp 3A). |
+| **Ô 4: Cam kết triển khai** | **Automation, Phân công & Willing Users** | **Mức tự động hoá:** Augment (AI phân tích gom cụm và đề xuất, con người giữ quyền duyệt để đảm bảo chất lượng sư phạm).<br>**Phân công:**<br>• Nguyễn Cảnh Duy (2A202602815) - Lead: Luồng gom cụm & pipeline.<br>• Nguyễn Văn Chiến (2A202602926) - Product: Spec, khảo sát Mom Test, evidence log.<br>• Nguyễn Hồ Nam (2A202602788) - Dev: Agent phân loại lỗi & map timestamp.<br>• Vũ Văn Hà (2A202602589) - Eval: Golden set, prompt cost & UI prototype.<br>**Willing Users (≥2 người ngoài nhóm):** Đào Xuân Anh (HV lớp 3A), Trần Đức Mạnh (HV lớp 3A). |
 
 ---
 
