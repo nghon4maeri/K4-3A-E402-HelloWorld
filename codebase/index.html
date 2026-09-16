@@ -400,6 +400,7 @@ function $(id){ return document.getElementById(id); }
 function fmt(n){ return n >= 1000 ? (n/1000).toFixed(0) + 'k' : n + 'đ'; }
 
 function go(i){
+  if(i===1){ $('btnStart').disabled = true; }
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   $('s'+i).classList.add('active');
   document.querySelectorAll('.steps .step').forEach((el,ix)=>{
@@ -407,6 +408,8 @@ function go(i){
     el.classList.toggle('done', ix<i);
   });
   if(i===3) renderReview();
+  if(i===1 && screening<5) runSteps();
+  if(i===0) resetRun();
   window.scrollTo({top:0, behavior:'smooth'});
 }
 
@@ -564,13 +567,7 @@ function togglePlay(){
   b.textContent = b.textContent==='▶'?'⏸':'▶';
 }
 
-const _prev = go;
-window.go = function(i){
-  if(i===1) $('btnStart').disabled = true;
-  _prev(i);
-  if(i===1 && screening<5) runSteps();
-  if(i===0) resetRun();
-};
+
 </script>
 </body>
 </html>
