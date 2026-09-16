@@ -1,0 +1,362 @@
+[
+  {
+    "cau": 1,
+    "batDau": "00:00.0",
+    "ketThucTieng": "00:05.4",
+    "ketThuc": "00:06.8",
+    "soFrame": 204,
+    "loi": "Một công cụ đánh dấu thư nào có thể là thư rác, còn một trợ lý viết giúp bạn lời mời tham gia câu lạc bộ.",
+    "soKyTu": 105
+  },
+  {
+    "cau": 2,
+    "batDau": "00:06.8",
+    "ketThucTieng": "00:11.6",
+    "ketThuc": "00:13.0",
+    "soFrame": 185,
+    "loi": "Cả hai có thể dùng trí tuệ nhân tạo, nhưng việc chúng làm và kết quả chúng trả về rất khác nhau.",
+    "soKyTu": 96
+  },
+  {
+    "cau": 3,
+    "batDau": "00:13.0",
+    "ketThucTieng": "00:19.3",
+    "ketThuc": "00:21.3",
+    "soFrame": 249,
+    "loi": "Mình sẽ dùng ba công cụ quen thuộc để phân biệt trí tuệ nhân tạo, học máy, tạo sinh và mô hình ngôn ngữ lớn.",
+    "soKyTu": 108
+  },
+  {
+    "cau": 4,
+    "batDau": "00:21.3",
+    "ketThucTieng": "00:26.6",
+    "ketThuc": "00:28.0",
+    "soFrame": 202,
+    "loi": "Trí tuệ nhân tạo là lĩnh vực làm cho máy thực hiện những việc thường cần trí thông minh, như nhận ra đồ vật trong ảnh.",
+    "soKyTu": 118
+  },
+  {
+    "cau": 5,
+    "batDau": "00:28.0",
+    "ketThucTieng": "00:32.8",
+    "ketThuc": "00:34.2",
+    "soFrame": 186,
+    "loi": "Trong lĩnh vực này, có những hệ thống giải bài toán bằng kiến thức và quy tắc do con người viết sẵn.",
+    "soKyTu": 100
+  },
+  {
+    "cau": 6,
+    "batDau": "00:34.2",
+    "ketThucTieng": "00:39.2",
+    "ketThuc": "00:40.6",
+    "soFrame": 191,
+    "loi": "Một cách khác là cho hệ thống học từ nhiều ví dụ, để nhận ra những đặc điểm giúp nó giải quyết công việc.",
+    "soKyTu": 105
+  },
+  {
+    "cau": 7,
+    "batDau": "00:40.6",
+    "ketThucTieng": "00:45.2",
+    "ketThuc": "00:46.6",
+    "soFrame": 182,
+    "loi": "Chẳng hạn, ta đưa vào nhiều thư điện tử đã được đánh dấu là thư rác hoặc thư bình thường.",
+    "soKyTu": 89
+  },
+  {
+    "cau": 8,
+    "batDau": "00:46.6",
+    "ketThucTieng": "00:51.2",
+    "ketThuc": "00:52.6",
+    "soFrame": 178,
+    "loi": "Bộ lọc dựa vào những gì đã học để dự đoán thư mới là thư rác hay thư bình thường.",
+    "soKyTu": 81
+  },
+  {
+    "cau": 9,
+    "batDau": "00:52.6",
+    "ketThucTieng": "00:54.8",
+    "ketThuc": "00:56.2",
+    "soFrame": 110,
+    "loi": "Cách học từ dữ liệu ấy được gọi là học máy.",
+    "soKyTu": 43
+  },
+  {
+    "cau": 10,
+    "batDau": "00:56.2",
+    "ketThucTieng": "01:00.5",
+    "ketThuc": "01:01.9",
+    "soFrame": 170,
+    "loi": "Bên trong bộ lọc, phần tính toán đã học từ các ví dụ ấy được gọi là mô hình học máy.",
+    "soKyTu": 84
+  },
+  {
+    "cau": 11,
+    "batDau": "01:01.9",
+    "ketThucTieng": "01:07.3",
+    "ketThuc": "01:09.3",
+    "soFrame": 222,
+    "loi": "Như vậy, học máy là một cách làm trong lĩnh vực trí tuệ nhân tạo, chứ không phải tên khác của cả lĩnh vực.",
+    "soKyTu": 106
+  },
+  {
+    "cau": 12,
+    "batDau": "01:09.3",
+    "ketThucTieng": "01:13.6",
+    "ketThuc": "01:15.0",
+    "soFrame": 172,
+    "loi": "Bây giờ, mình đổi nhiệm vụ từ phân loại thư sang viết một bức thư mời tham gia câu lạc bộ.",
+    "soKyTu": 90
+  },
+  {
+    "cau": 13,
+    "batDau": "01:15.0",
+    "ketThucTieng": "01:19.2",
+    "ketThuc": "01:20.6",
+    "soFrame": 167,
+    "loi": "Lúc này, bạn cần một bức thư mới, chứ không chỉ cần biết thư thuộc nhóm nào.",
+    "soKyTu": 76
+  },
+  {
+    "cau": 14,
+    "batDau": "01:20.6",
+    "ketThucTieng": "01:27.1",
+    "ketThuc": "01:28.5",
+    "soFrame": 238,
+    "loi": "Trí tuệ nhân tạo tạo sinh là tên gọi cho những hệ thống tạo nội dung, chẳng hạn văn bản, hình ảnh hoặc âm thanh.",
+    "soKyTu": 112
+  },
+  {
+    "cau": 15,
+    "batDau": "01:28.5",
+    "ketThucTieng": "01:33.7",
+    "ketThuc": "01:35.1",
+    "soFrame": 196,
+    "loi": "Trên bản đồ này, mình xét các mô hình tạo sinh học từ dữ liệu, nên đặt chúng trong vùng học máy.",
+    "soKyTu": 96
+  },
+  {
+    "cau": 16,
+    "batDau": "01:35.1",
+    "ketThucTieng": "01:40.5",
+    "ketThuc": "01:41.9",
+    "soFrame": 206,
+    "loi": "Nhưng không phải cứ học từ dữ liệu thì hệ thống sẽ tạo nội dung, vì bộ lọc thư rác vừa rồi chỉ phân loại.",
+    "soKyTu": 105
+  },
+  {
+    "cau": 17,
+    "batDau": "01:41.9",
+    "ketThucTieng": "01:47.1",
+    "ketThuc": "01:48.5",
+    "soFrame": 198,
+    "loi": "Một công cụ vẽ áp phích từ mô tả cũng thuộc nhóm tạo sinh, vì nó tạo hình ảnh để người dùng sử dụng.",
+    "soKyTu": 100
+  },
+  {
+    "cau": 18,
+    "batDau": "01:48.5",
+    "ketThucTieng": "01:53.8",
+    "ketThuc": "01:55.2",
+    "soFrame": 199,
+    "loi": "Mô hình ngôn ngữ lớn học cách dùng và kết hợp từ ngữ từ lượng lớn dữ liệu, để xử lý văn bản.",
+    "soKyTu": 92
+  },
+  {
+    "cau": 19,
+    "batDau": "01:55.2",
+    "ketThucTieng": "02:00.1",
+    "ketThuc": "02:01.5",
+    "soFrame": 191,
+    "loi": "Các mô hình ngôn ngữ có khả năng tạo sinh có thể viết thư, giải thích bài học hoặc tóm tắt tài liệu.",
+    "soKyTu": 100
+  },
+  {
+    "cau": 20,
+    "batDau": "02:01.5",
+    "ketThucTieng": "02:07.2",
+    "ketThuc": "02:08.6",
+    "soFrame": 212,
+    "loi": "Ứng dụng trò chuyện nhận câu hỏi của bạn và có thể sử dụng mô hình ngôn ngữ lớn để tạo câu trả lời.",
+    "soKyTu": 99
+  },
+  {
+    "cau": 21,
+    "batDau": "02:08.6",
+    "ketThucTieng": "02:13.2",
+    "ketThuc": "02:14.6",
+    "soFrame": 179,
+    "loi": "Bạn gõ câu hỏi trong khung trò chuyện, còn mô hình phía sau xử lý thông tin để viết câu trả lời.",
+    "soKyTu": 96
+  },
+  {
+    "cau": 22,
+    "batDau": "02:14.6",
+    "ketThucTieng": "02:19.4",
+    "ketThuc": "02:20.8",
+    "soFrame": 186,
+    "loi": "Cùng một ứng dụng có thể nối với cả mô hình viết văn bản, mô hình tạo ảnh và các công cụ khác.",
+    "soKyTu": 94
+  },
+  {
+    "cau": 23,
+    "batDau": "02:20.8",
+    "ketThucTieng": "02:24.8",
+    "ketThuc": "02:26.8",
+    "soFrame": 182,
+    "loi": "Vì vậy, tên ứng dụng bạn đang mở chưa cho biết bên trong đang dùng mô hình nào.",
+    "soKyTu": 79
+  },
+  {
+    "cau": 24,
+    "batDau": "02:26.8",
+    "ketThucTieng": "02:31.8",
+    "ketThuc": "02:33.2",
+    "soFrame": 190,
+    "loi": "Hãy đặt thẻ đầu tiên lên bản đồ: bộ lọc học từ những thư đã được đánh dấu để phân loại thư mới.",
+    "soKyTu": 95
+  },
+  {
+    "cau": 25,
+    "batDau": "02:33.2",
+    "ketThucTieng": "02:37.4",
+    "ketThuc": "02:38.8",
+    "soFrame": 170,
+    "loi": "Thẻ này nằm trong vùng học máy, và vùng học máy nằm bên trong lĩnh vực trí tuệ nhân tạo.",
+    "soKyTu": 88
+  },
+  {
+    "cau": 26,
+    "batDau": "02:38.8",
+    "ketThucTieng": "02:42.6",
+    "ketThuc": "02:44.0",
+    "soFrame": 156,
+    "loi": "Bộ lọc này chỉ đánh dấu loại thư, nên việc nó đang làm không phải tạo sinh.",
+    "soKyTu": 75
+  },
+  {
+    "cau": 27,
+    "batDau": "02:44.0",
+    "ketThucTieng": "02:48.1",
+    "ketThuc": "02:49.5",
+    "soFrame": 164,
+    "loi": "Thẻ thứ hai là công cụ tạo áp phích cho ngày hội khoa học từ một đoạn mô tả.",
+    "soKyTu": 76
+  },
+  {
+    "cau": 28,
+    "batDau": "02:49.5",
+    "ketThucTieng": "02:54.3",
+    "ketThuc": "02:55.7",
+    "soFrame": 187,
+    "loi": "Tạo áp phích là một việc tạo sinh, nhưng nhìn bức ảnh chưa cho biết công cụ đã dùng những mô hình nào.",
+    "soKyTu": 102
+  },
+  {
+    "cau": 29,
+    "batDau": "02:55.7",
+    "ketThucTieng": "03:00.1",
+    "ketThuc": "03:01.5",
+    "soFrame": 173,
+    "loi": "Thẻ thứ ba là trợ lý sử dụng mô hình ngôn ngữ lớn để viết thư mời tham gia ngày hội.",
+    "soKyTu": 84
+  },
+  {
+    "cau": 30,
+    "batDau": "03:01.5",
+    "ketThucTieng": "03:05.7",
+    "ketThuc": "03:07.1",
+    "soFrame": 168,
+    "loi": "Chức năng này tạo văn bản mới, nên ta đặt nó vào nhánh tạo sinh ngôn ngữ.",
+    "soKyTu": 73
+  },
+  {
+    "cau": 31,
+    "batDau": "03:07.1",
+    "ketThucTieng": "03:12.9",
+    "ketThuc": "03:14.3",
+    "soFrame": 215,
+    "loi": "Nếu giao chính mô hình ấy nhiệm vụ phân loại thư, tên mô hình vẫn giữ nguyên nhưng công việc đang làm đã thay đổi.",
+    "soKyTu": 114
+  },
+  {
+    "cau": 32,
+    "batDau": "03:14.3",
+    "ketThucTieng": "03:20.1",
+    "ketThuc": "03:22.1",
+    "soFrame": 234,
+    "loi": "Muốn phân biệt cho rõ, hãy hỏi công cụ nhận gì, xử lý bằng cách nào và trả về loại kết quả gì.",
+    "soKyTu": 94
+  },
+  {
+    "cau": 33,
+    "batDau": "03:22.1",
+    "ketThucTieng": "03:27.3",
+    "ketThuc": "03:28.7",
+    "soFrame": 200,
+    "loi": "Một hệ thống chỉ phân loại thư rác, không tạo nội dung mới, có nhất thiết là trí tuệ nhân tạo tạo sinh không?",
+    "soKyTu": 109
+  },
+  {
+    "cau": 34,
+    "batDau": "03:28.7",
+    "ketThucTieng": "03:31.5",
+    "ketThuc": "03:32.1",
+    "soFrame": 102,
+    "loi": "Hãy giải thích lựa chọn bằng kết quả mà hệ thống đang trả về.",
+    "soKyTu": 61
+  },
+  {
+    "cau": 35,
+    "batDau": "03:32.1",
+    "ketThucTieng": "03:32.1",
+    "ketThuc": "03:37.1",
+    "soFrame": 150,
+    "loi": "(dừng 5 giây)",
+    "soKyTu": 13
+  },
+  {
+    "cau": 36,
+    "batDau": "03:37.1",
+    "ketThucTieng": "03:41.6",
+    "ketThuc": "03:43.0",
+    "soFrame": 175,
+    "loi": "Không nhất thiết, vì học máy có thể dùng để phân loại mà không cần tạo nội dung mới.",
+    "soKyTu": 84
+  },
+  {
+    "cau": 37,
+    "batDau": "03:43.0",
+    "ketThucTieng": "03:48.4",
+    "ketThuc": "03:49.8",
+    "soFrame": 206,
+    "loi": "Nếu dùng mô hình ngôn ngữ cho việc đó, hãy nói rõ đây là mô hình ngôn ngữ đang làm nhiệm vụ phân loại.",
+    "soKyTu": 102
+  },
+  {
+    "cau": 38,
+    "batDau": "03:49.8",
+    "ketThucTieng": "03:55.8",
+    "ketThuc": "03:57.2",
+    "soFrame": 222,
+    "loi": "Trí tuệ nhân tạo là lĩnh vực rộng, học máy là một cách học từ dữ liệu, còn tạo sinh nói về việc tạo nội dung.",
+    "soKyTu": 109
+  },
+  {
+    "cau": 39,
+    "batDau": "03:57.2",
+    "ketThucTieng": "04:02.8",
+    "ketThuc": "04:04.2",
+    "soFrame": 209,
+    "loi": "Mô hình ngôn ngữ lớn xử lý văn bản, còn ứng dụng trò chuyện là nơi bạn gửi câu hỏi và nhận câu trả lời.",
+    "soKyTu": 103
+  },
+  {
+    "cau": 40,
+    "batDau": "04:04.2",
+    "ketThucTieng": "04:09.2",
+    "ketThuc": "04:11.2",
+    "soFrame": 211,
+    "loi": "Ở video tiếp theo, mình sẽ nhìn lại lịch sử để hiểu vì sao các công cụ này ngày càng phổ biến.",
+    "soKyTu": 94
+  }
+]

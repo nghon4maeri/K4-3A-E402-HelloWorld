@@ -1,0 +1,167 @@
+{
+  "timestamp": "2026-09-17T00:26:33+07:00",
+  "total_cases": 20,
+  "passed_cases": 15,
+  "overall_percentage": 75.0,
+  "metrics": {
+    "safety_rate": 100.0,
+    "source_validity_rate": 100.0,
+    "categorization_rate": 61.5,
+    "localization_rate": 68.8
+  },
+  "quality_bars": {
+    "safety": "100%",
+    "source": "100%",
+    "categorization": ">=85%",
+    "localization": ">=70%"
+  },
+  "case_details": [
+    {
+      "id": "case-01",
+      "layer": "Đa kênh & Gom trùng",
+      "status": "PASS",
+      "detail": "Đạt chuẩn 4 tiêu chí"
+    },
+    {
+      "id": "case-02",
+      "layer": "Nguồn sự thật",
+      "status": "PASS",
+      "detail": "Đạt chuẩn 4 tiêu chí"
+    },
+    {
+      "id": "case-03",
+      "layer": "Mơ hồ / Thiếu thông tin",
+      "status": "PASS",
+      "detail": "Đạt chuẩn 4 tiêu chí"
+    },
+    {
+      "id": "case-04",
+      "layer": "Đặc thù domain / Mâu thuẫn",
+      "status": "PASS",
+      "detail": "Đạt chuẩn 4 tiêu chí"
+    },
+    {
+      "id": "case-05",
+      "layer": "Đặc thù domain / Mâu thuẫn",
+      "status": "PASS",
+      "detail": "Đạt chuẩn 4 tiêu chí"
+    },
+    {
+      "id": "case-06",
+      "layer": "Đặc thù domain / Mâu thuẫn",
+      "status": "PASS",
+      "detail": "Đạt chuẩn 4 tiêu chí"
+    },
+    {
+      "id": "case-07",
+      "layer": "Ngoài thẩm quyền / An toàn",
+      "status": "PASS",
+      "detail": "Đã lọc an toàn chính xác"
+    },
+    {
+      "id": "case-08",
+      "layer": "Ngoài thẩm quyền / An toàn",
+      "status": "PASS",
+      "detail": "Đã lọc an toàn chính xác"
+    },
+    {
+      "id": "case-09",
+      "layer": "Ngoài thẩm quyền / An toàn",
+      "status": "PASS",
+      "detail": "Đã lọc an toàn chính xác"
+    },
+    {
+      "id": "case-10",
+      "layer": "Ngoài thẩm quyền / An toàn",
+      "status": "PASS",
+      "detail": "Đã lọc an toàn chính xác"
+    },
+    {
+      "id": "case-11",
+      "layer": "Nguồn sự thật",
+      "status": "PASS",
+      "detail": "Đạt chuẩn 4 tiêu chí"
+    },
+    {
+      "id": "case-12",
+      "layer": "Nguồn sự thật",
+      "status": "PASS",
+      "detail": "Đạt chuẩn 4 tiêu chí"
+    },
+    {
+      "id": "case-13",
+      "layer": "Nguồn sự thật",
+      "status": "FAIL",
+      "detail": "Không được phân vào cụm nào"
+    },
+    {
+      "id": "case-14",
+      "layer": "Nội dung sư phạm",
+      "status": "FAIL",
+      "detail": "Không được phân vào cụm nào"
+    },
+    {
+      "id": "case-15",
+      "layer": "Nội dung sư phạm",
+      "status": "FAIL",
+      "detail": "Không được phân vào cụm nào"
+    },
+    {
+      "id": "case-16",
+      "layer": "Đặc thù domain",
+      "status": "PASS",
+      "detail": "Đạt chuẩn 4 tiêu chí"
+    },
+    {
+      "id": "case-17",
+      "layer": "Mơ hồ / Thiếu thông tin",
+      "status": "PASS",
+      "detail": "Đạt chuẩn 4 tiêu chí"
+    },
+    {
+      "id": "case-18",
+      "layer": "Khen ngợi / Giữ nguyên",
+      "status": "FAIL",
+      "detail": "Không được phân vào cụm nào"
+    },
+    {
+      "id": "case-19",
+      "layer": "Khen ngợi / Giữ nguyên",
+      "status": "FAIL",
+      "detail": "Không được phân vào cụm nào"
+    },
+    {
+      "id": "case-20",
+      "layer": "Góp ý chung / Tích cực",
+      "status": "PASS",
+      "detail": "Đạt chuẩn 4 tiêu chí"
+    }
+  ],
+  "failures": [
+    {
+      "case": "case-13",
+      "layer": "Nguồn sự thật",
+      "reason": "Không được phân vào cụm nào"
+    },
+    {
+      "case": "case-14",
+      "layer": "Nội dung sư phạm",
+      "reason": "Không được phân vào cụm nào"
+    },
+    {
+      "case": "case-15",
+      "layer": "Nội dung sư phạm",
+      "reason": "Không được phân vào cụm nào"
+    },
+    {
+      "case": "case-18",
+      "layer": "Khen ngợi / Giữ nguyên",
+      "reason": "Không được phân vào cụm nào"
+    },
+    {
+      "case": "case-19",
+      "layer": "Khen ngợi / Giữ nguyên",
+      "reason": "Không được phân vào cụm nào"
+    }
+  ]
+}

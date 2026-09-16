@@ -1,0 +1,522 @@
+{
+  "metadata": {
+    "kichBanId": "d1",
+    "tongSoGopY": 30,
+    "soGopYHopLe": 26,
+    "soGopYBiChieuLoc": 4,
+    "soCumPhatHien": 9,
+    "tongChiPhiSuaDuKien": 4510000,
+    "chiPhiLamLaiToanBo": 8000000,
+    "tietKiemSoVoiLamLai": "3,490,000 VND (43.6%)",
+    "thoiGianChayGiay": 0.0
+  },
+  "clusters": [
+    {
+      "idx": 1,
+      "cum_id": "cum-01",
+      "color": "blue",
+      "title": "Phân biệt app trò chuyện và mô hình ngôn ngữ lớn chưa rõ ràng",
+      "loai": "Nội dung",
+      "so": "3 người học",
+      "v": "02:01",
+      "cau": "Câu 20–23",
+      "chat": "3 học viên độc lập",
+      "price": 1200000,
+      "type": "thu lời + dựng",
+      "quotes": [
+        {
+          "id": "gy-002",
+          "t": "\"Phần phân biệt mô hình ngôn ngữ lớn với ứng dụng trò chuyện em xem hai lần vẫn thấy lẫn. Chỗ nói cùng một ứng dụng nối được nhiều mô hình ấy ạ.\"",
+          "src": "gy-002 · binh-luan · hv-011"
+        },
+        {
+          "id": "gy-003",
+          "t": "\"Em nhắn lại về đoạn ứng dụng trò chuyện với mô hình ngôn ngữ lớn, vẫn chưa rõ lắm ạ.\"",
+          "src": "gy-003 · tin-nhan · hv-011"
+        },
+        {
+          "id": "gy-018",
+          "t": "\"Em hỏi lần nữa ạ, rốt cuộc ứng dụng trò chuyện có phải là mô hình ngôn ngữ lớn không ạ?\"",
+          "src": "gy-018 · tin-nhan · hv-011"
+        },
+        {
+          "id": "gy-019",
+          "t": "\"Đoạn phân biệt app chat với LLM ở tầm 2 phút vẫn hơi trừu tượng, nên có hình vẽ 2 lớp lồng nhau để phân biệt app bên ngoài model bên trong.\"",
+          "src": "gy-019 · khao-sat · hv-080"
+        }
+      ],
+      "transcript": [
+        {
+          "n": 20,
+          "t": "Ứng dụng trò chuyện nhận câu hỏi của bạn và có thể sử dụng mô hình ngôn ngữ lớn để tạo câu trả lời.",
+          "bad": false
+        },
+        {
+          "n": 21,
+          "t": "Bạn gõ câu hỏi trong khung trò chuyện, còn mô hình phía sau xử lý thông tin để viết câu trả lời.",
+          "bad": false
+        },
+        {
+          "n": 22,
+          "t": "Cùng một ứng dụng có thể nối với cả mô hình viết văn bản, mô hình tạo ảnh và các công cụ khác.",
+          "bad": true
+        },
+        {
+          "n": 23,
+          "t": "Vì vậy, tên ứng dụng bạn đang mở chưa cho biết bên trong đang dùng mô hình nào.",
+          "bad": false
+        }
+      ],
+      "fix": "Thu lại lời câu 22 (nói rõ ứng dụng là vỏ ngoài, model là lõi xử lý bên trong) + dựng lại hình ảnh 2 lớp lồng nhau.",
+      "cau_indices": [
+        20,
+        21,
+        22,
+        23
+      ],
+      "cau_thu_lai": [
+        19,
+        20,
+        21,
+        22,
+        23,
+        24
+      ],
+      "cau_dung_lai": [
+        19,
+        20,
+        21,
+        22,
+        23,
+        24
+      ],
+      "ghi_chu": "gy-002, gy-003, gy-018 từ cùng 1 học viên hv-011 (tính 1 người), cộng thêm hv-080 -> 2-3 người độc lập."
+    },
+    {
+      "idx": 2,
+      "cum_id": "cum-02",
+      "color": "green",
+      "title": "Âm thanh phút thứ 2 bị nhạc nền át tiếng giảng viên",
+      "loai": "Kỹ thuật",
+      "so": "2 người học",
+      "v": "02:01",
+      "cau": "Câu 20",
+      "chat": "2 học viên độc lập",
+      "price": 600000,
+      "type": "thu lời",
+      "quotes": [
+        {
+          "id": "gy-008",
+          "t": "\"Tiếng nhạc nền to hơn giọng đọc ở khoảng phút thứ hai, em phải tăng âm lượng lên mới nghe rõ.\"",
+          "src": "gy-008 · binh-luan · hv-044"
+        },
+        {
+          "id": "gy-022",
+          "t": "\"Âm lượng đoạn 2:00 bị nhạc nền át tiếng thầy nói, nghe không rõ lời giảng.\"",
+          "src": "gy-022 · khao-sat · hv-088"
+        }
+      ],
+      "transcript": [
+        {
+          "n": 20,
+          "t": "Ứng dụng trò chuyện nhận câu hỏi của bạn và có thể sử dụng mô hình ngôn ngữ lớn để tạo câu trả lời.",
+          "bad": true
+        }
+      ],
+      "fix": "Cân bằng lại âm lượng (gain reduction nhạc nền -6dB tại mốc 02:00 hoặc thu lại âm câu 20 chuẩn -16 LUFS).",
+      "cau_indices": [
+        20
+      ],
+      "cau_thu_lai": [
+        19,
+        20,
+        21
+      ],
+      "cau_dung_lai": [
+        19,
+        20,
+        21
+      ],
+      "ghi_chu": "Lỗi kỹ thuật thuần tuý về mix âm thanh, không phải lỗi kịch bản."
+    },
+    {
+      "idx": 3,
+      "cum_id": "cum-03",
+      "color": "violet",
+      "title": "Slide minh hoạ 3 thẻ ứng dụng chữ quá nhỏ trên thiết bị di động",
+      "loai": "Kỹ thuật",
+      "so": "2 người học",
+      "v": "02:26",
+      "cau": "Câu 24–29",
+      "chat": "2 học viên độc lập",
+      "price": 900000,
+      "type": "dựng hình",
+      "quotes": [
+        {
+          "id": "gy-010",
+          "t": "\"Chữ trên màn hình ở đoạn ba thẻ ứng dụng bị nhỏ, xem trên điện thoại không đọc được.\"",
+          "src": "gy-010 · binh-luan · hv-052"
+        },
+        {
+          "id": "gy-021",
+          "t": "\"Font chữ trên slide minh họa 3 cái thẻ ở phút 2:30 bé quá thầy ơi, xem trên mobile mờ tịt không nhìn rõ nội dung thẻ.\"",
+          "src": "gy-021 · tin-nhan · hv-085"
+        }
+      ],
+      "transcript": [
+        {
+          "n": 24,
+          "t": "Hãy đặt thẻ đầu tiên lên bản đồ: bộ lọc học từ những thư đã được đánh dấu để phân loại thư mới.",
+          "bad": true
+        },
+        {
+          "n": 25,
+          "t": "Thẻ này nằm trong vùng học máy, và vùng học máy nằm bên trong lĩnh vực trí tuệ nhân tạo.",
+          "bad": false
+        },
+        {
+          "n": 26,
+          "t": "Bộ lọc này chỉ đánh dấu loại thư, nên việc nó đang làm không phải tạo sinh.",
+          "bad": false
+        },
+        {
+          "n": 27,
+          "t": "Thẻ thứ hai là công cụ tạo áp phích cho ngày hội khoa học từ một đoạn mô tả.",
+          "bad": false
+        },
+        {
+          "n": 28,
+          "t": "Tạo áp phích là một việc tạo sinh, nhưng nhìn bức ảnh chưa cho biết công cụ đã dùng những mô hình nào.",
+          "bad": false
+        },
+        {
+          "n": 29,
+          "t": "Thẻ thứ ba là trợ lý sử dụng mô hình ngôn ngữ lớn để viết thư mời tham gia ngày hội.",
+          "bad": false
+        }
+      ],
+      "fix": "Phóng to font chữ trên 3 thẻ và căn chỉnh bố cục dạng thẻ dọc để hiển thị sắc nét trên màn hình điện thoại.",
+      "cau_indices": [
+        24,
+        25,
+        26,
+        27,
+        28,
+        29
+      ],
+      "cau_thu_lai": [],
+      "cau_dung_lai": [
+        24,
+        25,
+        26,
+        27,
+        28,
+        29
+      ],
+      "ghi_chu": "Chỉ đổi thiết kế đồ hoạ cảnh, hoàn toàn không cần thu lại giọng đọc."
+    },
+    {
+      "idx": 4,
+      "cum_id": "cum-04",
+      "color": "red",
+      "title": "Khoảng dừng suy nghĩ 5 giây gây ý kiến trái chiều (ngắn vs dài)",
+      "loai": "Sư phạm (tốc độ/giọng)",
+      "so": "3 người học",
+      "v": "03:32",
+      "cau": "Câu 35",
+      "chat": "3 học viên độc lập",
+      "price": 150000,
+      "type": "dựng hình",
+      "quotes": [
+        {
+          "id": "gy-005",
+          "t": "\"Năm giây suy nghĩ ngắn quá, em chưa kịp nghĩ đã thấy đáp án.\"",
+          "src": "gy-005 · khao-sat · hv-031"
+        },
+        {
+          "id": "gy-006",
+          "t": "\"Khoảng dừng để suy nghĩ hơi dài, em thấy sốt ruột, rút ngắn lại được không ạ.\"",
+          "src": "gy-006 · khao-sat · hv-037"
+        },
+        {
+          "id": "gy-028",
+          "t": "\"Chỗ 5 giây dừng suy nghĩ em thấy vừa xinh, kịp pause lại để tự suy nghĩ câu trả lời.\"",
+          "src": "gy-028 · khao-sat · hv-103"
+        }
+      ],
+      "transcript": [
+        {
+          "n": 35,
+          "t": "(dừng 5 giây)",
+          "bad": true
+        }
+      ],
+      "fix": "Thêm thanh đếm ngược tiến trình (progress timer 5s) và dòng nhắc 'Tạm dừng video nếu bạn cần thêm thời gian'.",
+      "cau_indices": [
+        35
+      ],
+      "cau_thu_lai": [],
+      "cau_dung_lai": [
+        35
+      ],
+      "ghi_chu": "Mâu thuẫn sư phạm 50/50: 1 người bảo ngắn, 1 người bảo dài, 1 người bảo vừa. Không thay đổi độ dài, chỉ thêm visual cue."
+    },
+    {
+      "idx": 5,
+      "cum_id": "cum-05",
+      "color": "blue",
+      "title": "Câu chốt kết thúc video hơi đột ngột, thiếu câu dẫn nối",
+      "loai": "Nội dung",
+      "so": "2 người học",
+      "v": "04:04",
+      "cau": "Câu 40",
+      "chat": "2 học viên độc lập",
+      "price": 400000,
+      "type": "thu lời",
+      "quotes": [
+        {
+          "id": "gy-016",
+          "t": "\"Sau buổi tổng kết: tôi thấy câu chốt cuối video hơi cụt, nên thêm một câu nối sang video sau. Còn phần bản đồ khái niệm thì giữ, sinh viên phản hồi tốt.\"",
+          "src": "gy-016 · tin-nhan · gv-01"
+        },
+        {
+          "id": "gy-024",
+          "t": "\"Đoạn kết video 4:05 kết thúc hơi đột ngột, chưa có lời chào hay báo trước video tiếp theo.\"",
+          "src": "gy-024 · tin-nhan · hv-092"
+        }
+      ],
+      "transcript": [
+        {
+          "n": 40,
+          "t": "Ở video tiếp theo, mình sẽ nhìn lại lịch sử để hiểu vì sao các công cụ này ngày càng phổ biến.",
+          "bad": true
+        }
+      ],
+      "fix": "Thu lại câu 40 bổ sung lời chào kết và giới thiệu chủ đề tập tiếp theo.",
+      "cau_indices": [
+        40
+      ],
+      "cau_thu_lai": [
+        39,
+        40
+      ],
+      "cau_dung_lai": [
+        39,
+        40
+      ],
+      "ghi_chu": "Được góp ý bởi giảng viên gv-01 và học viên hv-092."
+    },
+    {
+      "idx": 6,
+      "cum_id": "cum-06",
+      "color": "violet",
+      "title": "Phụ đề chạy nhanh hoặc lệch nhịp so với lời đọc của video",
+      "loai": "Kỹ thuật",
+      "so": "2 người học",
+      "v": "01:48",
+      "cau": "Câu 18–19",
+      "chat": "2 học viên độc lập",
+      "price": 60000,
+      "type": "sửa phụ đề",
+      "quotes": [
+        {
+          "id": "gy-017",
+          "t": "\"Phụ đề có chỗ chạy nhanh hơn giọng đọc một chút.\"",
+          "src": "gy-017 · binh-luan · hv-074"
+        },
+        {
+          "id": "gy-023",
+          "t": "\"Phần phụ đề ở đoạn giải thích mô hình ngôn ngữ bị trễ một nhịp so với lời đọc của video.\"",
+          "src": "gy-023 · binh-luan · hv-090"
+        }
+      ],
+      "transcript": [
+        {
+          "n": 18,
+          "t": "Mô hình ngôn ngữ lớn học cách dùng và kết hợp từ ngữ từ lượng lớn dữ liệu, để xử lý văn bản.",
+          "bad": true
+        },
+        {
+          "n": 19,
+          "t": "Các mô hình ngôn ngữ có khả năng tạo sinh có thể viết thư, giải thích bài học hoặc tóm tắt tài liệu.",
+          "bad": false
+        }
+      ],
+      "fix": "Chỉnh lại timestamp hiển thị phụ đề cho câu 18 và 19 khớp chính xác với âm thanh voiceover.",
+      "cau_indices": [
+        18,
+        19
+      ],
+      "cau_thu_lai": [],
+      "cau_dung_lai": [],
+      "ghi_chu": "Chỉ chỉnh lại file phụ đề SRT/VTT, không tốn chi phí quay dựng hay thu âm."
+    },
+    {
+      "idx": 7,
+      "cum_id": "cum-07",
+      "color": "blue",
+      "title": "Định nghĩa AI tạo sinh nhồi 3 ví dụ văn bản hình ảnh âm thanh trong cùng một câu",
+      "loai": "Nội dung",
+      "so": "2 người học",
+      "v": "01:20",
+      "cau": "Câu 14",
+      "chat": "2 học viên độc lập",
+      "price": 600000,
+      "type": "thu lời",
+      "quotes": [
+        {
+          "id": "gy-007",
+          "t": "\"Lớp chiều nay nhiều bạn hỏi lại đúng cái chỗ định nghĩa trí tuệ nhân tạo tạo sinh. Mình nghĩ là do câu đó nhồi ba ví dụ văn bản hình ảnh âm thanh vào cùng một câu, nghe qua là trôi mất.\"",
+          "src": "gy-007 · tin-nhan · tg-02"
+        },
+        {
+          "id": "gy-020",
+          "t": "\"Đoạn giải thích AI tạo sinh ở 1:20 nói lướt nhanh quá, 3 ví dụ văn bản hình ảnh âm thanh bị dồn cục khó nhớ.\"",
+          "src": "gy-020 · binh-luan · hv-082"
+        }
+      ],
+      "transcript": [
+        {
+          "n": 14,
+          "t": "Trí tuệ nhân tạo tạo sinh là tên gọi cho những hệ thống tạo nội dung, chẳng hạn văn bản, hình ảnh hoặc âm thanh.",
+          "bad": true
+        }
+      ],
+      "fix": "Tách câu 14 thành 2 câu ngắn: nêu định nghĩa trước, sau đó liệt kê từng ví dụ kèm minh họa trực quan.",
+      "cau_indices": [
+        14
+      ],
+      "cau_thu_lai": [
+        13,
+        14,
+        15
+      ],
+      "cau_dung_lai": [
+        13,
+        14,
+        15
+      ],
+      "ghi_chu": "Trợ giảng tg-02 phản ánh sinh viên hay bị trôi mất ý ở câu này."
+    },
+    {
+      "idx": 8,
+      "cum_id": "cum-08",
+      "color": "blue",
+      "title": "Mô hình học máy bên trong bộ lọc thư rác cần làm rõ và thêm ví dụ",
+      "loai": "Nội dung",
+      "so": "2 người học",
+      "v": "00:56",
+      "cau": "Câu 10",
+      "chat": "2 học viên độc lập",
+      "price": 600000,
+      "type": "thu lời",
+      "quotes": [
+        {
+          "id": "gy-015",
+          "t": "\"Chỗ giải thích mô hình học máy nằm bên trong bộ lọc em nghe ba lần mới hiểu.\"",
+          "src": "gy-015 · khao-sat · hv-070"
+        },
+        {
+          "id": "gy-029",
+          "t": "\"Chỗ câu 10 giải thích mô hình học máy bên trong bộ lọc nếu có thêm 1 ví dụ cụ thể thì dễ tiếp thu hơn ạ.\"",
+          "src": "gy-029 · binh-luan · hv-105"
+        }
+      ],
+      "transcript": [
+        {
+          "n": 10,
+          "t": "Bên trong bộ lọc, phần tính toán đã học từ các ví dụ ấy được gọi là mô hình học máy.",
+          "bad": true
+        }
+      ],
+      "fix": "Thu lại câu 10 nhấn mạnh khái niệm 'mô hình' và bổ sung ví dụ minh họa trực quan.",
+      "cau_indices": [
+        10
+      ],
+      "cau_thu_lai": [
+        9,
+        10,
+        11
+      ],
+      "cau_dung_lai": [
+        9,
+        10,
+        11
+      ],
+      "ghi_chu": "Học viên phản ánh phải nghe lại 3 lần mới hiểu."
+    },
+    {
+      "idx": 9,
+      "cum_id": "cum-09",
+      "color": "green",
+      "title": "Điểm sáng bài giảng được người học đánh giá cao (Khuyến nghị giữ nguyên)",
+      "loai": "Nội dung",
+      "so": "2 người học",
+      "v": "00:00",
+      "cau": "Câu 1–31",
+      "chat": "2 học viên độc lập",
+      "price": 0,
+      "type": "giữ nguyên",
+      "quotes": [
+        {
+          "id": "gy-004",
+          "t": "\"Chỗ nói tên mô hình giữ nguyên nhưng công việc thay đổi là chỗ hay nhất video, nghe xong em mới vỡ ra.\"",
+          "src": "gy-004 · binh-luan · hv-023"
+        },
+        {
+          "id": "gy-014",
+          "t": "\"Đoạn mở đầu hai công cụ hai nhiệm vụ rất dễ hiểu, giữ nguyên nhé ạ.\"",
+          "src": "gy-014 · binh-luan · hv-067"
+        }
+      ],
+      "transcript": [
+        {
+          "n": 1,
+          "t": "Một công cụ đánh dấu thư nào có thể là thư rác, còn một trợ lý viết giúp bạn lời mời tham gia câu lạc bộ.",
+          "bad": true
+        },
+        {
+          "n": 2,
+          "t": "Cả hai có thể dùng trí tuệ nhân tạo, nhưng việc chúng làm và kết quả chúng trả về rất khác nhau.",
+          "bad": false
+        },
+        {
+          "n": 31,
+          "t": "Nếu giao chính mô hình ấy nhiệm vụ phân loại thư, tên mô hình vẫn giữ nguyên nhưng công việc đang làm đã thay đổi.",
+          "bad": false
+        }
+      ],
+      "fix": "Giữ nguyên đoạn mở đầu (câu 1-2) và ví dụ chuyển đổi công việc (câu 31) vì người học hiểu rất sâu.",
+      "cau_indices": [
+        1,
+        2,
+        31
+      ],
+      "cau_thu_lai": [],
+      "cau_dung_lai": [],
+      "ghi_chu": "Phản hồi tích cực, không phát sinh chi phí sửa."
+    }
+  ],
+  "gop_y_chung_chung": [
+    {
+      "quote_id": "gy-001",
+      "noi_dung": "Đoạn giữa hơi nhanh, em không kịp ghi.",
+      "ly_do_khong_dinh_vi": "Góp ý chung chung, không có mốc thời gian hoặc từ khóa nhận diện câu"
+    },
+    {
+      "quote_id": "gy-009",
+      "noi_dung": "Video hay ạ.",
+      "ly_do_khong_dinh_vi": "Khen ngợi chung chung, không có yêu cầu điều chỉnh kịch bản"
+    },
+    {
+      "quote_id": "gy-027",
+      "noi_dung": "Video nhìn chung rất trực quan và dễ hiểu, em cảm ơn thầy cô.",
+      "ly_do_khong_dinh_vi": "Đánh giá tích cực tổng thể, không chỉ ra vị trí cần sửa"
+    },
+    {
+      "quote_id": "gy-030",
+      "noi_dung": "Đoạn giữa clip xem thấy mông lung quá chả hiểu gì.",
+      "ly_do_khong_dinh_vi": "Cảm nhận chủ quan, không định vị được phân đoạn lỗi"
+    }
+  ]
+}
