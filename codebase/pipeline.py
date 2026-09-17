@@ -51,6 +51,10 @@ TRANSCRIPT_PATH = DATA_DIR / "transcript-timecode.json"
 SAMPLE_FEEDBACK_PATH = DATA_DIR / "sample-feedback.json"
 CLUSTERS_OUTPUT_PATH = BASE_DIR / "clusters.json"
 SAFETY_LOG_PATH = BASE_DIR / "safety_log.json"
+COST_PER_RETAKE_SENTENCE = 50_000
+COST_PER_REBUILD_SCENE = 150_000
+COST_PER_SUBTITLE_FIX = 30_000
+FULL_VIDEO_COST = 8_000_000
 
 
 def load_inputs():
@@ -512,6 +516,12 @@ def build_final_clusters(ai_output: Dict[str, Any], feedbacks: List[Dict[str, An
         else:
             cau_tinh = cau_list
         cost_info = calculate_cluster_cost(cau_tinh, loai_sua_c, tr_map)
+        price = (
+            len(cost_info["cau_thu_lai"]) * COST_PER_RETAKE_SENTENCE
+            + len(cost_info["cau_dung_lai"]) * COST_PER_REBUILD_SCENE
+        )
+        if "phụ đề" in loai_sua_c and price == 0:
+            price = COST_PER_SUBTITLE_FIX
         
         # 5. UI Item
         final_clusters.append({
@@ -527,6 +537,7 @@ def build_final_clusters(ai_output: Dict[str, Any], feedbacks: List[Dict[str, An
             "kyTu": cost_info["so_ky_tu"],
             "canh": cost_info["so_canh"],
             "phanTramCongThu": cost_info["phan_tram_cong_thu"],
+            "price": price,
             "type": c.get("loai_sua", "thu lời"),
             "quotes": quote_objs,
             "transcript": transcript_snippet,
@@ -539,6 +550,60 @@ def build_final_clusters(ai_output: Dict[str, Any], feedbacks: List[Dict[str, An
         })
         
     return final_clusters
+
+
+def analyze_feedbacks(feedbacks: List[Dict[str, Any]], transcript: List[Dict[str, Any]]):
+    """Phân tích feedback do endpoint web cung cấp và trả về kết quả chuẩn cho UI."""
+    start_time = time.time()
+    safe_feedbacks, safety_log = filter_feedbacks(feedbacks)
+    with open(SAFETY_LOG_PATH, "w", encoding="utf-8") as f:
+        json.dump(safety_log, f, ensure_ascii=False, indent=2)
+
+    ai_raw_output = run_deepseek_call(safe_feedbacks, transcript)
+    final_clusters = build_final_clusters(ai_raw_output, feedbacks, transcript)
+    tong_ky_tu = sum(c["kyTu"] for c in final_clusters)
+    tong_canh = sum(c["canh"] for c in final_clusters)
+    tong_chi_phi = sum(c["price"] for c in final_clusters)
+    phan_tram_cong_thu = round(tong_ky_tu / TONG_KY_TU_CA_VIDEO * 100, 1)
+
+    la_ai_that = LAST_RUN.get("nguon") == "ai-that"
+    result = {
+        "nguon_ket_qua": {
+            "loai": LAST_RUN.get("nguon") or "khong-xac-dinh",
+            "la_ai_that": la_ai_that,
+            "model": LAST_RUN.get("model"),
+            "thoi_gian_goi_giay": LAST_RUN.get("so_giay"),
+            "tokens": LAST_RUN.get("tokens"),
+            "chi_phi_uoc_tinh_usd": LAST_RUN.get("chi_phi_usd"),
+            "ly_do_fallback": LAST_RUN.get("ly_do_fallback"),
+        },
+        "metadata": {
+            "kichBanId": "d1",
+            "tongSoGopY": len(feedbacks),
+            "soGopYHopLe": len(safe_feedbacks),
+            "soGopYBiChieuLoc": len(safety_log),
+            "soCumPhatHien": len(final_clusters),
+            "chiPhiLamLaiToanBo": FULL_VIDEO_COST,
+            "tongChiPhiDeXuat": tong_chi_phi,
+            "donGia": {
+                "thuLaiMotCau": COST_PER_RETAKE_SENTENCE,
+                "dungLaiMotCanh": COST_PER_REBUILD_SCENE,
+                "suaMotLanPhuDe": COST_PER_SUBTITLE_FIX,
+            },
+            "phamViLamLai": {
+                "soKyTuThuLai": tong_ky_tu,
+                "soCanhDungLai": tong_canh,
+                "phanTramCongThu": phan_tram_cong_thu,
+                "tietKiemPhanTram": round(100 - phan_tram_cong_thu, 1),
+            },
+            "toanBoVideo": {"soKyTu": TONG_KY_TU_CA_VIDEO, "soCanh": TONG_CANH_CA_VIDEO},
+            "thoiGianChayGiay": round(time.time() - start_time, 2),
+        },
+        "clusters": final_clusters,
+        "gop_y_chung_chung": ai_raw_output.get("gop_y_chung_chung", []),
+    }
+    CLUSTERS_OUTPUT_PATH.write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")
+    return result, safety_log
 
 
 def run_pipeline():
@@ -582,6 +647,7 @@ def run_pipeline():
     # đặt cạnh con số làm lại toàn bộ (3 637 ký tự / 40 cảnh) như đề yêu cầu.
     tong_ky_tu = sum(c["kyTu"] for c in final_clusters)
     tong_canh = sum(c["canh"] for c in final_clusters)
+    tong_chi_phi = sum(c["price"] for c in final_clusters)
     phan_tram_cong_thu = round(tong_ky_tu / TONG_KY_TU_CA_VIDEO * 100, 1)
     tiet_kiem_pct = round(100 - phan_tram_cong_thu, 1)
 
@@ -610,6 +676,13 @@ def run_pipeline():
             "soGopYHopLe": len(safe_feedbacks),
             "soGopYBiChieuLoc": len(safety_log),
             "soCumPhatHien": len(final_clusters),
+            "chiPhiLamLaiToanBo": FULL_VIDEO_COST,
+            "tongChiPhiDeXuat": tong_chi_phi,
+            "donGia": {
+                "thuLaiMotCau": COST_PER_RETAKE_SENTENCE,
+                "dungLaiMotCanh": COST_PER_REBUILD_SCENE,
+                "suaMotLanPhuDe": COST_PER_SUBTITLE_FIX,
+            },
             "phamViLamLai": {
                 "soKyTuThuLai": tong_ky_tu,
                 "soCanhDungLai": tong_canh,
