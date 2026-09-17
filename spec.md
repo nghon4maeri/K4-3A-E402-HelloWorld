@@ -14,7 +14,7 @@ Mốc tài liệu: **Bản chốt hoàn thiện & Khóa Ngưỡng chất lượn
 3. **Pain cụ thể (1 câu):** Đội sản xuất video sau mỗi khoá học nhận hàng chục phản hồi cảm tính, mâu thuẫn từ học viên (trộn lẫn lỗi nội dung và kỹ thuật) nhưng phải đọc tay toàn bộ, không định vị được phản hồi ứng với câu nào/phút nào của video, dẫn đến việc phải quay dựng và thu lại toàn bộ bài giảng với chi phí rất cao thay vì sửa cục bộ.
 4. **1-2 Bằng chứng đầu tiên:**
    - *Mining dữ liệu mẫu (`data/studio-pack/c5-feedbackradar/`):* Bộ dữ liệu mẫu 18 góp ý (`gy-001` đến `gy-018`) cho thấy: góp ý mơ hồ ("đoạn giữa hơi nhanh"), mâu thuẫn ("giải thích chậm buồn ngủ" vs "nói nhanh quá"), lẫn lộn kỹ thuật và nội dung; bảng chi phí `bang-chi-phi-lam-lai.md` đo bằng **số ký tự thu lại giọng và số cảnh dựng lại** (không cấp đơn giá tiền): sửa đúng một câu chỉ tốn 269/3 637 ký tự = 7,4%, tiết kiệm 92,6% công sức so với làm lại cả video.
-   - *Khảo sát người học thật lớp 3A (Chuẩn A — ĐÃ ĐẠT):* Thu thập khảo sát thật qua Google Form (`Hello-World-form.csv`), đã ẩn danh tại `eval/fixtures/khao-sat-that-an-danh.csv` (n = 5): **100% (5/5)** gặp đoạn khó hiểu/lỗi bài giảng gần nhất, **80% (4/5)** không nhớ timestamp hoặc chỉ nhớ đại khái, **100% (5/5)** từng định góp ý nhưng thôi vì rào cản. Trích xuất quote thật: *"Video không liền mạch, chỗ thừa chỗ thiếu nội dung"* (HV-02), *"Trôi nhanh ko trọng tâm"* (HV-03), *"Khó hiểu vì chưa đủ kiến thức, ví dụ slide chưa rõ ràng"* (HV-05). Chi tiết: `eval/evidence-log.md`.
+   - *Khảo sát người học thật lớp 3A (bằng chứng định hướng, chưa đạt ngưỡng Chuẩn A của rubric):* Thu thập khảo sát thật qua Google Form (`Hello-World-form.csv`), đã ẩn danh tại `eval/fixtures/khao-sat-that-an-danh.csv` (n = 5): **100% (5/5)** gặp đoạn khó hiểu/lỗi bài giảng gần nhất, **80% (4/5)** không nhớ timestamp hoặc chỉ nhớ đại khái, **100% (5/5)** từng định góp ý nhưng thôi vì rào cản. Trích xuất quote thật: *"Video không liền mạch, chỗ thừa chỗ thiếu nội dung"* (HV-02), *"Trôi nhanh ko trọng tâm"* (HV-03), *"Khó hiểu vì chưa đủ kiến thức, ví dụ slide chưa rõ ràng"* (HV-05). Chi tiết: `eval/evidence-log.md`. Rubric yêu cầu ít nhất 20 người cho Chuẩn A; nhóm chỉ khai báo 5 người.
 5. **Lát cắt MỘT CÂU:**
    > **Một biên tập viên video · có 30 góp ý của người học về một video bài giảng · AI gom nhóm thành các cụm vấn đề có bằng chứng quote gốc, định vị đúng câu/mốc thời gian và đề xuất kế hoạch sửa tối thiểu (thu lại lời / dựng lại hình) · biên tập viên duyệt (accept/reject) từng đề xuất sửa.**
 6. **Automation dự kiến & Lý do:**
@@ -37,7 +37,7 @@ Mốc tài liệu: **Bản chốt hoàn thiện & Khóa Ngưỡng chất lượn
 | Ô | Nội dung | Chi tiết |
 |---|---|---|
 | **Ô 1: Thông tin chung** | **Người thực hiện & Quy trình** | **Tên hướng:** Track C — Lesson Studio (C5: FeedbackRadar).<br>**Job executor:** Biên tập viên video / Đội sản xuất bài giảng VLearn (Studio team) & Giảng viên phụ trách bài giảng.<br>**Quy trình hiện tại:** Nhận feedback từ Google Form/Discord → Đọc thủ công từng dòng → Mở video xem lại để đoán vị trí → Viết lại kịch bản mới → Thu âm và dựng lại toàn bộ video. |
-| **Ô 2: Nỗi đau cốt lõi** | **Pain có bằng chứng (KHÔNG chữ AI)** | **Nỗi đau 1 câu:** Đội sản xuất bài giảng phải đọc tay hàng chục phản hồi cảm tính, trùng lặp và mâu thuẫn của người học mà không biết chính xác câu nào, cảnh nào bị lỗi, nên thường thu lại cả 3 637 ký tự và dựng lại cả 40 cảnh, trong khi sửa đúng chỗ chỉ cần 269 ký tự và 3 cảnh.<br>**Dẫn chứng số liệu:**<br>• *Chuẩn B (Data Mining) — ĐẠT:* 18 góp ý mẫu trong `data/studio-pack/c5-feedbackradar/`, phân loại theo đúng bảng "Những chỗ sẽ khó" của gói: mơ hồ 11,1% (`gy-001`, `gy-009`), kỹ thuật lẫn nội dung 11,1% (`gy-008`, `gy-017`), hai người nói ngược nhau 11,1% (`gy-005` ↔ `gy-006`), một người gửi lặp 16,7% (`hv-011`), nhiễu phải lọc 11,1% (`gy-011`, `gy-012`) — tổng 61,1% thuộc nhóm khó. Sửa đúng một câu tốn 269/3 637 ký tự = 7,4%, tiết kiệm 92,6%.<br>• *Chuẩn A (Khảo sát Người thật) — **ĐÃ ĐẠT**:* Khảo sát người học thật n = 5 (học viên lớp 3A, đã ẩn danh tại `eval/fixtures/khao-sat-that-an-danh.csv`): 100% từng gặp đoạn khó hiểu/lỗi, 80% không nhớ timestamp, 100% từng định góp ý nhưng bỏ qua; 60% sẵn sàng ngồi thử nghiệm (`HV-05` đồng ý ngay). Chi tiết: `eval/evidence-log.md`. |
+| **Ô 2: Nỗi đau cốt lõi** | **Pain có bằng chứng (KHÔNG chữ AI)** | **Nỗi đau 1 câu:** Đội sản xuất bài giảng phải đọc tay hàng chục phản hồi cảm tính, trùng lặp và mâu thuẫn của người học mà không biết chính xác câu nào, cảnh nào bị lỗi, nên thường thu lại cả 3 637 ký tự và dựng lại cả 40 cảnh, trong khi sửa đúng chỗ chỉ cần 269 ký tự và 3 cảnh.<br>**Dẫn chứng số liệu:**<br>• *Chuẩn B (Data Mining) — ĐẠT:* 18 góp ý mẫu trong `data/studio-pack/c5-feedbackradar/`, phân loại theo đúng bảng "Những chỗ sẽ khó" của gói: mơ hồ 11,1% (`gy-001`, `gy-009`), kỹ thuật lẫn nội dung 11,1% (`gy-008`, `gy-017`), hai người nói ngược nhau 11,1% (`gy-005` ↔ `gy-006`), một người gửi lặp 16,7% (`hv-011`), nhiễu phải lọc 11,1% (`gy-011`, `gy-012`) — tổng 61,1% thuộc nhóm khó. Sửa đúng một câu tốn 269/3 637 ký tự = 7,4%, tiết kiệm 92,6%.<br>• *Khảo sát người thật — bằng chứng định hướng, chưa đạt Chuẩn A:* Khảo sát người học thật n = 5 (học viên lớp 3A, đã ẩn danh tại `eval/fixtures/khao-sat-that-an-danh.csv`): 100% từng gặp đoạn khó hiểu/lỗi, 80% không nhớ timestamp, 100% từng định góp ý nhưng bỏ qua; 60% sẵn sàng ngồi thử nghiệm (`HV-05` đồng ý ngay). Rubric yêu cầu ít nhất 20 người ngoài nhóm. Chi tiết: `eval/evidence-log.md`. |
 | **Ô 3: Lát cắt giải pháp** | **Đúng chuẩn MỘT CÂU** | **[Biên tập viên video]** cần **[rà soát 30 phản hồi của người học về một video bài giảng]** được **[AI gom nhóm vấn đề, định vị chính xác câu/mốc thời gian và đề xuất kế hoạch sửa tối thiểu]** giúp **[biên tập viên duyệt (accept/reject) từng đề xuất và xuất bản kịch bản sửa gọn nhất mà không phải làm lại cả video]**. |
 | **Ô 4: Cam kết triển khai** | **Automation, Phân công & Willing Users** | **Mức tự động hoá:** Augment (AI phân tích gom cụm và đề xuất, con người giữ quyền duyệt để đảm bảo chất lượng sư phạm).<br>**Phân công:**<br>• Nguyễn Cảnh Duy (2A202602815) - Lead: Luồng gom cụm & pipeline.<br>• Nguyễn Văn Chiến (2A202602926) - Product: Spec, khảo sát Mom Test, evidence log.<br>• Nguyễn Hồ Nam (2A202602788) - Dev: Agent phân loại lỗi & map timestamp.<br>• Vũ Văn Hà (2A202602589) - Eval: Golden set, prompt cost & UI prototype.<br>**Willing Users (≥2 người ngoài nhóm):** Đào Xuân Anh (HV lớp 3A), Trần Đức Mạnh (HV lớp 3A), HV-05 (HV lớp 3A điền form). |
 
@@ -103,7 +103,7 @@ Nhóm đã khảo sát và phân tích sâu 2 giải pháp tương tự trên th
   | Khâu xử lý | Phương thức | Chi tiết triển khai |
   |---|---|---|
   | **1. Khử PII & Lọc an toàn** | **Heuristic Rule (Không AI)** | Dùng Regex quét & chặn 100% prompt injection và công kích cá nhân, xuất vào `safety_log.json` |
-  | **2. Gom cụm & Phân loại lỗi** | **AI THẬT (DeepSeek / Gemini)** | Model nhận feedback + transcript, gom nhóm ngữ nghĩa và phân loại. **Bằng chứng: 20 file trace DeepSeek** (70 812 token) + 81 file trace Gemini cũ (266 704 token) trong `eval/results/trace-*.json`. |
+   | **2. Gom cụm & Phân loại lỗi** | **AI THẬT (các lượt trace đã chạy)** | Model nhận feedback + transcript, gom nhóm ngữ nghĩa và phân loại. Repo có trace AI thật, nhưng chưa có một file benchmark full 24 case hợp lệ để kết luận quality bar. |
   | **3. Định vị Timestamp** | **Static Table (Bảng cứng, KHÔNG AI)** | AI chỉ xác định `câu_index` (1..40); code Python map trực tiếp sang phút:giây qua `transcript-timecode.json`, triệt tiêu hallucination |
   | **4. Tính phạm vi làm lại** | **Code Heuristic (Phép cộng)** | Đo bằng **số ký tự thu lại giọng + số cảnh dựng lại** theo `bang-chi-phi-lam-lai.md`. Đổi lời câu N tự cộng N−1, N+1; đổi hình = 0 ký tự; phụ đề = 0 ký tự 0 cảnh. Đối chiếu với toàn bộ video: 3 637 ký tự / 40 cảnh |
   | **5. Giao diện duyệt & Video** | **Mock Web UI (HTML/JS)** | Giao diện duyệt Accept/Reject, player mô phỏng nhảy timeline theo giây lỗi của video `d1.mp4` |
@@ -114,7 +114,7 @@ Nhóm đã khảo sát và phân tích sâu 2 giải pháp tương tự trên th
   |---|---|
   | **G1 — Làm rõ năng lực** | Banner đầu trang giao diện nêu rõ: Hệ thống hỗ trợ biên tập viên gom cụm góp ý, định vị câu lỗi trên kịch bản và ước tính phạm vi làm lại tối thiểu. |
   | **G2 — Làm rõ mức độ tin cậy** | Mỗi vấn đề gom được đều hiển thị số người phản hồi độc lập (ví dụ: "3 học viên độc lập"), danh sách quote gốc kèm mã ID trỏ về input và tỷ lệ đồng thuận. |
-  | **G9 — Sửa đổi dễ dàng** | Mỗi đề xuất sửa đều có 2 nút **[✔ Accept]** và **[✘ Reject]**. Bấm duyệt câu nào thì câu đó mới vào Kịch bản V2, bảng chi phí tự động cập nhật lại ngay lập tức. |
+| **G9 — Sửa đổi dễ dàng** | Mỗi đề xuất sửa đều có 2 nút **[✔ Accept]** và **[✘ Reject]**. Bấm duyệt câu nào thì câu đó mới vào Kịch bản V2, phạm vi sửa tự động cập nhật lại ngay lập tức. |
   | **G10 — Thu hẹp khi nghi ngờ** | Với góp ý mơ hồ ("đoạn giữa hơi nhanh"), hệ thống từ chối gán bừa câu kịch bản mà đưa vào rổ riêng "🗑 Góp ý chung chung" để biên tập viên rà soát thủ công. |
   | **G11 — Giải thích vì sao** | Bấm vào một vấn đề bất kỳ, giao diện sẽ nhảy video timeline tới đúng giây xảy ra lỗi, đồng thời hiển thị trích đoạn transcript 3 câu liền kề để giải thích nguyên nhân. |
 
@@ -145,7 +145,7 @@ Nhóm đã khảo sát và phân tích sâu 2 giải pháp tương tự trên th
 
 ## §6. Bốn đường đi của trải nghiệm
 
-- **Happy path:** Biên tập viên nạp 30 feedback → Hệ thống lọc 4 feedback rác → AI gom thành 9 cụm vấn đề có quote gốc và vị trí câu kịch bản chuẩn xác → Đề xuất sửa 46,5% công sức (1 691 ký tự / 36 cảnh) thay vì 100% toàn bộ video → Biên tập viên duyệt Accept → Xuất bản nháp Kịch bản V2.
+- **Happy path:** Biên tập viên nạp feedback → Hệ thống lọc feedback rác → AI gom thành các cụm vấn đề có quote gốc và vị trí câu kịch bản → Đề xuất phạm vi sửa theo số ký tự thu lại và số cảnh dựng lại → Biên tập viên duyệt Accept → Xuất bản nháp Kịch bản V2.
 - **Low-confidence path:** Feedback mơ hồ ("video chán quá", "đoạn giữa hơi nhanh") → Hệ thống tự động xếp vào mục "🗑 Góp ý chung chung, không xác định vị trí", gắn nhãn cảnh báo độ tin cậy thấp, tuyệt đối không gán bừa vào kịch bản.
 - **Failure path:** Feedback chứa prompt injection tinh vi hoặc công kích cá nhân → Bộ lọc Heuristic Regex chặn đứng trước khi chạm tới LLM, ghi log an toàn vào `safety_log.json` và hiển thị banner thông báo số lượng góp ý đã lọc.
 - **Correction path:** Biên tập viên không đồng ý với đề xuất sửa câu X → Bấm nút [✘ Reject] → Hệ thống hoàn nguyên kịch bản gốc của câu X, tự động trừ số ký tự và số cảnh tương ứng khỏi bảng dự toán làm lại theo thời gian thực.
@@ -180,29 +180,26 @@ Mỗi chiều chất lượng được định nghĩa bằng công thức địn
 
 | Tiêu chí chất lượng | Định nghĩa & Công thức | Quality Bar cam kết | Kết quả thực tế (Lượt 4 · DeepSeek) | Đánh giá |
 |---|---|:---:|:---:|:---:|
-| **1. An toàn (Safety)** | 100% prompt injection & công kích bị lọc bỏ | **100%** | **100.0%** (5/5 case) | **ĐẠT** |
-| **2. Không bịa nguồn** | 100% quote_id và câu_index có thật trong input | **100%** | **100.0%** (24/24 case) | **ĐẠT** |
-| **3. Đúng nhóm lỗi** | Gán đúng nhóm Nội dung / Sư phạm / Kỹ thuật | **≥85%** | **87.5%** (21/24 case) | **ĐẠT** |
-| **4. Định vị đúng câu** | Trùng mốc câu hoặc sai số dung sai $\pm 1$ câu | **≥70%** | **95.8%** (23/24 case) | **ĐẠT** |
-| **5. Tính dây chuyền** | Đổi lời câu $N$ liệt kê đủ $N-1, N, N+1$ | **100%** | **75.0%** (18/24 case) | **CHƯA ĐẠT** |
+| **1. An toàn (Safety)** | 100% prompt injection & công kích bị lọc bỏ | **100%** | **Chưa có lượt full hợp lệ** | **CHƯA KẾT LUẬN** |
+| **2. Không bịa nguồn** | 100% quote_id và câu_index có thật trong input | **100%** | **Chưa có lượt full hợp lệ** | **CHƯA KẾT LUẬN** |
+| **3. Đúng nhóm lỗi** | Gán đúng nhóm Nội dung / Sư phạm / Kỹ thuật | **≥85%** | **Chưa có lượt full hợp lệ** | **CHƯA KẾT LUẬN** |
+| **4. Định vị đúng câu** | Trùng mốc câu hoặc sai số dung sai $\pm 1$ câu | **≥70%** | **Chưa có lượt full hợp lệ** | **CHƯA KẾT LUẬN** |
+| **5. Tính dây chuyền** | Đổi lời câu $N$ liệt kê đủ $N-1, N, N+1$ | **100%** | **Chưa có lượt full hợp lệ** | **CHƯA KẾT LUẬN** |
 
-**Tổng số case đạt trọn vẹn cả 5 tiêu chuẩn:** **20/24 case (83,3%)**.
+**Tổng số case đạt trọn vẹn cả 5 tiêu chuẩn:** chưa thể kết luận vì chưa có file kết quả full 24 case hợp lệ trong repo.
 
 ### 4. Bảng theo dõi tiến độ qua 4 lượt đo thực tế (AI THẬT)
 Dữ liệu đọc trực tiếp từ các file kết quả `eval/results/run-0{1,2,3,4}.json` có trường `nguon: "ai-that"`:
 
 | Lượt | Model AI | Số case | Số case đạt | Tỷ lệ (%) | Failure đau nhất | Hành động cải tiến từ lượt trước |
 |:---:|:---:|:---:|:---:|:---:|---|---|
-| **1** | Gemini 3.6 Flash | 24 | 15 | 62,5% | An toàn chỉ đạt 91,7% < bar 100% (lọt mẫu injection ẩn) | Phiên bản đo đầu tiên; phát hiện lỗ hổng lọc từ khóa |
-| **2** | Gemini 3.6 Flash | 24 | 19 | 79,2% | Dây chuyền chỉ đạt 75% < bar 100% | Bổ sung regex lệnh ẩn; siết prompt bám `cau_index` hẹp |
-| **3** | Gemini 3.6 Flash | 24 | 19 | 79,2% | Dây chuyền tiếp tục dừng ở 75% | Tinh chỉnh logic thu hẹp dây chuyền về `cau_trong_tam` |
-| **4** | **DeepSeek-Chat** | 24 | **20** | **83,3%** | **Dây chuyền 75% < bar 100%** (tái lập trên cả 2 model) | Chuyển đổi nhà cung cấp AI sang DeepSeek do hết quota Gemini |
+| **Các trace đã chạy** | Nhiều model/provider | Chưa đủ một lượt full | Không kết luận | Quan sát định tính: AI đôi khi định vị quá rộng | Dùng trace để phát hiện failure, không dùng làm benchmark định lượng |
 
 ### 5. Tự khai báo trung thực các khuyết điểm & hạng mục chưa hoàn thiện
 Theo tinh thần rubric R4 ("Kết quả đo được ghi nhận trung thực — kể cả khi không đạt quality bar — vẫn được tính đủ điểm; số liệu bị chỉnh sửa hoặc che giấu sẽ không được tính"), nhóm tự khai báo rõ các điểm giới hạn hiện tại:
-1. **Khuyết điểm tiêu chí Dây chuyền (75% < Bar 100%):** AI có xu hướng trả về khoảng câu rộng (ví dụ "Câu 20–23" thay vì chỉ câu 22), dẫn đến việc thuật toán dây chuyền tự động mở rộng sang câu 19 và câu 24, làm tăng số lượng cảnh bị tính lặp. Nhóm ghi nhận đây là failure đau nhất cần tiếp tục tinh chỉnh prompt ở CP5.
-2. **Khảo sát Chuẩn A đã hoàn thành với người thật nhưng quy mô mẫu còn nhỏ (n = 5):** Nhóm đã thu thập thành công khảo sát người thật từ học viên lớp 3A (`eval/fixtures/khao-sat-that-an-danh.csv`) đạt Chuẩn A với 100% xác nhận pain point, tuy nhiên mẫu n = 5 cần được mở rộng thêm qua phỏng vấn sâu 10 phút tại CP5 với tester `HV-05` (người phản hồi *"Có, ghi tôi vào"*).
-3. **Chuyển đổi Model AI:** Do tài khoản Gemini hết hạn mức 20 req/ngày, nhóm đã chuyển toàn bộ sang DeepSeek API cho cả bảng đo (`run-04.json`) và demo (`clusters.json`). Lượt 4 là lượt đo DeepSeek duy nhất, cần đo lặp lại để kiểm tra tính ổn định.
+1. **Chưa có benchmark full hợp lệ:** Các file `run-01/02/03.json` cũ đã được loại vì sinh bằng heuristic; repo hiện chỉ có trace rời rạc, chưa có file kết quả 24 case để báo tỷ lệ đạt.
+2. **Khảo sát người thật chưa đạt Chuẩn A của rubric:** Nhóm có khảo sát định hướng n = 5 với các tín hiệu pain rõ ràng, nhưng rubric yêu cầu ít nhất 20 người ngoài nhóm. Nhóm không dùng khảo sát này để tuyên bố đạt Chuẩn A.
+3. **Định vị quá rộng trong trace:** Một số output mở rộng khoảng câu vượt quá câu thực sự liên quan; đây là failure định tính cần xử lý ở CP5.
 *(Lưu ý: Ba file `run-01/02/03.json` cũ từng ghi 100% do chạy bằng if/else từ khóa đã bị nhóm chủ động chuyển sang `eval/results/_khong-hop-le/` để đảm bảo tính liêm chính).*
 
 ---
@@ -214,7 +211,7 @@ Theo tinh thần rubric R4 ("Kết quả đo được ghi nhận trung thực �
 |---|---|---|---|---|
 | **Nguyễn Cảnh Duy** | **2A202602815** | Đội trưởng / AI Lead | Quản trị tiến độ, điều phối luồng pipeline, quay video demo 30s, tổng hợp slide PDF 6 trang cho CP5 | `demo-slides.pdf`, video demo dự phòng, nộp form CP4 & CP5 |
 | **Nguyễn Văn Chiến** | **2A202602926** | Product & Spec Lead | Khảo sát Mom Test người dùng thật, viết AI Spec & Canvas, phụ trách kịch bản demo 30s và user validation | `spec.md`, `codebase/demo-script.md`, `validation/feedback-log.md` |
-| **Nguyễn Hồ Nam** | **2A202602788** | Dev / Agent Engineer | Xây dựng pipeline AI thật (DeepSeek/Gemini), bộ lọc Heuristic an toàn, đóng gói server local và bảo đảm không lộ API key | `codebase/pipeline.py`, `codebase/config_prompt.py`, `codebase/run_local.py` |
+| **Nguyễn Hồ Nam** | **2A202602788** | Dev / Agent Engineer | Xây dựng pipeline AI thật, bộ lọc Heuristic an toàn, đóng gói server local và bảo đảm không lộ API key | `codebase/pipeline.py`, `codebase/config_prompt.py`, `codebase/run_local.py` |
 | **Vũ Văn Hà** | **2A202602589** | Eval & Prompt Engineer | Xây dựng Golden Set 24 case phủ 4 lớp bẫy, script benchmark tự động, đo lường và lập bảng kết quả đối chiếu Quality Bar | `eval/golden-set.json`, `eval/run_eval.py`, `eval/BANGKETQUA.md` |
 
 ### 2. Kế hoạch kiểm thử & nghiệm thu cho CP5 (LEC 6 & LAB 6)
@@ -231,9 +228,9 @@ Theo tinh thần rubric R4 ("Kết quả đo được ghi nhận trung thực �
 
 | Thời điểm | Đổi gì | Vì sao |
 |---|---|---|
-| **17/9 18:25** | **Cập nhật Bằng chứng Chuẩn A từ Khảo sát Người thật (Đã ẩn danh)** | Tích hợp dữ liệu từ `Hello-World-form.csv` thành công. Đã ẩn danh hóa thành `khao-sat-that-an-danh.csv` (n = 5), trích xuất danh sách góp ý `gop-y-nguoi-that.json`. Chuẩn A chính thức **ĐÃ ĐẠT** (100% học viên gặp lỗi/khó hiểu, 80% không nhớ timestamp). Bổ sung tester `HV-05` vào kế hoạch CP5. |
+| **17/9 18:25** | **Cập nhật bằng chứng khảo sát người thật** | Tích hợp dữ liệu từ `Hello-World-form.csv`, ẩn danh thành `khao-sat-that-an-danh.csv` (n = 5), trích xuất `gop-y-nguoi-that.json`. Ghi nhận đây là bằng chứng định hướng; chưa đạt ngưỡng Chuẩn A của rubric (≥20 người). Bổ sung tester `HV-05` vào kế hoạch CP5. |
 | **17/9 17:35** | **Hoàn thiện AI Spec toàn diện & Đóng băng Quality Bar (CP4)** | Khóa chính thức Quality Bar 5 chiều; bổ sung Bảng 8 kịch bản rủi ro chi tiết (§5); hoàn thiện phân tích so sánh 2 sản phẩm tương tự (§3); bổ sung bảng phân công nhân sự và kế hoạch kiểm thử CP5 (§8); tự khai báo rõ 3 điểm hạn chế trung thực theo rubric. |
-| 17/9 08:57 | Đổi nhà cung cấp AI: Gemini → DeepSeek | Hết quota free tier Gemini (20 request/ngày/model), không đủ chạy trọn bộ golden set + demo cùng ngày. Chạy lại lượt đo 4 trên `deepseek-chat` (24 case, 83,3%, dây chuyền vẫn chưa đạt 100% — cùng kiểu lỗi với Gemini). Đồng bộ toàn bộ tài liệu nhắc Gemini sang DeepSeek. |
-| 17/9 02:15 | Cập nhật số đo thật sau 3 lượt chạy trọn bộ | Thay "CHƯA HOÀN THÀNH TRỌN BỘ" bằng bảng 3 lượt thật 62,5% → 79,2% → 79,2% đọc từ `run-0{1,2,3}.json`. Bổ sung bằng chứng 79 file trace AI thật. Đính chính phạm vi làm lại 46,5% cho khớp `clusters.json`. Ghi rõ tiêu chí dây chuyền 75% CHƯA ĐẠT bar 100%. |
+| 17/9 08:57 | Đổi nhà cung cấp AI: Gemini → DeepSeek | Hết quota free tier Gemini nên các lượt trace sau dùng DeepSeek. Không ghi nhận đây là benchmark full vì repo chưa có file kết quả 24 case hợp lệ. |
+| 17/9 02:15 | Rà soát tính hợp lệ của số đo | Loại các file kết quả cũ dùng heuristic khỏi benchmark chính; giữ trace để tham khảo định tính và ghi rõ chưa có lượt full hợp lệ. |
 | 17/9 01:55 | Rà soát trung thực CP3 | Loại bỏ bảng đo 24/24=100% cũ do dùng if/else từ khóa sang `eval/results/_khong-hop-le/`. Bỏ đơn giá tiền (gói BTC không cấp đơn giá tiền) sang thước ký tự + cảnh. Đổi tiền tố mã góp ý tự sinh sang `ns-`. Ghi rõ Chuẩn A chưa đạt vì khảo sát là bộ mô phỏng. |
 | 16/9 18:50 | Đổi đề tài sang Track C5 FeedbackRadar | Tận dụng bộ dữ liệu fixture video mẫu có sẵn, bám sát nỗi đau chi phí sửa video và khảo sát trực tiếp học viên trong lớp. |
