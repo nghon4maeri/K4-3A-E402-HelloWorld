@@ -128,10 +128,15 @@ def build_docx(clusters, metadata, accepted_indices) -> bytes:
             if t.get("bad"):
                 rows.append((it, t))
 
-    cost = sum(it.get("price", 0) for it in accepted)
-    full = metadata.get("chiPhiLamLaiToanBo", 8000000)
-    savings = full - cost
-    savings_pct = round((savings / full) * 100, 1) if full else 0.0
+    # Phạm vi làm lại đo bằng KÝ TỰ + CẢNH, không quy ra tiền.
+    # Ban tổ chức không cấp đơn giá (spec.md §4, non-goal #4).
+    toan_bo = metadata.get("toanBoVideo", {}) or {}
+    tong_ky_tu_video = toan_bo.get("soKyTu", 3637)
+    tong_canh_video = toan_bo.get("soCanh", 40)
+    ky_tu = sum(it.get("kyTu", 0) for it in accepted)
+    canh = sum(it.get("canh", 0) for it in accepted)
+    pct_ky_tu = round(ky_tu / tong_ky_tu_video * 100, 1) if tong_ky_tu_video else 0.0
+    tiet_kiem_pct = round(100 - pct_ky_tu, 1)
 
     def p(text, bold=False, style=None):
         ppr = ""
@@ -157,13 +162,14 @@ def build_docx(clusters, metadata, accepted_indices) -> bytes:
     body.append(p(f"Ngày xuất: {datetime.now().strftime('%d/%m/%Y %H:%M')} · "
                   f"Từ {metadata.get('soGopYHopLe', len(clusters))} góp ý hợp lệ / {metadata.get('tongSoGopY', 30)} đầu vào · "
                   f"{metadata.get('soGopYBiChieuLoc', 0)} nhiễu đã lọc"))
-    body.append(p(f"{len(accepted)}/{len(clusters)} cụm được duyệt · Tổng ngân sách sửa: {cost:,}đ · "
-                  f"So với làm lại cả video {full:,}đ → tiết kiệm ~{savings_pct}%", bold=True))
+    body.append(p(f"{len(accepted)}/{len(clusters)} cụm được duyệt · Phạm vi làm lại: "
+                  f"{ky_tu} ký tự thu lại giọng / {tong_ky_tu_video} · {canh} cảnh dựng lại / {tong_canh_video} · "
+                  f"bằng {pct_ky_tu}% công thu giọng — tiết kiệm {tiet_kiem_pct}% so với làm lại cả video", bold=True))
 
     if not rows:
         body.append(p("(Chưa có câu nào được Accept — bấm ✔ trên bảng duyệt rồi xuất lại.)"))
     else:
-        table_rows = [hdr(["Mã câu", "Câu trong Kịch bản V2 (dự kiến)", "Vị trí video", "Cụm vấn đề", "Chi phí", "Trạng thái"])]
+        table_rows = [hdr(["Mã câu", "Câu trong Kịch bản V2 (dự kiến)", "Vị trí video", "Cụm vấn đề", "Phạm vi", "Trạng thái"])]
         for it, t in rows:
             table_rows.append(
                 "<w:tr>"
@@ -171,7 +177,7 @@ def build_docx(clusters, metadata, accepted_indices) -> bytes:
                 + cell(t["t"], width="5200")
                 + cell(f"{it.get('v')} · {it.get('cau')}")
                 + cell(it.get("title"), width="3600")
-                + cell(f"{it.get('price', 0):,}đ", width="1200")
+                + cell(f"{it.get('kyTu', 0)} ký tự · {it.get('canh', 0)} cảnh", width="1600")
                 + cell("Trong V2")
                 + "</w:tr>"
             )
@@ -181,7 +187,7 @@ def build_docx(clusters, metadata, accepted_indices) -> bytes:
                       for b in ("top", "left", "bottom", "right", "insideH", "insideV"))
             + "</w:tblBorders></w:tblPr>"
             + '<w:tblGrid>'
-            + '<w:gridCol w:w="1100"/><w:gridCol w:w="5200"/><w:gridCol w:w="1400"/><w:gridCol w:w="3600"/><w:gridCol w:w="1200"/><w:gridCol w:w="1200"/>'
+            + '<w:gridCol w:w="1100"/><w:gridCol w:w="5200"/><w:gridCol w:w="1400"/><w:gridCol w:w="3600"/><w:gridCol w:w="1600"/><w:gridCol w:w="1200"/>'
             + "</w:tblGrid>"
             + "".join(table_rows)
             + "</w:tbl>"
