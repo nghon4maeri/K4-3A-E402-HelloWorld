@@ -3,11 +3,11 @@
     "loai": "ai-that",
     "la_ai_that": true,
     "model": "deepseek-chat",
-    "thoi_gian_goi_giay": 4.67,
+    "thoi_gian_goi_giay": 5.73,
     "tokens": {
       "prompt": 3353,
-      "completion": 945,
-      "tong": 4298
+      "completion": 936,
+      "tong": 4289
     },
     "chi_phi_uoc_tinh_usd": 0.003964,
     "ly_do_fallback": null
@@ -26,31 +26,31 @@
       "suaMotLanPhuDe": 30000
     },
     "phamViLamLai": {
-      "soKyTuThuLai": 268,
+      "soKyTuThuLai": 295,
       "soCanhDungLai": 11,
-      "phanTramCongThu": 7.4,
-      "tietKiemPhanTram": 92.6
+      "phanTramCongThu": 8.1,
+      "tietKiemPhanTram": 91.9
     },
     "toanBoVideo": {
       "soKyTu": 3637,
       "soCanh": 40
     },
-    "thoiGianChayGiay": 6.5
+    "thoiGianChayGiay": 9.87
   },
   "clusters": [
     {
       "idx": 1,
       "cum_id": "cum-01",
       "color": "violet",
-      "title": "Phân biệt mô hình ngôn ngữ lớn và ứng dụng trò chuyện còn gây lẫn",
+      "title": "Lẫn lộn giữa mô hình ngôn ngữ lớn và ứng dụng trò chuyện",
       "loai": "Nội dung",
       "so": "1 người học",
       "v": "01:48",
       "cau": "Câu 18–39",
       "chat": "1 học viên độc lập",
-      "kyTu": 268,
+      "kyTu": 295,
       "canh": 3,
-      "phanTramCongThu": 7.4,
+      "phanTramCongThu": 8.1,
       "price": 600000,
       "type": "thu lời",
       "quotes": [
@@ -74,7 +74,7 @@
         {
           "n": 20,
           "t": "Ứng dụng trò chuyện nhận câu hỏi của bạn và có thể sử dụng mô hình ngôn ngữ lớn để tạo câu trả lời.",
-          "bad": false
+          "bad": true
         },
         {
           "n": 21,
@@ -89,7 +89,7 @@
         {
           "n": 23,
           "t": "Vì vậy, tên ứng dụng bạn đang mở chưa cho biết bên trong đang dùng mô hình nào.",
-          "bad": true
+          "bad": false
         },
         {
           "n": 39,
@@ -97,7 +97,7 @@
           "bad": false
         }
       ],
-      "fix": "Thu thêm 1-2 câu chốt ngay sau câu 23 để nhấn mạnh: ứng dụng trò chuyện là giao diện, còn mô hình ngôn ngữ lớn là thành phần xử lý văn bản bên trong; có thể chèn một ví dụ ngắn so sánh trực tiếp.",
+      "fix": "Thêm 1-2 câu chốt phân biệt rõ: mô hình ngôn ngữ lớn là phần xử lý văn bản, còn ứng dụng trò chuyện là giao diện người dùng; có thể chèn ngay sau câu 23 hoặc câu 39.",
       "cau_indices": [
         18,
         19,
@@ -108,21 +108,21 @@
         39
       ],
       "thuLai": [
-        22,
-        23,
-        24
+        19,
+        20,
+        21
       ],
       "cau_thu_lai": [
-        22,
-        23,
-        24
+        19,
+        20,
+        21
       ],
       "cau_dung_lai": [
-        22,
-        23,
-        24
+        19,
+        20,
+        21
       ],
-      "ghi_chu": "Người học xem lại hai lần vẫn thấy lẫn, nên cần câu chốt rõ ràng hơn."
+      "ghi_chu": "Người học xem lại vẫn thấy lẫn, cần câu chốt rõ ràng hơn."
     },
     {
       "idx": 2,
@@ -158,7 +158,7 @@
           "bad": true
         }
       ],
-      "fix": "Điều chỉnh khoảng dừng ở câu 35 về khoảng 3 giây, hoặc thêm đồng hồ đếm ngược trên màn hình để người học biết thời gian suy nghĩ.",
+      "fix": "Điều chỉnh thời lượng dừng ở câu 35: kéo dài thêm khoảng 2-3 giây để đủ suy nghĩ, nhưng không quá dài gây sốt ruột; có thể thêm đếm ngược trực quan.",
       "cau_indices": [
         35
       ],
@@ -167,12 +167,12 @@
       "cau_dung_lai": [
         35
       ],
-      "ghi_chu": "Hai người học có ý kiến trái chiều: một người thấy ngắn, một người thấy dài; nên chọn mức trung dung."
+      "ghi_chu": "Hai người học có ý kiến trái chiều (một người thấy ngắn, một người thấy dài), cần cân bằng."
     },
     {
       "idx": 3,
       "cum_id": "cum-03",
-      "color": "green",
+      "color": "red",
       "title": "Phụ đề lệch nhịp so với giọng đọc",
       "loai": "Kỹ thuật",
       "so": "1 người học",
@@ -192,17 +192,17 @@
         }
       ],
       "transcript": [],
-      "fix": "Rà soát và chỉnh lại timing phụ đề toàn video, ưu tiên các đoạn có tốc độ nói nhanh.",
+      "fix": "Rà soát và chỉnh lại timing phụ đề toàn video cho khớp với giọng đọc.",
       "cau_indices": [],
       "thuLai": [],
       "cau_thu_lai": [],
       "cau_dung_lai": [],
-      "ghi_chu": "Góp ý không chỉ rõ đoạn cụ thể nên không gán câu index."
+      "ghi_chu": "Góp ý không chỉ rõ câu cụ thể nên không định vị được câu nào."
     },
     {
       "idx": 4,
       "cum_id": "cum-04",
-      "color": "red",
+      "color": "green",
       "title": "Chữ trên màn hình nhỏ, khó đọc trên điện thoại",
       "loai": "Kỹ thuật",
       "so": "1 người học",
@@ -258,7 +258,7 @@
           "bad": false
         }
       ],
-      "fix": "Phóng to chữ trên slide ở đoạn ba thẻ ứng dụng, tăng cỡ chữ tối thiểu để đọc được trên màn hình điện thoại.",
+      "fix": "Phóng to chữ trên slide ở đoạn ba thẻ ứng dụng (câu 24-30), đặc biệt phần mô tả thẻ, để đọc được trên điện thoại.",
       "cau_indices": [
         24,
         25,

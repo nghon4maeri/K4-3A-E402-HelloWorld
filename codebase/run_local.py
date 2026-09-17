@@ -432,7 +432,7 @@ class CustomHandler(http.server.SimpleHTTPRequestHandler):
 def run_server():
     os.chdir(DIRECTORY)
     with socketserver.TCPServer(("", PORT), CustomHandler) as httpd:
-        url = f"http://localhost:{PORT}/index.html"
+        url = f"http://localhost:{PORT}/home.html"
         print("=" * 60)
         print("  FEEDBACKRADAR LOCAL WEB SERVER")
         print(f"  Đang chạy tại: {url}")
