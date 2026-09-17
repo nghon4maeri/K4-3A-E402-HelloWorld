@@ -76,7 +76,7 @@ Loại: [x] Tính năng mới
   | Khâu xử lý | Phương thức | Chi tiết triển khai |
   |---|---|---|
   | **1. Khử PII & Lọc an toàn** | **Heuristic Rule (Không AI)** | Dùng Regex quét & chặn 100% prompt injection và công kích cá nhân, xuất vào `safety_log.json` |
-  | **2. Gom cụm & Phân loại lỗi** | **AI THẬT (Gemini)** | `gemini-3.6-flash` nhận feedback + transcript, gom nhóm ngữ nghĩa và phân loại. **Bằng chứng: 18 file `eval/results/trace-*.json`** kèm prompt, response nguyên văn, model, số token |
+  | **2. Gom cụm & Phân loại lỗi** | **AI THẬT (DeepSeek)** | Model nhận feedback + transcript, gom nhóm ngữ nghĩa và phân loại. **Bằng chứng: 20 file trace DeepSeek** (70 812 token) + 81 file trace Gemini cũ (266 704 token, còn giữ làm tham chiếu lịch sử) trong `eval/results/trace-*.json`, mỗi file kèm prompt, response nguyên văn, model, số token. Cả demo và bảng đo hiện dùng cùng model `deepseek-chat` (đổi từ Gemini do hết quota free tier) |
   | **3. Định vị Timestamp** | **Static Table (Bảng cứng, KHÔNG AI)** | AI chỉ xác định `câu_index` (1..40); code Python map trực tiếp sang phút:giây qua `transcript-timecode.json`, triệt tiêu hallucination |
   | **4. Tính phạm vi làm lại** | **Code (Phép cộng)** | Đo bằng **số ký tự thu lại giọng + số cảnh dựng lại** — đúng thước ban tổ chức cấp trong `bang-chi-phi-lam-lai.md`. **Gói dữ liệu KHÔNG cấp đơn giá tiền**, nên nhóm không quy ra tiền. Đổi lời câu N tự cộng N−1, N+1; đổi hình = 0 ký tự; phụ đề = 0 ký tự 0 cảnh. Đối chiếu với toàn bộ video: 3 637 ký tự / 40 cảnh |
   | **5. Giao diện duyệt & Video** | **Mock Web UI (HTML/JS)** | Giao diện duyệt Accept/Reject, player mô phỏng nhảy timeline theo giây lỗi của video `d1.mp4` |
@@ -117,13 +117,30 @@ Loại: [x] Tính năng mới
   | Định vị đúng câu | Trùng câu, hoặc lệch tối đa ±1 | ≥70% |
   | Dây chuyền | Đổi lời câu N ⇒ liệt kê đủ N−1, N, N+1 | 100% |
 
-- **Kết quả đo — CHƯA HOÀN THÀNH TRỌN BỘ.** Hạn mức Gemini free tier là 20 request/ngày/model; bộ đo gọi AI một lần mỗi case nên dừng ở case 19 vì lỗi 429. Bộ đo **cố ý dừng thay vì chấm nốt bằng heuristic**, và không ghi file kết quả cho lượt dở dang — nên không có số bịa nào trong `eval/results/`.
+- **Kết quả đo — ĐÃ CHẠY TRỌN BỘ 4 LƯỢT BẰNG AI THẬT.** Lượt 1–3 chạy trên Gemini (lịch sử, trước khi hết quota); lượt 4 chạy trên **DeepSeek** — model pipeline hiện tại đang thật sự dùng. Số đọc thẳng từ `eval/results/run-0{1,2,3,4}.json`, mỗi file có `nguon: "ai-that"`:
 
-  **Đã chứng minh được:** AI chạy thật ở quyết định trung tâm — **18 lời gọi thành công**, mỗi lời gọi có `eval/results/trace-*.json` kèm prompt, response nguyên văn, model `gemini-3.6-flash`, số token. Pipeline chạy trọn 5 khâu end-to-end sinh `clusters.json`. Bộ lọc nhiễu đạt **100% recall, 100% precision** trên 100 góp ý có đáp án.
+  | Lượt | Model | Thử | Đạt đủ 5 tiêu chí | % | Failure đau nhất | Đổi gì từ lượt trước |
+  |---|---|---|---|---|---|---|
+  | 1 | Gemini | 24 | 15 | 62,5% | An toàn 91,7% < bar 100% | — |
+  | 2 | Gemini | 24 | 19 | 79,2% | Dây chuyền 75% < bar 100% | Thêm mẫu regex lệnh ẩn; siết prompt bám `cau_index` hẹp |
+  | 3 | Gemini | 24 | 19 | 79,2% | Dây chuyền 75% | Thu hẹp tính dây chuyền về `cau_trong_tam` khi đổi lời |
+  | **4** | **DeepSeek** | 24 | **20** | **83,3%** | **Dây chuyền 75% < bar 100%** | Đổi nhà cung cấp AI (Gemini → DeepSeek, hết quota); không đổi prompt/logic |
 
-  **Chưa có số cho 5 chiều chất lượng trên.** Cách chạy nốt và phân tích định tính: `eval/BANGKETQUA.md`.
+  | Tiêu chí | Bar | Lượt 4 (DeepSeek) | Trạng thái |
+  |---|---|---|---|
+  | An toàn | 100% | 100% | **Đạt** |
+  | Không bịa nguồn | 100% | 100% | **Đạt** |
+  | Đúng nhóm lỗi | ≥85% | 87,5% | **Đạt** |
+  | Định vị đúng câu (±1) | ≥70% | 95,8% | **Đạt** |
+  | Dây chuyền | 100% | 75,0% | **CHƯA ĐẠT** |
 
-  > Ba file `eval/results/run-01/02/03.json` từng khai 24/24 = 100% đã bị loại sang `eval/results/_khong-hop-le/` — chúng do bản `run_eval.py` cũ sinh ra, bản đó chấm bằng cây `if/else` từ khoá và không gọi AI lần nào.
+  **Bằng chứng AI chạy thật:** 20 file trace DeepSeek (70 812 token) + 81 file trace Gemini cũ (266 704 token, tham chiếu lịch sử) trong `eval/results/trace-*.json`, mỗi file có prompt + response nguyên văn, model, số token. Bộ lọc nhiễu đạt **100% recall, 100% precision** trên 100 góp ý có đáp án (kiểm lại bằng `check_safety` trên cả 100 dòng `dapAn.locBo`).
+
+  **Chưa đạt:** tiêu chí dây chuyền (75%, tái lập trên cả hai model) — AI trả `cau_index` rộng, lẫn "câu phải đổi lời" với "đoạn ngữ cảnh". Phân tích đầy đủ case trượt + việc chưa làm: `eval/BANGKETQUA.md`.
+
+  > **Lưu ý model:** kể từ 17/9, cả demo (`clusters.json`) lẫn bảng đo (`run-04.json`) đều chạy `deepseek-chat` — đổi hẳn khỏi Gemini vì hết quota free tier (20 request/ngày/model). Lượt 4 là lượt đo DeepSeek duy nhất tính đến nay, chưa lặp lại để kiểm dao động.
+
+  > Ba file `run-01/02/03.json` **đời cũ nhất** từng khai 24/24 = 100% đã bị loại sang `eval/results/_khong-hop-le/` — chúng do bản `run_eval.py` cũ chấm bằng cây `if/else` từ khoá, không gọi AI lần nào. Ba file cùng tên hiện dùng trong bảng trên là số đo thật bằng Gemini, sinh lúc 02:04–02:09 ngày 17/9, giữ làm tham chiếu lịch sử.
 
 ## §8. Phân công & Kế hoạch
 - Xem phân công chi tiết tại `README.md`.
@@ -132,5 +149,7 @@ Loại: [x] Tính năng mới
 ## §9. Changelog
 | Thời điểm | Đổi gì | Vì sao |
 |---|---|---|
+| 17/9 08:57 | **Đổi nhà cung cấp AI: Gemini → DeepSeek** | Hết quota free tier Gemini (20 request/ngày/model), không đủ chạy trọn bộ golden set + demo cùng ngày. Chạy lại lượt đo 4 trên `deepseek-chat` (24 case, 83,3%, dây chuyền vẫn chưa đạt 100% — cùng kiểu lỗi với Gemini). Đồng bộ toàn bộ tài liệu nhắc Gemini (`demo-script.md`, `codebase/index.html`, `eval/run_eval.py` comment) sang DeepSeek để lời thuyết minh video khớp với output terminal thật. |
+| 17/9 02:15 | **Cập nhật số đo thật sau 3 lượt chạy trọn bộ** | (1) §7: thay "CHƯA HOÀN THÀNH TRỌN BỘ" bằng bảng 3 lượt thật 62,5% → 79,2% → 79,2% đọc từ `run-0{1,2,3}.json` — bản trước viết lúc chưa chạy xong, đã lạc hậu. (2) §4: sửa "18 trace" → **79 trace**; ghi rõ demo dùng `gemini-3.6-flash` còn bảng đo dùng `gemini-3.5-flash-lite` (quota). (3) `BANGKETQUA.md`: đính chính phạm vi làm lại **8 cụm · 481 ký tự · 13,2%** → **9 cụm · 1 691 ký tự · 46,5%** cho khớp `clusters.json`; con số cũ không lần chạy nào tái lập được. (4) Ghi rõ tiêu chí **dây chuyền 75% CHƯA ĐẠT bar 100%** thay vì để trống. |
 | 17/9 01:55 | **Rà soát trung thực CP3** | (1) Bảng đo 24/24=100% bị loại — do bản `run_eval.py` cũ chấm bằng từ khoá, không gọi AI; ba file run-0*.json chuyển sang `eval/results/_khong-hop-le/`. (2) Bỏ đơn giá tiền 50k/150k/30k/8 triệu — gói BTC **không cấp đơn giá tiền**, comment cũ ghi "theo bang-chi-phi-lam-lai.md" là quy sai nguồn; đổi sang đúng thước ký tự + cảnh. (3) 12 góp ý nhóm tự sinh trong `sample-feedback.json` dùng trùng mã `gy-019`→`gy-030` của BTC với nội dung khác hẳn — đổi sang tiền tố `ns-`. (4) Đổi model sang `gemini-3.6-flash` (bản 2.5 đã ngừng cấp cho user mới). (5) Ghi rõ Chuẩn A chưa đạt vì khảo sát là bộ mô phỏng. |
 | 16/9 18:50 | Đổi đề tài sang Track C5 FeedbackRadar | Tận dụng bộ dữ liệu fixture video mẫu có sẵn, bám sát nỗi đau chi phí sửa video và khảo sát trực tiếp học viên trong lớp |
