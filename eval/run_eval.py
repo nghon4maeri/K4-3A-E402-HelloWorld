@@ -9,7 +9,7 @@ Chạy trọn bộ golden set (eval/golden-set.json) QUA AI THẬT và chấm 4 
   4. Định vị câu    — đúng câu hoặc lệch tối đa ±1                     (bar ≥70%)
 
 QUAN TRỌNG — TÍNH TRUNG THỰC CỦA SỐ ĐO:
-  Script này BẮT BUỘC gọi AI thật. Nếu chưa có GEMINI_API_KEY hoặc API lỗi,
+  Script này BẮT BUỘC gọi AI thật. Nếu chưa có DEEPSEEK_API_KEY hoặc API lỗi,
   nó DỪNG LẠI chứ không tự chấm bằng heuristic — vì số đo bằng heuristic
   không phải số đo của hệ thống AI, ghi vào bảng kết quả là sai sự thật.
 
@@ -108,6 +108,12 @@ NHOM_TUONG_DUONG = {
 
 
 def nhom_khop(mong_doi, thuc_te):
+    """So nhãn đáp án (kho-hieu, loi-ky-thuat…) với nhãn AI trả về.
+
+    Prompt yêu cầu AI trả nhãn tiếng Việt có chú thích, ví dụ
+    "Sư phạm (tốc độ/giọng)". So khớp chính xác sẽ trượt oan, nên ở đây
+    chỉ cần nhãn AI BẮT ĐẦU BẰNG một trong các biến thể được chấp nhận.
+    """
     if not mong_doi:
         return True
     if not thuc_te:
@@ -116,7 +122,10 @@ def nhom_khop(mong_doi, thuc_te):
     b = str(thuc_te).strip().lower()
     if a == b:
         return True
-    return b in NHOM_TUONG_DUONG.get(a, set())
+    for bien_the in NHOM_TUONG_DUONG.get(a, set()):
+        if b == bien_the or b.startswith(bien_the):
+            return True
+    return False
 
 
 def cham_case(case, ket_qua_ai, bi_loc_ids):
@@ -217,16 +226,16 @@ def run_benchmark():
     args = ap.parse_args()
 
     # --- CHẶN: không có key thì dừng, KHÔNG tự chấm bằng heuristic ---
-    if not os.environ.get("GEMINI_API_KEY", "").strip():
+    if not os.environ.get("DEEPSEEK_API_KEY", "").strip():
         print("=" * 65)
-        print("  DỪNG — CHƯA CÓ GEMINI_API_KEY")
+        print("  DỪNG — CHƯA CÓ DEEPSEEK_API_KEY")
         print("=" * 65)
         print("  Bảng đo CP3 phải là số đo của AI thật. Chấm bằng heuristic")
         print("  rồi ghi vào bảng là sai sự thật, và rubric loại số liệu đó.")
         print("")
         print("  Cách khắc phục:")
-        print("    1. Lấy key miễn phí: https://aistudio.google.com/apikey")
-        print("    2. Dán vào dòng GEMINI_API_KEY= trong codebase/.env")
+        print("    1. Lấy key tại: https://platform.deepseek.com/api_keys")
+        print("    2. Dán vào dòng DEEPSEEK_API_KEY= trong codebase/.env")
         print("    3. Chạy lại: python eval/run_eval.py")
         print("=" * 65)
         sys.exit(1)
@@ -242,7 +251,7 @@ def run_benchmark():
 
     print("=" * 65)
     print("  BENCHMARK FEEDBACKRADAR — LƯỢT %d" % args.lan)
-    print("  %d case · model=%s" % (len(cases), os.environ.get("GEMINI_MODEL", "gemini-3.6-flash")))
+    print("  %d case · model=%s" % (len(cases), os.environ.get("DEEPSEEK_MODEL", "deepseek-chat")))
     print("=" * 65)
 
     ket = []

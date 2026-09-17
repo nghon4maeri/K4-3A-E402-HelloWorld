@@ -2,8 +2,5 @@
 #
 # Cài:  python -m pip install -r codebase/requirements.txt
 
-google-genai>=1.0.0      # SDK Gemini — dùng ở khâu gom cụm (quyết định trung tâm)
+openai>=1.40.0           # SDK OpenAI-compatible — dùng để gọi DeepSeek
 python-dotenv>=1.0.0     # đọc khoá API từ codebase/.env
-
-# Dự phòng, chỉ cần nếu chuyển lại sang OpenAI:
-# openai>=1.40.0

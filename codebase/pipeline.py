@@ -3,7 +3,7 @@ FeedbackRadar AI Pipeline
 Author: Nguyen Ho Nam (Dev / Agent Engineer - Batch 04 · Room E402)
 Features:
   1. Heuristic Safety Screening (Regex Prompt Injection & Personal Attack Filter)
-  2. Gemini AI Call (Structured JSON Output via Google GenAI SDK)
+    2. DeepSeek AI Call (Structured JSON Output via OpenAI-compatible SDK)
   3. Anti-Hallucination Guardrails (Quote verification & Static Sentence Index)
   4. Static Timecode Mapping (Hard-coded lookup from fixture, strictly no AI-hallucinated timestamps)
   5. Minimal Rework Cost Calculation (Chain effect on adjacent sentences)
@@ -13,6 +13,7 @@ Features:
 import os
 import sys
 import json
+import math
 import time
 from pathlib import Path
 from typing import Dict, List, Any, Optional
@@ -35,14 +36,15 @@ from config_prompt import (
     build_user_prompt
 )
 
-# Optional dotenv loading
+BASE_DIR = Path(__file__).resolve().parent
+
+# Load the project-local environment file regardless of the terminal cwd.
 try:
     from dotenv import load_dotenv
-    load_dotenv()
+    load_dotenv(BASE_DIR / ".env")
 except ImportError:
     pass
 
-BASE_DIR = Path(__file__).resolve().parent
 DATA_DIR = BASE_DIR / "data"
 
 TRANSCRIPT_PATH = DATA_DIR / "transcript-timecode.json"
@@ -70,48 +72,71 @@ def load_inputs():
 
 # Ghi lại nguồn của kết quả lần chạy gần nhất — để clusters.json và UI
 # nói đúng sự thật là kết quả do AI sinh hay do dữ liệu dựng sẵn.
-LAST_RUN = {"nguon": None, "model": None, "so_giay": None, "tokens": None, "ly_do_fallback": None}
+LAST_RUN = {"nguon": None, "model": None, "so_giay": None, "tokens": None,
+            "chi_phi_usd": None, "ly_do_fallback": None}
+PROCESS_BUDGET_USED_USD = 0.0
 
 
-def run_gemini_call(safe_feedbacks: List[Dict[str, Any]], transcript: List[Dict[str, Any]]) -> Dict[str, Any]:
+def estimate_request_cost(user_content: str, max_output_tokens: int) -> float:
+    """Ước tính bảo thủ chi phí request để không vượt ngân sách process."""
+    input_tokens = math.ceil((len(SYSTEM_PROMPT) + len(user_content)) / 4)
+    input_price = float(os.environ.get("DEEPSEEK_INPUT_PRICE_USD_PER_MILLION", "0.28"))
+    output_price = float(os.environ.get("DEEPSEEK_OUTPUT_PRICE_USD_PER_MILLION", "0.42"))
+    return (input_tokens * input_price + max_output_tokens * output_price) / 1_000_000
+
+
+def run_deepseek_call(safe_feedbacks: List[Dict[str, Any]], transcript: List[Dict[str, Any]]) -> Dict[str, Any]:
     """
-    Gọi Gemini API để gom cụm và định vị câu — ĐÂY LÀ QUYẾT ĐỊNH TRUNG TÂM.
+    Gọi DeepSeek API để gom cụm và định vị câu — ĐÂY LÀ QUYẾT ĐỊNH TRUNG TÂM.
 
     Nếu không có key hoặc API lỗi, trả về bộ dữ liệu DỰNG SẴN để luồng không gãy
     khi test offline. Bộ dựng sẵn KHÔNG phải kết quả AI — mọi đầu ra đều được
     đánh dấu nguon="fallback-dung-san" để không ai nhầm.
     """
-    api_key = os.environ.get("GEMINI_API_KEY", "").strip()
-    model_name = os.environ.get("GEMINI_MODEL", "gemini-3.6-flash").strip()
+    api_key = os.environ.get("DEEPSEEK_API_KEY", "").strip()
+    model_name = os.environ.get("DEEPSEEK_MODEL", "deepseek-chat").strip()
+    base_url = os.environ.get("DEEPSEEK_BASE_URL", "https://api.deepseek.com").strip()
+    max_budget_usd = float(os.environ.get("DEEPSEEK_MAX_BUDGET_USD", "0.5"))
+    max_output_tokens = int(os.environ.get("DEEPSEEK_MAX_OUTPUT_TOKENS", "2048"))
+    request_timeout = float(os.environ.get("DEEPSEEK_REQUEST_TIMEOUT_SECONDS", "45"))
 
     if not api_key:
         LAST_RUN.update(nguon="fallback-dung-san", model=None,
-                        ly_do_fallback="Chưa điền GEMINI_API_KEY trong codebase/.env")
-        canh_bao_fallback("Chưa điền GEMINI_API_KEY trong codebase/.env")
+                        ly_do_fallback="Chưa điền DEEPSEEK_API_KEY trong codebase/.env")
+        canh_bao_fallback("Chưa điền DEEPSEEK_API_KEY trong codebase/.env")
         return run_fallback_engine(safe_feedbacks, transcript)
 
-    print(f"[*] Khởi tạo kết nối Google GenAI với model: {model_name}...")
+    print(f"[*] Khởi tạo kết nối DeepSeek với model: {model_name}...")
     user_content = build_user_prompt(safe_feedbacks, transcript)
+    estimated_cost = estimate_request_cost(user_content, max_output_tokens)
 
     loi_cuoi = None
     for lan in range(1, 4):
+        global PROCESS_BUDGET_USED_USD
+        if PROCESS_BUDGET_USED_USD + estimated_cost > max_budget_usd:
+            loi_cuoi = (f"Ngân sách process {max_budget_usd:.2f} USD không đủ cho "
+                        f"request tiếp theo (ước tính {estimated_cost:.4f} USD)")
+            break
+        PROCESS_BUDGET_USED_USD += estimated_cost
         try:
-            from google import genai
-            client = genai.Client(api_key=api_key)
+            from openai import OpenAI
+            client = OpenAI(api_key=api_key, base_url=base_url,
+                            timeout=request_timeout, max_retries=0)
 
             t0 = time.time()
-            response = client.models.generate_content(
+            response = client.chat.completions.create(
                 model=model_name,
-                contents=user_content,
-                config={
-                    "system_instruction": SYSTEM_PROMPT,
-                    "response_mime_type": "application/json",
-                    "temperature": 0.2
-                }
+                messages=[
+                    {"role": "system", "content": SYSTEM_PROMPT},
+                    {"role": "user", "content": user_content},
+                ],
+                response_format={"type": "json_object"},
+                temperature=0.2,
+                max_tokens=max_output_tokens,
             )
             so_giay = round(time.time() - t0, 2)
 
-            raw_text = response.text.strip()
+            raw_text = (response.choices[0].message.content or "").strip()
             # Loại bỏ markdown fence nếu model có bọc lại
             if raw_text.startswith("```json"):
                 raw_text = raw_text[7:]
@@ -124,19 +149,21 @@ def run_gemini_call(safe_feedbacks: List[Dict[str, Any]], transcript: List[Dict[
 
             tokens = None
             try:
-                um = response.usage_metadata
+                um = response.usage
                 tokens = {
-                    "prompt": um.prompt_token_count,
-                    "completion": um.candidates_token_count,
-                    "tong": um.total_token_count,
+                    "prompt": um.prompt_tokens,
+                    "completion": um.completion_tokens,
+                    "tong": um.total_tokens,
                 }
             except Exception:
                 pass
 
             LAST_RUN.update(nguon="ai-that", model=model_name, so_giay=so_giay,
-                            tokens=tokens, ly_do_fallback=None)
+                            tokens=tokens, chi_phi_usd=round(estimated_cost, 6),
+                            ly_do_fallback=None)
 
-            print(f"[✓] Gọi Gemini THÀNH CÔNG — model={model_name} · {so_giay}s"
+            print(f"[✓] Gọi DeepSeek THÀNH CÔNG — model={model_name} · {so_giay}s"
+                f" · ước tính ${estimated_cost:.4f}"
                   + (f" · {tokens['tong']} tokens" if tokens else ""))
 
             # Lưu trace để chứng minh AI chạy thật (bằng chứng cho CP3)
@@ -151,10 +178,15 @@ def run_gemini_call(safe_feedbacks: List[Dict[str, Any]], transcript: List[Dict[
                 print(f"    Thử lại sau {cho}s...")
                 time.sleep(cho)
 
-    LAST_RUN.update(nguon="fallback-dung-san", model=None,
-                    ly_do_fallback=f"Gọi Gemini lỗi sau 3 lần: {loi_cuoi}")
-    canh_bao_fallback(f"Gọi Gemini lỗi sau 3 lần: {loi_cuoi}")
+    LAST_RUN.update(nguon="fallback-dung-san", model=None, chi_phi_usd=None,
+                    ly_do_fallback=f"Gọi DeepSeek lỗi sau 3 lần: {loi_cuoi}")
+    canh_bao_fallback(f"Gọi DeepSeek lỗi sau 3 lần: {loi_cuoi}")
     return run_fallback_engine(safe_feedbacks, transcript)
+
+
+def run_gemini_call(safe_feedbacks: List[Dict[str, Any]], transcript: List[Dict[str, Any]]) -> Dict[str, Any]:
+    """Tên tương thích ngược cho evaluator và các script cũ."""
+    return run_deepseek_call(safe_feedbacks, transcript)
 
 
 def canh_bao_fallback(ly_do: str):
@@ -170,8 +202,8 @@ def canh_bao_fallback(ly_do: str):
     print("!!  KHÔNG dùng lần chạy này để quay video CP3 hay ghi vào bảng đo.")
     print("!!")
     print("!!  Cách chạy AI thật:")
-    print("!!    1. Lấy key miễn phí: https://aistudio.google.com/apikey")
-    print("!!    2. Dán vào dòng GEMINI_API_KEY= trong codebase/.env")
+    print("!!    1. Lấy key tại: https://platform.deepseek.com/api_keys")
+    print("!!    2. Dán vào dòng DEEPSEEK_API_KEY= trong codebase/.env")
     print("!!    3. Chạy lại lệnh này")
     print("!" * 65)
     print("")
@@ -467,8 +499,19 @@ def build_final_clusters(ai_output: Dict[str, Any], feedbacks: List[Dict[str, An
                     "bad": (cn == cau_trong_tam)
                 })
                 
-        # 4. Tính chi phí
-        cost_info = calculate_cluster_cost(cau_list, c.get("loai_sua", "thu lời"), tr_map)
+        # 4. Tính phạm vi làm lại
+        # Sửa sau lượt đo 1-2 (failure "day_chuyen"): dây chuyền phải tính trên
+        # CÂU THẬT SỰ ĐỔI LỜI, không phải trên cả cụm. AI thường trả cau_index
+        # rộng (cả đoạn liên quan) nhưng chỉ cau_trong_tam mới là câu cần sửa lời.
+        # Tính trên cả cụm làm phạm vi bị thổi lên: 269 -> 563 ký tự ở case-14.
+        # Chỉ thu hẹp khi ĐỔI LỜI. Đổi hình thì vẫn phải dựng lại cả cụm cảnh,
+        # vì lỗi hình ảnh trải trên toàn đoạn (ví dụ chữ nhỏ ở cả 3 thẻ).
+        loai_sua_c = c.get("loai_sua", "thu lời")
+        if "thu lời" in loai_sua_c and cau_trong_tam and cau_trong_tam in cau_list:
+            cau_tinh = [cau_trong_tam]
+        else:
+            cau_tinh = cau_list
+        cost_info = calculate_cluster_cost(cau_tinh, loai_sua_c, tr_map)
         
         # 5. UI Item
         final_clusters.append({
@@ -526,9 +569,9 @@ def run_pipeline():
         json.dump(safety_log, f, ensure_ascii=False, indent=2)
     print(f" -> Đã ghi log an toàn vào: {SAFETY_LOG_PATH.name}")
 
-    # Bước 3: Gọi AI Gemini (hoặc Fallback Engine)
+    # Bước 3: Gọi AI DeepSeek (hoặc Fallback Engine)
     print("\n[Bước 3/5] Kích hoạt Agent AI phân tích ngữ nghĩa, gom cụm và phân loại...")
-    ai_raw_output = run_gemini_call(safe_feedbacks, transcript)
+    ai_raw_output = run_deepseek_call(safe_feedbacks, transcript)
     
     # Bước 4: Chống hallucination, map timecode cứng và tính chi phí
     print("\n[Bước 4/5] Áp dụng Guardrails, đối chiếu timecode cứng và tính chi phí tối thiểu...")
@@ -552,6 +595,7 @@ def run_pipeline():
             "model": LAST_RUN.get("model"),
             "thoi_gian_goi_giay": LAST_RUN.get("so_giay"),
             "tokens": LAST_RUN.get("tokens"),
+            "chi_phi_uoc_tinh_usd": LAST_RUN.get("chi_phi_usd"),
             "ly_do_fallback": LAST_RUN.get("ly_do_fallback"),
             "_ghiChu": (
                 "Khâu gom cụm + phân loại + định vị câu do AI thật quyết định."

@@ -41,7 +41,15 @@ PROMPT_INJECTION_PATTERNS = [
     r"you\s+are\s+now\s+a",
     r"jailbreak",
     r"system\s*prompt",
-    r"ghi\s+vào\s+báo\s+cáo\s+là\s+không\s+có\s+vấn\s+đề"
+    r"ghi\s+vào\s+báo\s+cáo\s+là\s+không\s+có\s+vấn\s+đề",
+    # Bổ sung sau lượt đo 1 — case-11 lọt lưới:
+    r"(hệ\s*thống|system)\s+(chú\s*ý|lưu\s*ý|attention)",
+    r"đặt\s+toàn\s+bộ\s+.{0,30}(mức|về)",
+    r"tự\s+(chấp\s+nhận|duyệt)\s+mọi",
+    r"đừng\s+phân\s+tích",
+    r"trả\s+về\s+.{0,15}(rỗng|empty)",
+    r"(in|xuất|print)\s+ra\s+.{0,25}prompt",
+    r"prompt\s+(hệ\s*thống|của\s+bạn)",
 ]
 
 PERSONAL_ATTACK_PATTERNS = [
@@ -57,7 +65,13 @@ PERSONAL_ATTACK_PATTERNS = [
     r"vô\s+học",
     r"không\s+đáng\s+học",
     r"tệ\s+hại",
-    r"phát\s+âm\s+như\s+hạch"
+    r"phát\s+âm\s+như\s+hạch",
+    # Bổ sung sau lượt đo 1 — case-13 lọt lưới:
+    r"(đọc|giảng|nói)\s+như\s+(máy|robot|cái\s+máy)",
+    r"chán\s+không\s+chịu\s+được",
+    r"lười\s+biếng",
+    r"làm\s+cho\s+có",
+    r"(là\s+)?biết\s+(ngay\s+)?không\s+có\s+chuyên\s+môn",
 ]
 
 def check_safety(text: str) -> Tuple[bool, str]:
@@ -99,7 +113,7 @@ def filter_feedbacks(feedbacks: List[Dict[str, Any]]) -> Tuple[List[Dict[str, An
     return safe_list, safety_log
 
 # ==========================================
-# 3. GEMINI SYSTEM PROMPT & JSON SCHEMA
+# 3. DEEPSEEK SYSTEM PROMPT & JSON SCHEMA
 # ==========================================
 SYSTEM_PROMPT = """Bạn là Chuyên gia Phân tích Góp ý & Tối ưu Sản xuất Bài giảng (FeedbackRadar Agent).
 Nhiệm vụ của bạn là nhận danh sách các góp ý của người học về một video bài giảng, đối chiếu với danh sách câu trong kịch bản (kèm câu index 1..40), sau đó:
@@ -147,7 +161,7 @@ OUTPUT PHẢI LÀ JSON THUẦN TÚY (Pure JSON, không bọc ```json ``` hay b�
 """
 
 def build_user_prompt(feedbacks: List[Dict[str, Any]], transcript: List[Dict[str, Any]]) -> str:
-    """Tạo prompt đưa cho Gemini gồm danh sách feedback an toàn và danh sách câu kịch bản"""
+    """Tạo prompt đưa cho DeepSeek gồm danh sách feedback an toàn và danh sách câu kịch bản"""
     fb_text = "\n".join([
         f"- ID: {item.get('id')} | Người gửi: {item.get('nguoiGui')} | Kênh: {item.get('kenh')} | Nội dung: \"{item.get('noiDung')}\""
         for item in feedbacks
