@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bài 1 · Day01 — Phân biệt AI, Machine Learning, Generative AI &amp; LLM</title>
+<link rel="stylesheet" href="player.css">
+<style>
+  :root {
+    --bg: #f2f4f8;
+    --card: #ffffff;
+    --ink: #16203c;
+    --muted: #6b7592;
+    --line: #e2e6ef;
+    --soft: #fafbfe;
+    --primary: #3a5bff;
+    --primary-dark: #2743d9;
+    --primary-bg: #e8efff;
+    --ok: #16a34a;
+    --ok-bg: #e9f9ef;
+    --no: #dc2626;
+    --no-bg: #fdeeee;
+    --warn: #d97706;
+    --warn-bg: #fff6e5;
+    --violet: #7c3aed;
+    --violet-bg: #f2ebfe;
+    --chain: #ea580c;
+    --rail: 60px;
+    --side: 300px;
+    --shadow: 0 1px 2px rgba(22,32,60,.06), 0 8px 24px rgba(22,32,60,.06);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0f1420; --card: #171d2c; --ink: #e8ecf6; --muted: #9aa5be;
+      --line: #2a3346; --soft: #1d2434; --primary-bg: #1e2a52;
+      --ok-bg: #14301f; --no-bg: #3a1a1a; --warn-bg: #362713; --violet-bg: #2a1f45;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.25);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0f1420; --card: #171d2c; --ink: #e8ecf6; --muted: #9aa5be;
+    --line: #2a3346; --soft: #1d2434; --primary-bg: #1e2a52;
+    --ok-bg: #14301f; --no-bg: #3a1a1a; --warn-bg: #362713; --violet-bg: #2a1f45;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.25);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg); color: var(--ink); font-size: 14px;
+    height: 100vh; overflow: hidden;
+  }
+  .tnum { font-variant-numeric: tabular-nums; }
+  button { font-family: inherit; }
+
+  /* ---------- TOPBAR ---------- */
+  .top {
+    height: 56px; background: var(--card); border-bottom: 1px solid var(--line);
+    display: flex; align-items: center; gap: 14px; padding: 0 16px;
+  }
+  .top .back {
+    width: 32px; height: 32px; border-radius: 8px; border: none; background: transparent;
+    color: var(--muted); cursor: pointer; font-size: 17px; flex-shrink: 0;
+  }
+  .top .back:hover { background: var(--soft); color: var(--ink); }
+  .top .title { font-weight: 700; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .top .spacer { flex: 1; }
+  .prog { display: flex; align-items: center; gap: 9px; flex-shrink: 0; }
+  .prog .lab { font-size: 13px; color: var(--muted); }
+  .prog .track { width: 130px; height: 6px; border-radius: 999px; background: var(--line); overflow: hidden; }
+  .prog .track > i { display: block; height: 100%; width: 0; background: var(--primary); border-radius: 999px; }
+  .top .act {
+    background: transparent; border: none; color: var(--ink); font-size: 13px; font-weight: 600;
+    cursor: pointer; padding: 7px 11px; border-radius: 8px; display: inline-flex; align-items: center; gap: 6px;
+    white-space: nowrap;
+  }
+  .top .act:hover { background: var(--soft); }
+  .avatar {
+    width: 34px; height: 34px; border-radius: 50%; background: var(--primary); color: #fff;
+    display: grid; place-items: center; font-weight: 700; font-size: 14px; flex-shrink: 0;
+  }
+  @media (max-width: 900px) { .prog, .top .act .txt { display: none; } }
+
+  /* ---------- LAYOUT ---------- */
+  .shell { display: flex; height: calc(100vh - 56px); }
+
+  /* --- sidebar --- */
+  .side {
+    width: var(--side); flex-shrink: 0; background: var(--card);
+    border-right: 1px solid var(--line); overflow-y: auto;
+  }
+  .side.hide { display: none; }
+  .side-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 16px 12px;
+  }
+  .side-head h2 { font-size: 12px; letter-spacing: .07em; text-transform: uppercase; color: var(--muted); }
+  .side-head button { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 15px; }
+  .grp { border-top: 1px solid var(--line); }
+  .grp > .gh {
+    display: flex; align-items: center; justify-content: space-between; width: 100%;
+    padding: 13px 16px; background: none; border: none; cursor: pointer;
+    font-size: 14px; font-weight: 700; color: var(--ink); text-align: left;
+  }
+  .grp > .gh:hover { background: var(--soft); }
+  .grp > .gh .ar { color: var(--muted); font-size: 12px; transition: transform .15s; }
+  .grp.open > .gh .ar { transform: rotate(90deg); }
+  .grp .body { display: none; padding-bottom: 6px; }
+  .grp.open .body { display: block; }
+
+  .lesson {
+    display: flex; align-items: center; gap: 10px; width: 100%;
+    padding: 9px 16px 9px 14px; background: none; border: none; cursor: pointer;
+    text-align: left; font-size: 13.5px; color: var(--ink); border-left: 3px solid transparent;
+  }
+  .lesson:hover { background: var(--soft); }
+  .lesson.on { background: var(--soft); border-left-color: var(--no); font-weight: 700; color: var(--no); }
+  .lesson .ic { flex-shrink: 0; font-size: 13px; color: var(--muted); }
+  .lesson.on .ic { color: var(--no); }
+  .lesson .nm { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .lesson .rt { font-size: 12px; color: var(--muted); flex-shrink: 0; font-weight: 600; }
+  .lesson.on .rt { color: var(--no); }
+  .lesson .flag {
+    font-size: 11px; font-weight: 700; color: var(--warn); background: var(--warn-bg);
+    border-radius: 999px; padding: 2px 7px; flex-shrink: 0;
+  }
+  .lab-row { background: var(--soft); }
+
+  /* --- main --- */
+  .main { flex: 1; overflow-y: auto; padding: 18px 22px 40px; min-width: 0; }
+  .stagewrap {
+    background: var(--card); border: 1px solid var(--line); border-radius: 14px;
+    box-shadow: var(--shadow); overflow: hidden; max-width: 960px; margin: 0 auto;
+  }
+  .slide {
+    background: #fff; border-bottom: 1px solid var(--line); padding: 22px 26px 26px; color: #0f2044;
+  }
+  .slide .kicker {
+    display: flex; justify-content: space-between; align-items: center; gap: 12px;
+    font-size: 11px; font-weight: 800; letter-spacing: .12em; color: #d61f4e; margin-bottom: 10px;
+  }
+  .slide .kicker .org { color: #8592b5; letter-spacing: .04em; font-weight: 700; }
+  .slide h1 { text-align: center; font-size: 26px; margin-bottom: 22px; color: #0f2044; }
+  .cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .col { display: flex; flex-direction: column; align-items: center; gap: 0; }
+  .box {
+    border: 1.5px solid #b9cbe8; border-radius: 8px; padding: 11px 10px; width: 100%;
+    text-align: center; font-size: 13.5px; font-weight: 600; background: #fff;
+  }
+  .link { width: 2px; height: 20px; background: #3f6fb5; }
+  .link.red { background: #d61f4e; }
+  .out { border-radius: 8px; padding: 12px 10px; width: 100%; text-align: center; background: #f4f8fd; }
+  .out .cap { font-size: 12px; font-weight: 800; letter-spacing: .06em; color: #d61f4e; margin-bottom: 8px; }
+  .out .chip { display: inline-block; border: 1.5px solid #b9cbe8; border-radius: 6px; padding: 5px 14px; font-size: 13px; background: #fff; }
+  .out .bars i { display: block; height: 3px; background: #d61f4e; border-radius: 2px; margin: 0 auto 5px; }
+  .out .pic { height: 46px; display: grid; place-items: center; }
+  @media (max-width: 720px) {
+    .cols { grid-template-columns: 1fr; }
+    .slide h1 { font-size: 20px; }
+  }
+
+  .undervideo { padding: 14px 18px; }
+  .lesson-meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 4px; }
+  .lesson-meta h3 { font-size: 16px; }
+  .tag { font-size: 11px; font-weight: 700; border-radius: 999px; padding: 3px 9px; }
+  .tag.v { background: var(--violet-bg); color: var(--violet); }
+  .tag.g { background: var(--ok-bg); color: var(--ok); }
+  .sub { color: var(--muted); font-size: 13px; line-height: 1.6; }
+
+  /* --- khối góp ý --- */
+  .fbbox {
+    margin-top: 16px; border: 1px solid var(--line); border-radius: 12px;
+    background: var(--soft); padding: 14px 16px; max-width: 960px; margin-left: auto; margin-right: auto;
+  }
+  .fbbox h4 { font-size: 14px; margin-bottom: 4px; }
+  .fbrow { display: flex; gap: 10px; align-items: flex-start; margin-top: 12px; }
+  .fbrow textarea {
+    flex: 1; min-height: 62px; resize: vertical; padding: 10px 12px; font-size: 13px; line-height: 1.55;
+    border: 1px solid var(--line); border-radius: 10px; background: var(--card); color: var(--ink);
+    font-family: inherit;
+  }
+  .btn {
+    display: inline-flex; align-items: center; gap: 7px; border: none; cursor: pointer;
+    font-weight: 700; font-size: 13.5px; border-radius: 10px; padding: 10px 16px; transition: .15s;
+  }
+  .btn-primary { background: var(--primary); color: #fff; }
+  .btn-primary:hover:not(:disabled) { background: var(--primary-dark); }
+  .btn-ghost { background: var(--card); color: var(--ink); border: 1px solid var(--line); }
+  .btn-ghost:hover { border-color: var(--primary); color: var(--primary); }
+  .btn:disabled { opacity: .45; cursor: not-allowed; }
+  .sent { color: var(--ok); font-size: 12.5px; font-weight: 700; margin-top: 8px; }
+
+  /* --- rail phải --- */
+  .rail {
+    width: var(--rail); flex-shrink: 0; background: var(--card); border-left: 1px solid var(--line);
+    display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 12px 0;
+  }
+  .rail button {
+    width: 46px; padding: 8px 2px; background: none; border: none; cursor: pointer;
+    color: var(--muted); font-size: 10.5px; line-height: 1.35; border-radius: 9px;
+    display: flex; flex-direction: column; align-items: center; gap: 4px; position: relative;
+  }
+  .rail button .gi { font-size: 17px; }
+  .rail button:hover { background: var(--soft); color: var(--ink); }
+  .rail button.on { background: var(--primary-bg); color: var(--primary); font-weight: 700; }
+  .rail .sep { width: 30px; height: 1px; background: var(--line); margin: 6px 0; }
+  .rail .dot {
+    position: absolute; top: 4px; right: 5px; min-width: 16px; height: 16px; padding: 0 4px;
+    border-radius: 999px; background: var(--no); color: #fff; font-size: 10px; font-weight: 800;
+    display: grid; place-items: center;
+  }
+  .rail button.fr { color: var(--primary); }
+  .rail button.fr:hover { background: var(--primary-bg); }
+  @media (max-width: 780px) { .rail { display: none; } }
+
+  /* --- panel phải --- */
+  .panel {
+    width: 340px; flex-shrink: 0; background: var(--card); border-left: 1px solid var(--line);
+    overflow-y: auto; padding: 16px; display: none;
+  }
+  .panel.open { display: block; }
+  .panel h3 { font-size: 14px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+  .panel h3 button { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 15px; }
+  .panel .tline {
+    display: flex; gap: 9px; padding: 8px 9px; font-size: 13px; line-height: 1.55; cursor: pointer;
+    border-radius: 8px;
+  }
+  .panel .tline:hover { background: var(--soft); }
+  .panel .tline .n { color: var(--muted); font-weight: 700; min-width: 20px; flex-shrink: 0; }
+  .panel .tline .at { color: var(--muted); font-size: 11.5px; flex-shrink: 0; }
+  @media (max-width: 1100px) { .panel { position: fixed; right: var(--rail); top: 56px; bottom: 0; z-index: 40; box-shadow: var(--shadow); } }
+
+  .note { font-size: 12px; color: var(--muted); line-height: 1.6; }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <button class="back" onclick="history.length>1?history.back():null" title="Quay lại">←</button>
+  <span class="title">Bài 1 · Day01</span>
+  <span class="spacer"></span>
+  <div class="prog">
+    <span class="lab tnum" id="progLab">0/28 bài</span>
+    <span class="track"><i id="progFill"></i></span>
+  </div>
+  <button class="act" onclick="alert('Phần hỏi đáp với AI không thuộc phạm vi bài này.')">✦ <span class="txt">Đặt câu hỏi với AI</span></button>
+  <button class="act" onclick="focusFeedback()">✍ <span class="txt">Gửi góp ý</span></button>
+  <span class="avatar">N</span>
+</header>
+
+<div class="shell">
+
+  <!-- ================= SIDEBAR ================= -->
+  <aside class="side" id="side">
+    <div class="side-head">
+      <h2>Nội dung bài học</h2>
+      <button onclick="document.getElementById('side').classList.add('hide')" title="Ẩn danh sách">✕</button>
+    </div>
+
+    <div class="grp">
+      <button class="gh" onclick="this.parentElement.classList.toggle('open')">Slides <span class="ar">›</span></button>
+      <div class="body">
+        <button class="lesson"><span class="ic">▤</span><span class="nm">Slide ngày 01 (PDF)</span></button>
+      </div>
+    </div>
+
+    <div class="grp lab-row">
+      <button class="gh" onclick="this.parentElement.classList.toggle('open')">
+        <span>⚗ Lab 01 — Nền tảng LLM API</span><span class="ar">›</span>
+      </button>
+      <div class="body">
+        <button class="lesson"><span class="ic">›</span><span class="nm">Hướng dẫn cài đặt</span></button>
+      </div>
+    </div>
+
+    <div class="grp open">
+      <button class="gh" onclick="this.parentElement.classList.toggle('open')">Videos <span class="ar">›</span></button>
+      <div class="body" id="videoList"></div>
+    </div>
+
+    <div class="grp">
+      <button class="gh" onclick="this.parentElement.classList.toggle('open')">KC &amp; Luyện tập <span class="ar">›</span></button>
+      <div class="body">
+        <button class="lesson"><span class="ic">✎</span><span class="nm">Bài tập cuối buổi</span></button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ================= MAIN ================= -->
+  <main class="main">
+    <div class="stagewrap">
+      <!-- slide tĩnh minh hoạ nội dung bài, khớp khung hình đầu video -->
+      <div class="slide" id="slide">
+        <div class="kicker">
+          <span>NGÀY 01 · AI, MACHINE LEARNING, GENERATIVE AI &amp; LLM</span>
+          <span class="org">● VinUni · AI in Action 20K</span>
+        </div>
+        <h1>Ba yêu cầu, ba kiểu đầu ra</h1>
+        <div class="cols">
+          <div class="col">
+            <div class="box">✉ Phân loại email</div>
+            <div class="link"></div>
+            <div class="box">Xử lý ?</div>
+            <div class="link red"></div>
+            <div class="out">
+              <div class="cap">NHÃN</div>
+              <span class="chip">Thư rác</span>
+            </div>
+          </div>
+          <div class="col">
+            <div class="box">Viết trả lời khách</div>
+            <div class="link"></div>
+            <div class="box">Xử lý ?</div>
+            <div class="link red"></div>
+            <div class="out">
+              <div class="cap">ĐOẠN VĂN</div>
+              <div class="bars"><i style="width:88%"></i><i style="width:96%"></i><i style="width:70%"></i></div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="box">Tạo ảnh minh họa</div>
+            <div class="link"></div>
+            <div class="box">Xử lý ?</div>
+            <div class="link red"></div>
+            <div class="out">
+              <div class="cap">ẢNH MỚI</div>
+              <div class="pic">
+                <svg width="92" height="44" viewBox="0 0 92 44" aria-hidden="true">
+                  <polyline points="4,40 30,14 50,30 68,10 88,40" fill="none" stroke="#d61f4e" stroke-width="2.4"/>
+                  <circle cx="74" cy="12" r="4" fill="#1d4ed8"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- player dùng chung với index.html -->
+      <div id="playerMount"></div>
+
+      <div class="undervideo">
+        <div class="lesson-meta">
+          <h3 id="vTitle">Phân biệt AI, Machine Learning, Generative AI &amp; LLM</h3>
+          <span class="tag v">Video 1/6</span>
+          <span class="tag g" id="vLen">4:11</span>
+        </div>
+        <p class="sub">Bài giảng d1 · 40 câu thoại có bảng timecode. Bấm một câu ở tab Transcript để nhảy thẳng tới giây đó.</p>
+      </div>
+    </div>
+
+    <!-- khối gửi góp ý — đây là nguồn dữ liệu đầu vào của FeedbackRadar -->
+    <section class="fbbox" id="fbbox">
+      <h4>Góp ý về video này</h4>
+      <p class="sub">Góp ý của bạn được gom cùng góp ý của các bạn khác, rồi chuyển cho biên tập viên xử lý.</p>
+      <div class="fbrow">
+        <textarea id="fbText" placeholder="Ví dụ: đoạn phân biệt mô hình ngôn ngữ lớn với ứng dụng trò chuyện em xem hai lần vẫn thấy lẫn…"></textarea>
+        <button class="btn btn-primary" id="fbSend" onclick="sendFeedback()">Gửi</button>
+      </div>
+      <p class="sent" id="fbSent" hidden></p>
+      <p class="note" style="margin-top:10px">
+        Góp ý gửi ở đây được lưu tạm trong trình duyệt để demo. Biên tập viên mở
+        <b>FeedbackRadar</b> ở thanh phải để gom cụm và lên kế hoạch sửa.
+      </p>
+    </section>
+  </main>
+
+  <!-- ================= PANEL PHẢI ================= -->
+  <aside class="panel" id="panel">
+    <h3><span id="panelTitle">Transcript</span>
+      <button onclick="closePanel()" title="Đóng">✕</button></h3>
+    <div id="panelBody"></div>
+  </aside>
+
+  <!-- ================= RAIL PHẢI ================= -->
+  <nav class="rail">
+    <button id="tabTranscript" onclick="openPanel('transcript')"><span class="gi">▤</span>Transcript</button>
+    <button id="tabNote" onclick="openPanel('note')"><span class="gi">✎</span>Ghi chú</button>
+    <button id="tabDoc" onclick="openPanel('doc')"><span class="gi">🗎</span>Tài liệu</button>
+    <div class="sep"></div>
+    <button class="fr" id="tabFR" onclick="goFeedbackRadar()" title="Mở FeedbackRadar — gom cụm góp ý của người học">
+      <span class="gi">📡</span>FeedbackRadar
+      <span class="dot" id="frDot" hidden>0</span>
+    </button>
+  </nav>
+</div>
+
+<script src="player.js"></script>
+<script>
+'use strict';
+
+var $ = function (id) { return document.getElementById(id); };
+var esc = function (s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+};
+
+/* Danh sách video trong sidebar — khớp bài Day01 */
+var VIDEOS = [
+  { t: 'Phân biệt AI, Machine Learning, Generative AI & LLM', len: '4:11', on: true },
+  { t: 'Lịch sử AI từ 1950–nay', len: '4 phút' },
+  { t: 'Cách LLM sinh ra văn bản', len: '4 phút' },
+  { t: 'How Transformer works', len: '' },
+  { t: 'Attention', len: '4 phút' },
+  { t: 'Token và context', len: '5 phút' }
+];
+
+$('videoList').innerHTML = VIDEOS.map(function (v, i) {
+  return '<button class="lesson' + (v.on ? ' on' : '') + '"' +
+         (v.on ? '' : ' onclick="notReady()"') + '>' +
+           '<span class="ic">▷</span>' +
+           '<span class="nm">' + esc(v.t) + '</span>' +
+           (v.on ? '<span class="flag">Đang học</span>'
+                 : (v.len ? '<span class="rt">' + esc(v.len) + '</span>' : '')) +
+         '</button>';
+}).join('');
+
+function notReady() {
+  alert('Bản demo chỉ có video 1 (d1.mp4). Các video khác chưa được nạp vào gói dữ liệu.');
+}
+
+/* ---------- player dùng chung ---------- */
+var player = FRPlayer.create($('playerMount'), {
+  showTranscript: false,
+  onTime: function (sec, line) {
+    if (line) markProgress(line.cau);
+  }
+});
+
+FRPlayer.loadTranscript().then(function (lines) {
+  if (!lines.length) return;
+  var last = lines[lines.length - 1];
+  $('vLen').textContent = FRPlayer.toClock(FRPlayer.toSec(last.ketThuc || last.batDau));
+});
+
+/* ---------- tiến độ xem ---------- */
+var seen = 0;
+function markProgress(cau) {
+  if (cau <= seen) return;
+  seen = cau;
+  var pct = Math.min(100, seen / 40 * 100);
+  $('progFill').style.width = pct + '%';
+  $('progLab').textContent = Math.round(seen / 40 * 28) + '/28 bài';
+}
+
+/* ---------- panel phải ---------- */
+var openTab = null;
+function openPanel(kind) {
+  if (openTab === kind) { closePanel(); return; }
+  openTab = kind;
+  ['tabTranscript', 'tabNote', 'tabDoc'].forEach(function (id) { $(id).classList.remove('on'); });
+  $('panel').classList.add('open');
+
+  if (kind === 'transcript') {
+    $('tabTranscript').classList.add('on');
+    $('panelTitle').textContent = 'Transcript · 40 câu';
+    FRPlayer.loadTranscript().then(function (lines) {
+      $('panelBody').innerHTML = lines.map(function (l) {
+        return '<div class="tline" data-sec="' + FRPlayer.toSec(l.batDau) + '">' +
+                 '<span class="n tnum">' + l.cau + '</span>' +
+                 '<span>' + esc(l.loi) + '</span>' +
+                 '<span class="at tnum">' + FRPlayer.toClock(FRPlayer.toSec(l.batDau)) + '</span>' +
+               '</div>';
+      }).join('');
+    });
+  } else if (kind === 'note') {
+    $('tabNote').classList.add('on');
+    $('panelTitle').textContent = 'Ghi chú của bạn';
+    $('panelBody').innerHTML =
+      '<textarea id="noteArea" style="width:100%;min-height:240px;padding:11px;border:1px solid var(--line);' +
+      'border-radius:10px;background:var(--soft);color:var(--ink);font-family:inherit;font-size:13px;line-height:1.6" ' +
+      'placeholder="Ghi chú riêng của bạn về video này…"></textarea>' +
+      '<p class="note" style="margin-top:8px">Ghi chú lưu trong trình duyệt của bạn.</p>';
+    try {
+      var na = $('noteArea');
+      na.value = localStorage.getItem('fr-note-d1') || '';
+      na.addEventListener('input', function () {
+        try { localStorage.setItem('fr-note-d1', na.value); } catch (e) {}
+      });
+    } catch (e) {}
+  } else {
+    $('tabDoc').classList.add('on');
+    $('panelTitle').textContent = 'Tài liệu bài học';
+    $('panelBody').innerHTML =
+      '<div class="note" style="line-height:1.9">' +
+      '<div>🗎 <a href="../data/vlearn-pack/slides/d1-slide-hackathon.pdf" target="_blank">Slide ngày 01 (PDF)</a></div>' +
+      '<div>🗎 <a href="../data/studio-pack/c5-feedbackradar/video-mau/kich-ban-d1.md" target="_blank">Kịch bản d1 (Markdown)</a></div>' +
+      '<div>🗎 <a href="../data/studio-pack/c5-feedbackradar/video-mau/transcript-d1.txt" target="_blank">Transcript thuần văn bản</a></div>' +
+      '<div>🗎 <a href="../data/studio-pack/c5-feedbackradar/video-mau/cau-timecode-d1.csv" target="_blank">Bảng câu ↔ timecode (CSV)</a></div>' +
+      '</div>';
+  }
+}
+function closePanel() {
+  openTab = null;
+  $('panel').classList.remove('open');
+  ['tabTranscript', 'tabNote', 'tabDoc'].forEach(function (id) { $(id).classList.remove('on'); });
+}
+
+/* bấm một câu trong transcript -> nhảy video tới giây đó */
+$('panelBody').addEventListener('click', function (e) {
+  var row = e.target.closest('.tline');
+  if (row) player.seekTo(parseFloat(row.dataset.sec));
+});
+
+/* ---------- gửi góp ý ---------- */
+var FB_KEY = 'fr-feedbacks-d1';
+
+function readFeedbacks() {
+  try { return JSON.parse(localStorage.getItem(FB_KEY) || '[]'); }
+  catch (e) { return []; }
+}
+
+function sendFeedback() {
+  var el = $('fbText');
+  var txt = (el.value || '').trim();
+  if (!txt) { el.focus(); return; }
+  var list = readFeedbacks();
+  list.push({
+    nguoiGui: 'hv-' + String(Math.floor(Math.random() * 900) + 100),
+    noiDung: txt,
+    kenh: 'khao-sat',
+    thoiDiem: new Date().toISOString()
+  });
+  try { localStorage.setItem(FB_KEY, JSON.stringify(list)); } catch (e) {}
+  el.value = '';
+  var s = $('fbSent');
+  s.hidden = false;
+  s.textContent = '✔ Đã gửi. Hiện có ' + list.length + ' góp ý đang chờ biên tập viên xử lý.';
+  refreshDot();
+}
+
+function refreshDot() {
+  var n = readFeedbacks().length;
+  var dot = $('frDot');
+  dot.hidden = !n;
+  dot.textContent = n;
+  $('tabFR').title = n
+    ? 'Mở FeedbackRadar — ' + n + ' góp ý đang chờ gom cụm'
+    : 'Mở FeedbackRadar — gom cụm góp ý của người học';
+}
+
+function focusFeedback() {
+  $('fbbox').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  $('fbText').focus();
+}
+
+/* ---------- sang FeedbackRadar ---------- */
+function goFeedbackRadar() {
+  var list = readFeedbacks();
+  if (list.length) {
+    /* Chuyển góp ý sang index.html qua localStorage — index đọc key này
+       và đổ sẵn vào ô nhập, biên tập viên chỉ việc bấm Phân tích. */
+    try {
+      localStorage.setItem('fr-handoff', JSON.stringify({
+        from: 'home', kichBan: 'd1', gopY: list, at: Date.now()
+      }));
+    } catch (e) {}
+  }
+  location.href = 'index.html' + (list.length ? '?from=home' : '');
+}
+
+window.addEventListener('DOMContentLoaded', function () {
+  try {
+    var th = localStorage.getItem('fr-theme');
+    if (th) document.documentElement.setAttribute('data-theme', th);
+  } catch (e) {}
+  refreshDot();
+});
+</script>
+</body>
+</html>

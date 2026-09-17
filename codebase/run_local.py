@@ -29,6 +29,7 @@ if sys.stdout and hasattr(sys.stdout, "reconfigure"):
 
 PORT = 8000
 DIRECTORY = Path(__file__).resolve().parent
+REPO_DATA = DIRECTORY.parent / "data"   # gói dữ liệu đề bài (video mẫu, slide, transcript)
 
 TRANSCRIPT_PATH = DIRECTORY / "data" / "transcript-timecode.json"
 SAMPLE_FEEDBACK_PATH = DIRECTORY / "data" / "sample-feedback.json"
@@ -269,7 +270,83 @@ class CustomHandler(http.server.SimpleHTTPRequestHandler):
         if parsed.path == "/export_docx":
             self._export_docx(parse_qs(parsed.query))
             return
+        if self.headers.get("Range") and self._serve_range():
+            return
         super().do_GET()
+
+    def _serve_range(self) -> bool:
+        """Phục vụ HTTP Range cho file tĩnh — trình duyệt cần cái này để tua video.
+
+        SimpleHTTPRequestHandler không hỗ trợ Range, nên <video> không seek được
+        và Safari từ chối phát hẳn. Trả True nếu đã tự xử lý xong request.
+        """
+        m = re.match(r"bytes=(\d*)-(\d*)$", self.headers.get("Range", "").strip())
+        if not m:
+            return False
+        local = Path(self.translate_path(self.path))
+        if not local.is_file():
+            return False
+
+        size = local.stat().st_size
+        start_s, end_s = m.group(1), m.group(2)
+        if start_s:
+            start = int(start_s)
+            end = int(end_s) if end_s else size - 1
+        elif end_s:                      # dạng "bytes=-500": 500 byte cuối
+            start, end = max(0, size - int(end_s)), size - 1
+        else:
+            return False
+        end = min(end, size - 1)
+        if start > end:
+            self.send_response(416)
+            self.send_header("Content-Range", f"bytes */{size}")
+            self.end_headers()
+            return True
+
+        self.send_response(206)
+        self.send_header("Content-Type", self.guess_type(str(local)))
+        self.send_header("Content-Range", f"bytes {start}-{end}/{size}")
+        self.send_header("Content-Length", str(end - start + 1))
+        self.send_header("Accept-Ranges", "bytes")
+        super().end_headers()   # gọi thẳng lớp cha để không thêm Accept-Ranges lần hai
+        with open(local, "rb") as f:
+            f.seek(start)
+            remaining = end - start + 1
+            while remaining > 0:
+                chunk = f.read(min(64 * 1024, remaining))
+                if not chunk:
+                    break
+                try:
+                    self.wfile.write(chunk)
+                except (BrokenPipeError, ConnectionResetError):
+                    break   # người xem tua sang chỗ khác, bỏ dở là bình thường
+                remaining -= len(chunk)
+        return True
+
+    def end_headers(self):
+        if self.path.endswith(".mp4"):
+            self.send_header("Accept-Ranges", "bytes")
+        super().end_headers()
+
+    def translate_path(self, path):
+        """Cho phép trang web đọc gói dữ liệu ngoài codebase/ (video mẫu, slide, transcript).
+
+        Trình duyệt chuẩn hoá "../data/..." thành "/data/...", mà thư mục gốc của
+        server là codebase/ nên đường dẫn đó 404. Ở đây map riêng tiền tố /data/
+        sang thư mục data/ của repo — trừ hai file pipeline thật sự nằm trong
+        codebase/data/ thì vẫn ưu tiên bản trong codebase.
+        """
+        clean = urlparse(path).path
+        if clean.startswith("/data/"):
+            rel = clean[len("/data/"):]
+            local = DIRECTORY / "data" / rel
+            if local.is_file():
+                return str(local)
+            repo_file = (REPO_DATA / rel).resolve()
+            # chặn đi ra ngoài thư mục data/ của repo
+            if str(repo_file).startswith(str(REPO_DATA.resolve())) and repo_file.is_file():
+                return str(repo_file)
+        return super().translate_path(path)
 
     def do_POST(self):
         parsed = urlparse(self.path)

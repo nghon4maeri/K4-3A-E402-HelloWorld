@@ -1,0 +1,100 @@
+/* ============================================================
+   FeedbackRadar — Style cho player dùng chung (player.js)
+   Dùng token màu của trang chủ nếu có; nếu không thì tự có giá trị dự phòng.
+   ============================================================ */
+.frp {
+  --frp-ink: var(--ink, #16203c);
+  --frp-muted: var(--muted, #6b7592);
+  --frp-line: var(--line, #e2e6ef);
+  --frp-card: var(--card, #fff);
+  --frp-soft: var(--soft, #fafbfe);
+  --frp-primary: var(--primary, #3a5bff);
+  --frp-warn: var(--warn, #d97706);
+  --frp-no: var(--no, #dc2626);
+  --frp-chain: var(--chain, #ea580c);
+  border-radius: 12px;
+  overflow: hidden;
+  background: #0d1226;
+  color: #fff;
+}
+
+.frp-stage { position: relative; background: #000; }
+.frp-video { width: 100%; display: block; aspect-ratio: 16/9; background: #000; }
+.frp-fallback {
+  aspect-ratio: 16/9; display: grid; place-items: center; text-align: center;
+  padding: 24px; font-size: 13px; line-height: 1.7; color: #8d99bd;
+  background: radial-gradient(circle at 30% 40%, #22305c, #0d1226);
+}
+.frp-fallback code { background: rgba(255,255,255,.1); padding: 1px 5px; border-radius: 4px; }
+
+/* ---------- thanh điều khiển ---------- */
+.frp-controls {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 12px; background: #11172b;
+}
+.frp-btn {
+  background: rgba(255,255,255,.1); color: #fff; border: none; cursor: pointer;
+  width: 32px; height: 32px; border-radius: 8px; font-size: 13px; flex-shrink: 0;
+  font-family: inherit; transition: background .15s;
+}
+.frp-btn:hover { background: rgba(255,255,255,.22); }
+.frp-play { font-size: 12px; }
+.frp-back { font-size: 11px; width: 38px; }
+.frp-time { font-size: 12px; color: #b9c2dd; flex-shrink: 0; min-width: 88px; }
+
+.frp-bar {
+  flex: 1; height: 6px; border-radius: 999px; background: #2a3354;
+  position: relative; cursor: pointer; min-width: 60px;
+}
+.frp-bar:focus-visible { outline: 2px solid var(--frp-primary); outline-offset: 3px; }
+.frp-fill {
+  position: absolute; left: 0; top: 0; bottom: 0; width: 0;
+  border-radius: 999px; background: var(--frp-primary);
+}
+.frp-marks { position: absolute; inset: 0; }
+.frp-mark {
+  position: absolute; top: -4px; width: 13px; height: 13px; border-radius: 50%;
+  background: var(--frp-warn); border: 3px solid #fff; transform: translateX(-50%);
+  cursor: pointer; transition: transform .15s;
+}
+.frp-mark:hover { transform: translateX(-50%) scale(1.25); }
+.frp-mark.bad   { background: var(--frp-no); }
+.frp-mark.chain { background: var(--frp-chain); }
+
+/* ---------- phụ đề câu đang đọc ---------- */
+.frp-caption {
+  padding: 10px 14px; font-size: 13.5px; line-height: 1.6;
+  background: #11172b; color: #dbe2f5; min-height: 42px;
+  border-top: 1px solid rgba(255,255,255,.07);
+}
+.frp-cap-no {
+  font-size: 11px; font-weight: 800; color: #8fa3e8;
+  background: rgba(58,91,255,.18); border-radius: 5px; padding: 2px 7px; margin-right: 6px;
+}
+
+/* ---------- bảng transcript cuộn theo ---------- */
+.frp-transcript {
+  max-height: 260px; overflow-y: auto; background: var(--frp-card); color: var(--frp-ink);
+  border-top: 1px solid var(--frp-line);
+}
+.frp-line {
+  display: flex; gap: 10px; align-items: flex-start; padding: 8px 13px;
+  font-size: 13px; line-height: 1.55; cursor: pointer;
+  border-bottom: 1px solid var(--frp-line); transition: background .12s;
+}
+.frp-line:last-child { border-bottom: none; }
+.frp-line:hover { background: var(--frp-soft); }
+.frp-line.on { background: var(--frp-soft); box-shadow: inset 3px 0 0 var(--frp-primary); }
+.frp-line.on .frp-tx { font-weight: 600; }
+.frp-no { color: var(--frp-muted); font-weight: 700; min-width: 22px; flex-shrink: 0; }
+.frp-tx { flex: 1; }
+.frp-at { color: var(--frp-muted); font-size: 11.5px; flex-shrink: 0; }
+
+/* ---------- bản gọn dùng trong index.html ---------- */
+.frp-compact .frp-caption { font-size: 12.5px; padding: 8px 12px; min-height: 36px; }
+.frp-compact .frp-controls { padding: 7px 10px; gap: 8px; }
+
+@media (max-width: 560px) {
+  .frp-back, .frp-full { display: none; }
+  .frp-time { min-width: 76px; font-size: 11px; }
+}

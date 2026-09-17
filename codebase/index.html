@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>FeedbackRadar — Góp ý học viên → bản sửa video tối thiểu</title>
+<link rel="stylesheet" href="player.css">
 <style>
   :root {
     --bg: #f2f4f8;
@@ -58,6 +59,12 @@
     border-bottom: 1px solid var(--line); padding: 10px 20px;
   }
   .topbar .line1 { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+  .homelink {
+    width: 30px; height: 30px; border-radius: 8px; border: 1px solid var(--line);
+    display: grid; place-items: center; color: var(--muted); text-decoration: none;
+    font-size: 15px; flex-shrink: 0;
+  }
+  .homelink:hover { border-color: var(--primary); color: var(--primary); }
   .brand { display: flex; align-items: center; gap: 9px; font-weight: 800; font-size: 16px; }
   .logo {
     width: 28px; height: 28px; border-radius: 8px;
@@ -249,14 +256,6 @@
   .conflict .side { border: 1px solid var(--line); border-radius: 10px; padding: 11px; background: var(--soft); font-size: 12.5px; line-height: 1.5; }
   .conflict .vs { font-weight: 800; color: var(--violet); text-align: center; }
 
-  .video { border-radius: 12px; overflow: hidden; background: #0d1226; color: #fff; }
-  .video .top { display: flex; align-items: center; gap: 10px; padding: 9px 13px; font-size: 12px; color: #b9c2dd; }
-  .video video { width: 100%; display: block; background: #000; aspect-ratio: 16/9; }
-  .video .novid { aspect-ratio: 16/7; background: radial-gradient(circle at 30% 40%, #22305c, #0d1226); display: grid; place-items: center; font-size: 13px; color: #8d99bd; text-align: center; padding: 20px; line-height: 1.6; }
-  .video .seek { padding: 10px 13px; }
-  .video .bar { height: 6px; border-radius: 999px; background: #2a3354; position: relative; }
-  .video .bar .fill { position: absolute; left: 0; top: 0; bottom: 0; width: 0; border-radius: 999px; background: var(--primary); }
-  .video .bar .mark { position: absolute; top: -4px; width: 13px; height: 13px; border-radius: 50%; background: var(--warn); border: 3px solid #fff; transform: translateX(-50%); }
 
   .actionbar {
     position: fixed; left: 0; right: 0; bottom: 0; z-index: 60; background: var(--card);
@@ -296,6 +295,7 @@
 
 <header class="topbar">
   <div class="line1">
+    <a href="home.html" class="homelink" title="Về trang bài học">←</a>
     <div class="brand"><span class="logo">FR</span> FeedbackRadar</div>
     <span class="srcbadge unknown" id="srcBadge" title="Chưa có kết quả">○ Chưa chạy phân tích</span>
     <div class="iconbtn">
@@ -467,6 +467,7 @@
   </div>
 </div>
 
+<script src="player.js"></script>
 <script>
 'use strict';
 
@@ -959,7 +960,14 @@ function renderDetail(){
     <h2>${it.idx}. ${esc(it.title)}</h2>
     <p class="sub">📍 ${esc(it.cau)} · mốc ${esc(it.v)} &nbsp;·&nbsp; hướng xử lý: <b>${esc(it.type)}</b></p>
 
-    <div class="sec">${videoBlock(it)}</div>
+    <div class="sec">
+      <h4>Video tại vị trí này
+        <span class="pill red">● câu đổi lời</span>
+        <span class="pill chain">● câu thu lại dây chuyền</span>
+      </h4>
+      <div id="playerHost"></div>
+      <div class="legend">Chấm màu trên thanh thời gian là các câu cụm này đụng tới — bấm để nhảy thẳng tới đó.</div>
+    </div>
 
     <div class="sec">
       <h4>Bằng chứng — ${nq} góp ý từ ${groups.length} người</h4>
@@ -985,29 +993,53 @@ function renderDetail(){
       <div class="mt">${scopeMeter(it.kyTu || 0, it.canh || 0, whole, { title: 'Nếu duyệt cụm này', hideSave: true })}</div>
     </div>`;
 
+  /* innerHTML ở trên đã xoá DOM của player cũ, nên dựng lại vào mount mới. */
+  PLAYER = null;
+  mountPlayer(it);
+
   $('abPos').textContent = 'Cụm ' + (sel + 1) + ' / ' + ISSUES.length;
   $('abAccept').innerHTML = (isConflict(it) ? '✔ Duyệt giải pháp trung hoà' : '✔ Accept') + '<kbd>A</kbd>';
 }
 
-function videoBlock(it){
-  const total = 251; // độ dài video mẫu d1, tính bằng giây
-  const sec = timeToSec(it.v);
-  const pct = Math.max(0, Math.min(100, sec / total * 100));
-  const fallback = 'Không nạp được d1.mp4. Mở giao diện qua run_local.py để phát video tại đúng mốc ' + esc(it.v) + '.';
-  return `<div class="video">
-    <div class="top"><span>▶ Bài giảng "Giới thiệu AI đại chúng" — d1.mp4</span>
-      <span style="margin-left:auto" class="tnum">📍 ${esc(it.v)} · ${esc(it.cau)}</span></div>
-    <video preload="metadata" controls
-           src="../data/studio-pack/c5-feedbackradar/video-mau/d1.mp4#t=${sec}"
-           onerror="this.outerHTML='<div class=&quot;novid&quot;>${fallback}</div>'"></video>
-    <div class="seek"><div class="bar"><div class="fill" style="width:${pct}%"></div><div class="mark" style="left:${pct}%"></div></div></div>
-  </div>`;
+/* Player dùng chung với home.html (player.js).
+   renderDetail() ghi lại innerHTML nên player phải dựng lại theo; trình duyệt
+   dùng lại d1.mp4 trong cache nên không tải lại 13MB mỗi lần đổi cụm. */
+let PLAYER = null;
+
+function mountPlayer(it){
+  const host = $('playerHost');
+  if (!host) return;
+  if (!PLAYER){
+    PLAYER = FRPlayer.create(host, { compact: true, showTranscript: false });
+  }
+  PLAYER.setMarks(clusterMarks(it));
+  const focus = (it.transcript || []).find(t => t.bad);
+  if (focus) PLAYER.seekToSentence(focus.n);
+  else PLAYER.seekTo(timeToSec(it.v));
+}
+
+/* Chấm trên thanh seek: đỏ = câu đổi lời, cam = câu thu lại theo dây chuyền */
+function clusterMarks(it){
+  const out = [];
+  const thuLai = new Set(it.cau_thu_lai || []);
+  const lines = FRPlayer.__lines || [];
+  const secOf = n => {
+    const hit = lines.find(l => l.cau === n);
+    return hit ? FRPlayer.toSec(hit.batDau) : null;
+  };
+  (it.transcript || []).forEach(t => {
+    const s = secOf(t.n);
+    if (s == null) return;
+    if (t.bad)               out.push({ sec: s, label: 'Câu ' + t.n + ' — đổi lời', kind: 'bad' });
+    else if (thuLai.has(t.n)) out.push({ sec: s, label: 'Câu ' + t.n + ' — thu lại theo dây chuyền', kind: 'chain' });
+  });
+  return out;
 }
 
 function timeToSec(v){
   const p = String(v || '00:00').split(':');
   if (p.length < 2) return 0;
-  return (parseInt(p[0], 10) || 0) * 60 + (parseInt(p[1], 10) || 0);
+  return (parseInt(p[0], 10) || 0) * 60 + (parseFloat(p[1]) || 0);
 }
 
 function renderUnloc(){
@@ -1197,6 +1229,25 @@ document.addEventListener('keydown', e => {
 /* ============================================================
    KHỞI ĐỘNG — nạp kết quả lần chạy gần nhất nếu có
    ============================================================ */
+/* Góp ý do học viên gửi ở home.html được bàn giao qua localStorage.
+   Đổ sẵn vào ô nhập để biên tập viên chỉ việc bấm Phân tích. */
+function takeHandoff(){
+  let raw;
+  try { raw = localStorage.getItem('fr-handoff'); } catch(e){ return; }
+  if (!raw) return;
+  let h;
+  try { h = JSON.parse(raw); } catch(e){ return; }
+  const list = (h && h.gopY) || [];
+  if (!list.length) return;
+
+  setInputTab('json');
+  $('inputText').value = JSON.stringify(list, null, 2);
+  touched.json = true; savedText.json = $('inputText').value;
+  updateRowCount();
+  setStatus(`✔ Nhận ${list.length} góp ý học viên gửi từ trang bài học — bấm "Phân tích bằng AI" để gom cụm.`, true);
+  try { localStorage.removeItem('fr-handoff'); } catch(e){}
+}
+
 function bootstrap(){
   Promise.all([
     fetch('clusters.json', { cache: 'no-store' }).then(r => r.ok ? r.json() : null).catch(() => null),
@@ -1222,6 +1273,7 @@ window.addEventListener('DOMContentLoaded', () => {
   } catch(e){}
 
   setInputTab('csv');
+  takeHandoff();   // sau setInputTab, vì nó tự chuyển sang tab JSON nếu có bàn giao
   bootstrap();
 
   $('fileInput').addEventListener('change', e => {
