@@ -1,0 +1,50 @@
+[
+  {
+    "ma_hoc_vien": "HV-01",
+    "gop_y_nguyen_van": "ko có",
+    "noi_dung_trai_nghiem": "Gặp đoạn khó hiểu, tua lại 1 lần, ghi chú ra vở và hỏi ChatGPT; đã từng bỏ dở video vì nghe không rõ nhưng ngại không biết góp ý ở đâu.",
+    "phan_loai": "Am_thanh_va_Noi_dung",
+    "dinh_vi_timestamp": "Không xác định được",
+    "ky_vong_sua": "Không kỳ vọng gì cả",
+    "san_sang_test": false
+  },
+  {
+    "ma_hoc_vien": "HV-02",
+    "gop_y_nguyen_van": "Video không liền mạch, chỗ thừa chỗ thiếu nội dung",
+    "noi_dung_trai_nghiem": "Gặp cả đoạn khó hiểu lẫn lỗi kỹ thuật, tua lại 2-3 lần; muốn báo nhưng không biết gửi cho ai; từng thấy phụ đề lệch nhưng chỉ nhớ đại khái giữa/cuối video.",
+    "phan_loai": "Noi_dung",
+    "dinh_vi_timestamp": "Không, chỉ biết đại khái (giữa / cuối video)",
+    "ky_vong_sua": "Chỉ đọc thôi, không cần báo; Cảm ơn rồi giữ nguyên",
+    "san_sang_test": true,
+    "ghi_chu_test": "Hỏi lại vào tuần sau"
+  },
+  {
+    "ma_hoc_vien": "HV-03",
+    "gop_y_nguyen_van": "Trôi nhanh ko trọng tâm",
+    "noi_dung_trai_nghiem": "Học hơn 5 lần/tuần, tua lại 2-3 lần; thấy video trôi nhanh không trọng tâm; phụ đề lệch trong tuần qua nhưng chỉ nhớ đại khái giữa/cuối video.",
+    "phan_loai": "Noi_dung",
+    "dinh_vi_timestamp": "Không, chỉ biết đại khái (giữa / cuối video)",
+    "ky_vong_sua": "Sửa đúng đoạn đó rồi báo lại tôi",
+    "san_sang_test": false
+  },
+  {
+    "ma_hoc_vien": "HV-04",
+    "gop_y_nguyen_van": "Chủ yếu do mạng chậm khiến video k load được",
+    "noi_dung_trai_nghiem": "Gặp đoạn khó hiểu hỏi ngay tutor ChatGPT; không biết góp ý ở đâu; khi hai nhóm mâu thuẫn khuyên giữ cả hai ý kiến.",
+    "phan_loai": "Ky_thuat_Ha_tang",
+    "dinh_vi_timestamp": "Chưa từng gặp / Không xác định",
+    "ky_vong_sua": "Không kỳ vọng gì cả",
+    "san_sang_test": true,
+    "ghi_chu_test": "Hỏi lại vào tuần sau"
+  },
+  {
+    "ma_hoc_vien": "HV-05",
+    "gop_y_nguyen_van": "Khó hiểu vì chưa đủ kiến thức, ví dụ slide chưa rõ ràng",
+    "noi_dung_trai_nghiem": "Tua lại 2-3 lần rồi tự đọc lại slide; gặp tình trạng cùng đoạn người thấy nhanh người thấy bình thường rất thường xuyên; phụ đề lệch chỉ đúng được giây; từng bỏ dở vì âm thanh không rõ.",
+    "phan_loai": "Hinh_anh_va_Noi_dung",
+    "dinh_vi_timestamp": "Có, tôi biết rõ / chỉ đúng được giây",
+    "ky_vong_sua": "Sửa đúng đoạn đó rồi báo lại tôi; Chỉ đọc thôi, không cần báo",
+    "san_sang_test": true,
+    "ghi_chu_test": "Có, ghi tôi vào (Tester tiềm năng lớn nhất cho CP5)"
+  }
+]

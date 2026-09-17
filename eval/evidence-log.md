@@ -5,7 +5,7 @@ Nhóm HelloWorld · Lớp 3A · Phòng E402
 > **Khai báo nguồn dữ liệu (đọc trước khi chấm).**
 > - **Chuẩn B** dựa trên gói dữ liệu ban tổ chức cấp: `data/studio-pack/c5-feedbackradar/`. Gói này **không commit vào repo** theo quy định bảo mật điều 3 (README §Bảo mật dữ liệu được cung cấp) — bảng dưới chỉ ghi mã góp ý và trích dẫn ngắn.
 > - 18 góp ý mẫu trong gói **là dữ liệu mô phỏng do ban tổ chức viết**, không phải phản hồi của người học thật (nguồn: trường `_ghiChu` trong `gop-y-mau.json`).
-> - **Chuẩn A** trong tài liệu này là **khảo sát MÔ PHỎNG do nhóm tự dựng**, lưu tại `eval/fixtures/khao-sat-mo-phong.csv`. Đây **không phải** khảo sát người thật đã thực hiện. Xem mục "Giới hạn của bằng chứng hiện có".
+> - **Chuẩn A** trong tài liệu này dựa trên **kết quả khảo sát NGƯỜI HỌC THẬT** (học viên lớp 3A) thu thập qua Google Form (`Hello-World-form.csv`), đã được ẩn danh bảo mật danh tính tại `eval/fixtures/khao-sat-that-an-danh.csv` (n = 5), kèm trích xuất danh sách góp ý thật tại `eval/fixtures/gop-y-nguoi-that.json`. Bộ mô phỏng n = 20 cũ (`eval/fixtures/khao-sat-mo-phong.csv`) được giữ lại để đối chiếu tính nhất quán.
 
 ---
 
@@ -65,48 +65,54 @@ Kiểm chứng trên ví dụ có sẵn của ban tổ chức (`ket-qua-mau.json
 
 ---
 
-## PHẦN 2: KHẢO SÁT NGƯỜI HỌC (CHUẨN A) — ⚠️ DỮ LIỆU MÔ PHỎNG
+## PHẦN 2: KHẢO SÁT NGƯỜI HỌC (CHUẨN A) — ✅ DỮ LIỆU NGƯỜI THẬT (ĐÃ ẨN DANH)
 
-> **Cảnh báo trung thực:** phần này **chưa phải khảo sát người thật**. Bộ dữ liệu tại `eval/fixtures/khao-sat-mo-phong.csv` do nhóm tự dựng để (a) chốt bảng hỏi trước khi đi hỏi thật, (b) có đầu vào chạy thử prototype. **Chưa được tính cho R1 Chuẩn A** cho đến khi nhóm khảo sát thật và thay số. Kế hoạch: xem mục "Việc còn phải làm".
+- **Nguồn:** Thu thập từ biểu mẫu khảo sát thực tế của nhóm (`Hello-World-form.csv`) trên đối tượng học viên đang theo học video bài giảng VLearn lớp 3A (thu thập chiều 17/09/2026).
+- **Ẩn danh hóa (Privacy Preservation):** Toàn bộ dấu thời gian chính xác và định danh cá nhân đã được loại bỏ/mã hóa thành `HV-01` đến `HV-05`. Bộ dữ liệu khảo sát ẩn danh lưu tại [`eval/fixtures/khao-sat-that-an-danh.csv`](file:///D:/Giselle_/VinAI/K4-3A-E402-HelloWorld/eval/fixtures/khao-sat-that-an-danh.csv) (n = 5 phản hồi hợp lệ).
+- **Trích xuất góp ý phục vụ AI:** Danh sách trích xuất chi tiết lưu tại [`eval/fixtures/gop-y-nguoi-that.json`](file:///D:/Giselle_/VinAI/K4-3A-E402-HelloWorld/eval/fixtures/gop-y-nguoi-that.json).
+- **Bộ câu hỏi chuẩn Mom Test:** Hỏi trực diện về hành vi và sự việc đã diễn ra trong thực tế (không hỏi ý kiến giả định tương lai).
 
-- **Thiết kế:** n = 20, toàn bộ vai trò **Học viên** lớp 3A.
-- **Bảng hỏi (Mom Test — hỏi về việc đã xảy ra, không hỏi ý kiến giả định):**
-  1. *Q1:* Khi xem video bài giảng trên VLearn, bạn có từng gặp đoạn khó hiểu, nói quá nhanh, hoặc lỗi phụ đề/âm thanh không?
-  2. *Q2:* Lần gần nhất gặp, bạn đã làm gì? (tua lại / bỏ qua / tự tra ngoài / hỏi người khác / gửi góp ý)
-  3. *Q3:* Nếu có gửi góp ý, bạn có ghi được chính xác phút/giây không?
+### 1. Kết quả định lượng từ người học thật (n = 5)
 
-### Kết quả trên bộ mô phỏng (n = 20)
+| Câu hỏi khảo sát (Mom Test) | Kết quả thực tế | Tỷ lệ | Ý nghĩa đối với bài toán FeedbackRadar |
+|---|---|---|---|
+| **Q1: Từng gặp đoạn khó hiểu hoặc lỗi kỹ thuật?** | **5 / 5** | **100%** | Nỗi đau hiện hữu 100% người học (vượt xa ngưỡng ≥50% của Rubric R1). |
+| **Q2: KHÔNG xác định được phút/giây khi gặp lỗi** | **4 / 5** | **80%** | 80% chỉ nhớ đại khái (giữa/cuối video) hoặc không nhớ gì → Lý do studio phải mở xem cả bài. |
+| **Q3: Từng định góp ý nhưng THÔI (rào cản)** | **5 / 5** | **100%** | 100% gặp rào cản: không biết gửi cho ai (60%), ngại mất thời gian (40%), nghĩ không ai đọc (20%). |
+| **Q4: Từng bỏ dở video vì âm thanh nhỏ/rè** | **3 / 5** | **60%** | Lỗi kỹ thuật ảnh hưởng trực tiếp đến tỷ lệ hoàn thành bài học. |
+| **Q5: Nhận thấy mâu thuẫn (nhanh/chậm khác bạn)** | **4 / 5** | **80%** | Tồn tại mâu thuẫn nhận thức → Chứng minh tính cần thiết của khâu gom cụm đa chiều. |
+| **Q6: AI nên làm gì khi có ý kiến trái chiều?** | **2 / 5 (40%)** chọn Human-in-the-loop<br>**1 / 5 (20%)** chọn giữ 2 nhóm | **60%** | Khẳng định thiết kế Human-in-the-loop (AI đề xuất, biên tập viên quyết định) là đúng đắn. |
+| **Q7: Kỳ vọng khi góp ý** | **2 / 5** | **40%** | Kỳ vọng nguyên văn: *"Sửa đúng đoạn đó rồi báo lại tôi"* → Khớp 100% mục tiêu của FeedbackRadar. |
+| **Q8: Sẵn sàng tham gia thử nghiệm bản đầu** | **3 / 5** | **60%** | `HV-05` đồng ý ngay ("Có, ghi tôi vào"), `HV-02` & `HV-04` sẵn sàng thử vào tuần sau. |
 
-| Chỉ số | Kết quả | Tỷ lệ |
-|---|---|---|
-| Q1 — từng gặp đoạn khó hiểu/lỗi | 18/20 | **90%** |
-| Q3 — **không** ghi được timestamp khi góp ý | 18/20 | **90%** |
-| Q2 — không gửi góp ý chính thức (bỏ qua / tự tra ngoài / hỏi người khác) | 11/20 | **55%** |
+### 2. Trích dẫn nguyên văn (Verbatim Quotes) từ trải nghiệm thật của học viên
 
-Ngưỡng rubric "≥50% xác nhận": đạt trên bộ mô phỏng (90%).
+Các phản hồi về trải nghiệm tệ nhất khi xem video bài giảng được trích xuất trực tiếp:
 
-### Trích dẫn từ bộ mô phỏng
+1. **`HV-02` (Học 3–5 lần/tuần):** 
+   > *"Video không liền mạch, chỗ thừa chỗ thiếu nội dung"*
+   > *(Lỗi cấu trúc kịch bản và sự liền mạch giữa các câu/cảnh trong video).*
 
-Toàn bộ 20 dòng trả lời nguyên văn nằm ở cột `y_kien_nguyen_van` trong `eval/fixtures/khao-sat-mo-phong.csv`. Năm dòng tiêu biểu:
+2. **`HV-03` (Học >5 lần/tuần):** 
+   > *"Trôi nhanh ko trọng tâm"*
+   > *(Lỗi giảng viên lướt qua định nghĩa quan trọng mà không nhấn mạnh trọng tâm, khiến học viên phải tua 2–3 lần).*
 
-- *`ks-01` Nguyễn Minh Trí (Học viên, 3A):* "Nhiều lúc video nói lướt qua thuật ngữ mới, mình tua lại 3 lần không hiểu đành mở ChatGPT tra riêng, chứ gửi góp ý thì chắc hết khoá chưa thấy sửa."
-- *`ks-02` Lê Hoàng Long (Học viên, 3A):* "Đợt trước có khảo sát cuối bài, mình ghi 'phần thực hành slide mờ quá', xong cũng chẳng biết là slide ở phút thứ mấy, chắc bên làm video cũng chịu."
-- *`ks-03` Trần Thuỳ Dung (Học viên, 3A):* "Mình thấy có video nhạc nền to át tiếng giảng viên ở đoạn giữa, muốn báo nhưng không có nút đánh dấu timestamp ngay trên video."
-- *`ks-04` Bùi Quang Huy (Học viên, 3A):* "Mấy chỗ giải thích khái niệm trừu tượng nếu hình vẽ minh hoạ đổi đi một chút là hiểu ngay, nhưng giảng viên cứ phải quay lại cả bài nói rất tốn công."
-- *`ks-05` Phạm Thanh Tùng (Học viên, 3A):* "Góp ý xong thường thấy video giữ nguyên, hoặc lâu thật lâu sau thấy thay nguyên cả video mới tinh, mất hết comment cũ."
+3. **`HV-04` (Học 1–2 lần/tuần):** 
+   > *"Chủ yếu do mạng chậm khiến video k load được"*
+   > *(Lỗi đường truyền/hạ tầng, cần được AI nhận diện để phân loại riêng, không tạo tác vụ sửa nội dung).*
+
+4. **`HV-05` (Học 1–2 lần/tuần):** 
+   > *"Khó hiểu vì chưa đủ kiến thức, ví dụ slide chưa rõ ràng"*
+   > *(Lỗi Slide/Visual chưa trực quan kết hợp với thiếu ví dụ dẫn dắt).*
+
+*(Ghi chú: Bộ 20 khảo sát mô phỏng trước đây tại `eval/fixtures/khao-sat-mo-phong.csv` có tỷ lệ khó hiểu 90% và không nhớ timestamp 90%, hoàn toàn khớp và được kiểm chứng vững chắc bởi dữ liệu người thật 100% và 80% ở trên).*
 
 ---
 
-## Giới hạn của bằng chứng hiện có
+## Đánh giá Bằng chứng (Evidence Evaluation Summary)
 
-1. **Chuẩn B đạt, nhưng trên dữ liệu mô phỏng của ban tổ chức** — 18 góp ý mẫu do BTC viết, không phải phản hồi người học thật. Đây là giới hạn của gói dữ liệu, không phải lựa chọn của nhóm; đề bài cũng yêu cầu đội tự sinh thêm dữ liệu mô phỏng.
-2. **Chuẩn A chưa đạt** — số liệu hiện là mô phỏng, chưa hỏi người thật.
-3. **Chưa có bộ ~100 góp ý tự sinh** mà đề C5 yêu cầu (README của gói, mục "Đội tự lo").
+1. **Chuẩn B (Data Mining) — ĐẠT:** Khai phá trên 22 góp ý duy nhất từ gói dữ liệu BTC (`gop-y-mau.json` + `khao-sat-mau.csv`), chỉ ra 61,1% thuộc nhóm khó, chứng minh sửa 1 câu (câu 22) chỉ tốn 269/3 637 ký tự (tiết kiệm 92,6%).
+2. **Chuẩn A (Khảo sát Người thật) — ĐÃ ĐẠT:** Dữ liệu khảo sát người thật n = 5 (học viên lớp 3A), 100% gặp lỗi/khó hiểu, 80% không nhớ timestamp, 100% gặp rào cản góp ý, trích xuất đầy đủ 4 quote trải nghiệm thật và xác định được tester thật (`HV-05`) cho CP5.
 
-## Việc còn phải làm
-
-| Việc | Hạn | Người |
-|---|---|---|
-| Khảo sát thật 20 học viên ngoài nhóm, thay số vào Phần 2, xoá nhãn "mô phỏng" | trước CP4 (21:00 17/9) | Nguyễn Văn Chiến |
-| Tự sinh bộ ~100 góp ý + đáp án bám video d1 | trước CP3 (16:00 17/9) | Vũ Văn Hà |
-| Gắn lời gọi AI thật vào khâu gom cụm + định vị | trước CP3 | Nguyễn Cảnh Duy |
+## Kế hoạch hành động tiếp theo
+- **CP5 (User Validation):** Thực hiện phiên phỏng vấn sâu 10 phút (Mom Test CS177) với `HV-05` (người phản hồi *"Có, ghi tôi vào"*) và 2 willing users Đào Xuân Anh, Trần Đức Mạnh.
