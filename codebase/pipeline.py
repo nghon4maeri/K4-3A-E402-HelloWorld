@@ -409,48 +409,26 @@ def build_final_clusters(ai_output: Dict[str, Any], feedbacks: List[Dict[str, An
     return final_clusters
 
 
-def run_pipeline():
-    """Hàm chạy chính của toàn bộ Pipeline"""
-    print("=" * 65)
-    print("  FEEDBACKRADAR AI PIPELINE — NHÓM HELLOWORLD (E402 · BATCH 04)")
-    print("  Dev / Agent Engineer: Nguyễn Hồ Nam")
-    print("=" * 65)
-    
-    start_time = time.time()
-    
-    # Bước 1: Đọc dữ liệu đầu vào
-    print("\n[Bước 1/5] Đang đọc transcript 40 câu và 30 góp ý mẫu...")
-    transcript, all_feedbacks = load_inputs()
-    print(f" -> Đã nạp {len(transcript)} câu kịch bản có timecode.")
-    print(f" -> Đã nạp {len(all_feedbacks)} góp ý của người học.")
-    
+def analyze_feedbacks(all_feedbacks, transcript):
+    """Lõi Pipeline dùng lại được (UI/API gọi): lọc nhiễu -> AI -> map timecode -> chi phí.
+    Trả về tuple (pipeline_result, safety_log, ai_used). Không ghi file vào disk ngoài những log bắt buộc."""
     # Bước 2: Lọc nhiễu Heuristic (Safety & Injection Screening)
-    print("\n[Bước 2/5] Thực hiện tiền xử lý & kiểm tra an toàn Heuristic...")
     safe_feedbacks, safety_log = filter_feedbacks(all_feedbacks)
-    print(f" -> Số góp ý an toàn đưa vào phân tích: {len(safe_feedbacks)}/{len(all_feedbacks)}")
-    print(f" -> Số góp ý bị loại bỏ (Safety Filter): {len(safety_log)}")
-    for bad in safety_log:
-        print(f"    [Lọc] {bad['id']} ({bad['nguoiGui']}): {bad['lyDo']} -> \"{bad['noiDung'][:45]}...\"")
-        
-    # Lưu safety_log.json
+
+    # Lưu safety_log.json (bắt buộc cho UI hiển thị banner an toàn)
     with open(SAFETY_LOG_PATH, "w", encoding="utf-8") as f:
         json.dump(safety_log, f, ensure_ascii=False, indent=2)
-    print(f" -> Đã ghi log an toàn vào: {SAFETY_LOG_PATH.name}")
 
-    # Bước 3: Gọi AI Gemini (hoặc Fallback Engine)
-    print("\n[Bước 3/5] Kích hoạt Agent AI phân tích ngữ nghĩa, gom cụm và phân loại...")
+    # Bước 3: Gọi AI Gemini (luôn chạy thật nếu có key; có engine fallback khi offline để không crash)
     ai_raw_output = run_gemini_call(safe_feedbacks, transcript)
-    
+
     # Bước 4: Chống hallucination, map timecode cứng và tính chi phí
-    print("\n[Bước 4/5] Áp dụng Guardrails, đối chiếu timecode cứng và tính chi phí tối thiểu...")
     final_clusters = build_final_clusters(ai_raw_output, all_feedbacks, transcript)
-    
-    # Tính tổng ngân sách
+
     total_rework_cost = sum(c["price"] for c in final_clusters)
     savings = DON_GIA["full_video_cost"] - total_rework_cost
     savings_pct = round((savings / DON_GIA["full_video_cost"]) * 100, 1)
 
-    # Đóng gói xuất bản
     pipeline_result = {
         "metadata": {
             "kichBanId": "d1",
@@ -461,26 +439,51 @@ def run_pipeline():
             "tongChiPhiSuaDuKien": total_rework_cost,
             "chiPhiLamLaiToanBo": DON_GIA["full_video_cost"],
             "tietKiemSoVoiLamLai": f"{savings:,} VND ({savings_pct}%)",
-            "thoiGianChayGiay": round(time.time() - start_time, 2)
+            "thoiGianChayGiay": 0.0
         },
         "clusters": final_clusters,
         "gop_y_chung_chung": ai_raw_output.get("gop_y_chung_chung", [])
     }
-    
+    return pipeline_result, safety_log
+
+
+def run_pipeline(transcript=None, all_feedbacks=None, silent=False):
+    """Hàm chạy chính của toàn bộ Pipeline (CLI). Có thể ép 1 chuỗi dữ liệu vào thay vì đọc file."""
+    if not silent:
+        print("=" * 65)
+        print("  FEEDBACKRADAR AI PIPELINE — NHÓM HELLOWORLD (E402 · BATCH 04)")
+        print("  Dev / Agent Engineer: Nguyễn Hồ Nam")
+        print("=" * 65)
+
+    start_time = time.time()
+
+    # Bước 1: Đọc dữ liệu đầu vào (hoặc dùng dữ liệu được truyền vào)
+    if transcript is None or all_feedbacks is None:
+        transcript, all_feedbacks = load_inputs()
+        if not silent:
+            print(f"[Bước 1/5] Đã nạp {len(transcript)} câu kịch bản có timecode + {len(all_feedbacks)} góp ý.")
+
+    pipeline_result, safety_log = analyze_feedbacks(all_feedbacks, transcript)
+    pipeline_result["metadata"]["thoiGianChayGiay"] = round(time.time() - start_time, 2)
+
     # Bước 5: Ghi file clusters.json
-    print("\n[Bước 5/5] Xuất kết quả hoàn tất ra clusters.json...")
     with open(CLUSTERS_OUTPUT_PATH, "w", encoding="utf-8") as f:
         json.dump(pipeline_result, f, ensure_ascii=False, indent=2)
-        
-    print(f" -> Đã ghi thành công file: {CLUSTERS_OUTPUT_PATH.name}")
-    print("\n" + "=" * 65)
-    print("  KẾT QUẢ PHÂN TÍCH TỔNG HỢP:")
-    print(f"  • Số cụm vấn đề xác định: {len(final_clusters)}")
-    for c in final_clusters:
-        print(f"    [{c['idx']}] {c['title']} ({c['loai']}) - {c['cau']} [{c['v']}] - {c['price']:,}đ")
-    print(f"  • Tổng chi phí sửa đề xuất: {total_rework_cost:,} VND")
-    print(f"  • Tiết kiệm so với làm lại trọn bài: {savings_pct}%")
-    print("=" * 65)
+
+    if not silent:
+        final_clusters = pipeline_result["clusters"]
+        print("\n" + "=" * 65)
+        print("  KẾT QUẢ PHÂN TÍCH TỔNG HỢP:")
+        print(f"  • Số cụm vấn đề xác định: {len(final_clusters)}")
+        for c in final_clusters:
+            print(f"    [{c['idx']}] {c['title']} ({c['loai']}) - {c['cau']} [{c['v']}] - {c['price']:,}đ")
+        print(f"  • Tổng chi phí sửa đề xuất: {pipeline_result['metadata']['tongChiPhiSuaDuKien']:,} VND")
+        print(f"  • Tiết kiệm so với làm lại trọn bài: {pipeline_result['metadata']['tietKiemSoVoiLamLai']}")
+        print("=" * 65)
+    if not silent:
+        print(f" -> Đã ghi thành công file: {CLUSTERS_OUTPUT_PATH.name}")
+
+    return pipeline_result
 
 
 if __name__ == "__main__":
