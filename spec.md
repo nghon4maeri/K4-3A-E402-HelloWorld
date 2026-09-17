@@ -6,7 +6,7 @@ Mốc tài liệu: **Bản chốt hoàn thiện & Khóa Ngưỡng chất lượn
 
 ---
 
-## 📌 CANVAS CP1 (Nộp lúc 19:30 · 16/9)
+## CANVAS CP1 (Nộp lúc 19:30 · 16/9)
 
 ### Canvas 7 dòng (Theo Guide §1.5)
 1. **Hướng:** Track C — Lesson Studio (Đề C5: FeedbackRadar — Agent biến góp ý của người học thành bản sửa video tối thiểu).

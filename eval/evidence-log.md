@@ -65,7 +65,7 @@ Kiểm chứng trên ví dụ có sẵn của ban tổ chức (`ket-qua-mau.json
 
 ---
 
-## PHẦN 2: KHẢO SÁT NGƯỜI HỌC (CHUẨN A) — ✅ DỮ LIỆU NGƯỜI THẬT (ĐÃ ẨN DANH)
+## PHẦN 2: KHẢO SÁT NGƯỜI HỌC (CHUẨN A) — DỮ LIỆU NGƯỜI THẬT (ĐÃ ẨN DANH)
 
 - **Nguồn:** Thu thập từ biểu mẫu khảo sát thực tế của nhóm (`Hello-World-form.csv`) trên đối tượng học viên đang theo học video bài giảng VLearn lớp 3A (thu thập chiều 17/09/2026).
 - **Ẩn danh hóa (Privacy Preservation):** Toàn bộ dấu thời gian chính xác và định danh cá nhân đã được loại bỏ/mã hóa thành `HV-01` đến `HV-05`. Bộ dữ liệu khảo sát ẩn danh lưu tại [`eval/fixtures/khao-sat-that-an-danh.csv`](file:///D:/Giselle_/VinAI/K4-3A-E402-HelloWorld/eval/fixtures/khao-sat-that-an-danh.csv) (n = 5 phản hồi hợp lệ).
