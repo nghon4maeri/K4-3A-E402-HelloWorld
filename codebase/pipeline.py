@@ -255,11 +255,20 @@ def run_gemini_api_call(safe_feedbacks: List[Dict[str, Any]], transcript: List[D
                                 "loai_sua": {"type": "STRING"},
                                 "de_xuat_sua": {"type": "STRING"},
                                 "ghi_chu": {"type": "STRING"},
+                                "chi_phi_chi_tiet": {
+                                    "type": "OBJECT",
+                                    "properties": {
+                                        "cau_thu_lai": {"type": "ARRAY", "items": {"type": "INTEGER"}},
+                                        "so_ky_tu": {"type": "INTEGER"},
+                                        "so_canh": {"type": "INTEGER"},
+                                    },
+                                    "required": ["cau_thu_lai", "so_ky_tu", "so_canh"],
+                                },
                             },
                             "required": [
                                 "cum_id", "tieu_de", "loai_loi", "ui_color", "so_nguoi",
                                 "quote_ids", "cau_index", "cau_trong_tam", "loai_sua",
-                                "de_xuat_sua", "ghi_chu",
+                                "de_xuat_sua", "ghi_chu", "chi_phi_chi_tiet",
                             ],
                         },
                     },

@@ -113,18 +113,20 @@ Nguyên tắc: mỗi người phải trả lời được 1 câu hỏi giám kh�
 
 ### Sáng 17/9 (LEC — 8:00–12:00) — lượt đo 1
 - [ ] Nam: hoàn tất pipeline chạy được end-to-end → `clusters.json` (AI thật)
-- [ ] Duy: chạy `run_eval.py` lượt 1 trọn 20 case → `eval/results/run-01.json`
+- [x] Duy: chạy `run_eval.py` lượt 1 đủ 24 case → `eval/results/run-01.json` (19/24 đạt, 79,2%)
 - [ ] Chiến: nối `index.html` đọc `clusters.json`; mở qua `run_local.py`
 - [ ] Hà: chấm 5 case độc lập (giao nhau với kết quả máy) để kiểm độ rõ định nghĩa; ghi failure đau nhất
 
 ### Trưa–chiều 17/9 (12:00–15:00) — lượt 2–3 + video
-- [ ] Hà + Nam: sửa MỘT failure đau nhất (thường là prompt) → chạy lại trọn bộ (lượt 2, rồi lượt 3 nếu kịp)
-- [ ] Duy: chốt bảng kết quả + 1 đoạn phân tích vì sao số chưa 100% (số thật)
+- [x] Hà + Nam: sửa failure lượt 1 trong prompt: dây chuyền thu lời, lỗi kỹ thuật và phạm vi định vị
+- [x] Hà + Nam: chạy lại trọn bộ lượt 2 để kiểm chứng thay đổi → `eval/results/run-02.json` (20/24 đạt, 83,3%)
+- [x] Hà + Nam: chạy lại trọn bộ lượt 3 → `eval/results/run-03.json` (22/24 đạt, 91,7%; đạt cả 5 quality bar)
+- [x] Duy: chốt bảng kết quả + phân tích vì sao số chưa 100% (số thật)
 - [ ] Chiến: `demo-script.md` — 30s gồm: mở trang → nhập 30 feedback → AI chạy (5s) → 4 cụm hiện → bấm 1 cụm thấy quote + timestamp → trong đó 1 case chỗ khó (injection bị lọc)
 - [ ] Duy: quay màn hình 30s (OBS / Win+G), để trong `codebase/video/` (repo riêng hoặc ngoài)
 
 ### 15:00–16:00 — soát & nộp
-- [ ] `spec.md` §4 + §7 cập nhật, `eval/BANGKETQUA.md` đầy đủ
+- [x] `spec.md` §4 + §7 cập nhật, `eval/BANGKETQUA.md` đầy đủ
 - [ ] Push lên repo public; kiểm tra không có `.env`/key, không data pack
 - [ ] Duy nộp form CP3 trước 16:00 (đội trưởng nộp thay cả nhóm)
 
@@ -146,8 +148,8 @@ Nguyên tắc: mỗi người phải trả lời được 1 câu hỏi giám kh�
 ## 7. Checklist nộp cuối (16:00 17/9)
 
 - [ ] `eval/golden-set.json` — ≥20 case, phủ 4 lớp, có đáp án
-- [ ] `eval/results/run-0*.json` — ≥2 lượt, đủ cả case fail
-- [ ] `eval/BANGKETQUA.md` — bảng thử/đúng + 1 failure phân tích
+- [x] `eval/results/run-0*.json` — có lượt 1 và lượt 2, đủ cả case fail
+- [x] `eval/BANGKETQUA.md` — lượt 1 và lượt 2, có phân tích failure
 - [ ] `spec.md` §4 — liệt kê khâu AI thật (gom cụm/locate) vs khâu mock (UI, video player)
 - [ ] `spec.md` §7 — quality bar chốt (không đổi sau khi thấy kết quả)
 - [ ] Video 30s trong repo (hoặc link) — thấy AI chạy thật trả cụm
