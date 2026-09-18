@@ -231,11 +231,8 @@ Theo tinh thần rubric R4 ("Kết quả đo được ghi nhận trung thực �
 | **Vũ Văn Hà** | **2A202602589** | Eval & Prompt Engineer | Xây dựng Golden Set 24 case phủ 4 lớp bẫy, script benchmark tự động, đo lường và lập bảng kết quả đối chiếu Quality Bar | `eval/golden-set.json`, `eval/run_eval.py`, `eval/BANGKETQUA.md` |
 
 ### 2. Kế hoạch kiểm thử & nghiệm thu cho CP5 (LEC 6 & LAB 6)
-- **Kiểm thử máy (Automated Evals):** Chạy lại trọn bộ 24 case trên DeepSeek với seed cố định để kiểm tra phương sai kết quả; phấn đấu cải thiện prompt dây chuyền từ 75% lên ≥85%.
-- **Kiểm thử người (User Validation — Bonus R6):**
-  - Thực hiện 3 phiên phỏng vấn người dùng thật theo quy trình 5 bước của Stanford CS177 / Mom Test (Thời lượng: 10 phút/người).
-  - Đối tượng thử nghiệm: **Đào Xuân Anh** (Học viên lớp 3A / Content Creator), **Trần Đức Mạnh** (Học viên lớp 3A / Trợ giảng VLearn), và **Học viên HV-05** (Học viên lớp 3A điền form khảo sát thật, trả lời *"Có, ghi tôi vào"*).
-  - Nhiệm vụ giao cho user: Giao outcome *"Duyệt kế hoạch sửa cho bài giảng d1 từ 30 góp ý để tiết kiệm công thu âm nhất"*. Quan sát hành vi, ghi nhận quote nguyên văn và câu hỏi Sean Ellis Disappointment vào `validation/feedback-log.md`.
+- **Kiểm thử máy (Automated Evals):** Dùng lượt chạy AI thật trên golden set 24 case làm bằng chứng thay thế khi không thực hiện user testing. Kết quả, 5 failure và backlog được ghi tại `validation/feedback-log.md`; không dùng dữ liệu mô phỏng để tạo quote người dùng.
+- **Kiểm thử người (User Validation — Bonus R6):** Không thực hiện trong CP5. Nhóm không khai báo đạt R6 và không bịa tên, hành vi hay quote. User testing thật với ít nhất 2 người ngoài nhóm được giữ trong backlog sau demo.
 - **Dry-run Demo Thuyết trình:** Duy và Chiến thực hiện tổng duyệt bài thuyết trình 5 phút (Slide 6 trang có phân tích case lỗi live) trước 12:00 ngày 18/9 để sẵn sàng cho CP6.
 
 ---
@@ -244,6 +241,7 @@ Theo tinh thần rubric R4 ("Kết quả đo được ghi nhận trung thực �
 
 | Thời điểm | Đổi gì | Vì sao |
 |---|---|---|
+| **18/9** | **Tạo `validation/feedback-log.md` theo hướng thay thế** | Không thực hiện khảo sát/user testing thật trong CP5. Dùng kết quả benchmark AI thật 19/24 và 5 failure làm bằng chứng kiểm thử, không tạo quote hay hành vi người dùng giả; không khai báo đạt R6. |
 | **18/9 09:08** | **Chạy trọn bộ benchmark 24 case qua AI thật — điền kết quả vào Quality Bar** | Đóng lỗ hổng lớn nhất còn lại của CP4: repo trước đó chỉ có trace rời rạc. Lượt 4 (`deepseek-chat`) đạt **19/24 = 79,2%**; 4/5 tiêu chí đạt bar, riêng **Tính dây chuyền 75% < bar 100% — CHƯA ĐẠT**. **Không sửa ngưỡng "đạt"** (đã đóng băng 21:00 17/9), chỉ điền số đo. Giữ nguyên toàn bộ 5 case trượt và trace để đối chiếu. |
 | **17/9 18:25** | **Cập nhật bằng chứng khảo sát người thật** | Tích hợp dữ liệu từ `Hello-World-form.csv`, ẩn danh thành `khao-sat-that-an-danh.csv` (n = 5), trích xuất `gop-y-nguoi-that.json`. Ghi nhận đây là bằng chứng định hướng; chưa đạt ngưỡng Chuẩn A của rubric (≥20 người). Bổ sung tester `HV-05` vào kế hoạch CP5. |
 | **17/9 17:35** | **Hoàn thiện AI Spec toàn diện & Đóng băng Quality Bar (CP4)** | Khóa chính thức Quality Bar 5 chiều; bổ sung Bảng 8 kịch bản rủi ro chi tiết (§5); hoàn thiện phân tích so sánh 2 sản phẩm tương tự (§3); bổ sung bảng phân công nhân sự và kế hoạch kiểm thử CP5 (§8); tự khai báo rõ 3 điểm hạn chế trung thực theo rubric. |
