@@ -5,3 +5,4 @@ node_modules/
 /data/
 /further-reading/
 /tracks/
+/eval/results/trace-*.json
