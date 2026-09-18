@@ -9,7 +9,7 @@
 (function (global) {
   'use strict';
 
-  var VIDEO_SRC = '../data/studio-pack/c5-feedbackradar/video-mau/d1.mp4';
+  var VIDEO_SRC = '../data/d1.mp4';
   var TRANSCRIPT_URL = 'data/transcript-timecode.json';
 
   var transcriptCache = null;
@@ -74,10 +74,6 @@
         '<div class="frp-stage">' +
           '<video class="frp-video" preload="metadata" playsinline ' +
                  'src="' + VIDEO_SRC + '"></video>' +
-          '<div class="frp-fallback" hidden>' +
-            'Không nạp được <code>d1.mp4</code>.<br>' +
-            'Mở trang qua <code>python run_local.py</code> để phát được video.' +
-          '</div>' +
         '</div>' +
         '<div class="frp-controls">' +
           '<button class="frp-btn frp-play" type="button" aria-label="Phát / tạm dừng">▶</button>' +
@@ -95,7 +91,6 @@
 
     var root     = mount.querySelector('.frp');
     var video    = mount.querySelector('.frp-video');
-    var fallback = mount.querySelector('.frp-fallback');
     var playBtn  = mount.querySelector('.frp-play');
     var backBtn  = mount.querySelector('.frp-back');
     var fullBtn  = mount.querySelector('.frp-full');
@@ -105,11 +100,6 @@
     var marksEl  = mount.querySelector('.frp-marks');
     var capEl    = mount.querySelector('.frp-caption');
     var trEl     = mount.querySelector('.frp-transcript');
-
-    video.addEventListener('error', function () {
-      video.hidden = true;
-      fallback.hidden = false;
-    });
 
     video.addEventListener('loadedmetadata', function () {
       duration = video.duration || 0;

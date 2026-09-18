@@ -1010,7 +1010,7 @@ function mountPlayer(it){
   const host = $('playerHost');
   if (!host) return;
   if (!PLAYER){
-    PLAYER = FRPlayer.create(host, { compact: true, showTranscript: false });
+    PLAYER = FRPlayer.create(host, { showTranscript: false });
   }
   PLAYER.setMarks(clusterMarks(it));
   const focus = (it.transcript || []).find(t => t.bad);

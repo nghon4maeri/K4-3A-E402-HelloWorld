@@ -15,6 +15,9 @@ import sys
 import json
 import math
 import time
+import urllib.error
+import urllib.parse
+import urllib.request
 from pathlib import Path
 from typing import Dict, List, Any, Optional
 
@@ -39,11 +42,28 @@ from config_prompt import (
 BASE_DIR = Path(__file__).resolve().parent
 
 # Load the project-local environment file regardless of the terminal cwd.
-try:
-    from dotenv import load_dotenv
-    load_dotenv(BASE_DIR / ".env")
-except ImportError:
-    pass
+def load_project_env(path: Path):
+    try:
+        from dotenv import load_dotenv
+        load_dotenv(path)
+        return
+    except ImportError:
+        # Keep local demos working when optional python-dotenv is not installed.
+        if not path.exists():
+            return
+        for raw_line in path.read_text(encoding="utf-8-sig").splitlines():
+            line = raw_line.strip()
+            if not line or line.startswith("#") or "=" not in line:
+                continue
+            name, value = line.split("=", 1)
+            name = name.strip().removeprefix("export ")
+            value = value.strip()
+            if len(value) >= 2 and value[0] == value[-1] and value[0] in "\"'":
+                value = value[1:-1]
+            os.environ.setdefault(name, value)
+
+
+load_project_env(BASE_DIR / ".env")
 
 DATA_DIR = BASE_DIR / "data"
 
@@ -188,9 +208,161 @@ def run_deepseek_call(safe_feedbacks: List[Dict[str, Any]], transcript: List[Dic
     return run_fallback_engine(safe_feedbacks, transcript)
 
 
+def run_gemini_api_call(safe_feedbacks: List[Dict[str, Any]], transcript: List[Dict[str, Any]]) -> Dict[str, Any]:
+    """Gọi Gemini bằng REST API, giữ nguyên schema JSON của pipeline."""
+    api_key = os.environ.get("GEMINI_API_KEY", "").strip()
+    model_name = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash").strip()
+    max_output_tokens = int(os.environ.get("GEMINI_MAX_OUTPUT_TOKENS", "8192"))
+    request_timeout = float(os.environ.get("GEMINI_REQUEST_TIMEOUT_SECONDS", "45"))
+
+    if not api_key:
+        reason = "Chưa điền GEMINI_API_KEY trong codebase/.env"
+        LAST_RUN.update(nguon="fallback-dung-san", model=None, chi_phi_usd=None,
+                        ly_do_fallback=reason)
+        canh_bao_fallback(reason)
+        return run_fallback_engine(safe_feedbacks, transcript)
+
+    print(f"[*] Khởi tạo kết nối Gemini với model: {model_name}...")
+    user_content = build_user_prompt(safe_feedbacks, transcript)
+    endpoint = (
+        "https://generativelanguage.googleapis.com/v1beta/models/"
+        + urllib.request.pathname2url(model_name)
+        + ":generateContent?key=" + urllib.parse.quote(api_key)
+    )
+    payload = {
+        "systemInstruction": {"parts": [{"text": SYSTEM_PROMPT}]},
+        "contents": [{"role": "user", "parts": [{"text": user_content}]}],
+        "generationConfig": {
+            "temperature": 0.2,
+            "maxOutputTokens": max_output_tokens,
+            "responseMimeType": "application/json",
+            "responseSchema": {
+                "type": "OBJECT",
+                "properties": {
+                    "cum_van_de": {
+                        "type": "ARRAY",
+                        "items": {
+                            "type": "OBJECT",
+                            "properties": {
+                                "cum_id": {"type": "STRING"},
+                                "tieu_de": {"type": "STRING"},
+                                "loai_loi": {"type": "STRING"},
+                                "ui_color": {"type": "STRING"},
+                                "so_nguoi": {"type": "INTEGER"},
+                                "quote_ids": {"type": "ARRAY", "items": {"type": "STRING"}},
+                                "cau_index": {"type": "ARRAY", "items": {"type": "INTEGER"}},
+                                "cau_trong_tam": {"type": "INTEGER"},
+                                "loai_sua": {"type": "STRING"},
+                                "de_xuat_sua": {"type": "STRING"},
+                                "ghi_chu": {"type": "STRING"},
+                            },
+                            "required": [
+                                "cum_id", "tieu_de", "loai_loi", "ui_color", "so_nguoi",
+                                "quote_ids", "cau_index", "cau_trong_tam", "loai_sua",
+                                "de_xuat_sua", "ghi_chu",
+                            ],
+                        },
+                    },
+                    "gop_y_chung_chung": {
+                        "type": "ARRAY",
+                        "items": {
+                            "type": "OBJECT",
+                            "properties": {
+                                "quote_id": {"type": "STRING"},
+                                "noi_dung": {"type": "STRING"},
+                                "ly_do_khong_dinh_vi": {"type": "STRING"},
+                            },
+                            "required": ["quote_id", "noi_dung", "ly_do_khong_dinh_vi"],
+                        },
+                    },
+                },
+            },
+        },
+    }
+
+    loi_cuoi = None
+    for lan in range(1, 4):
+        try:
+            request = urllib.request.Request(
+                endpoint,
+                data=json.dumps(payload, ensure_ascii=False).encode("utf-8"),
+                headers={"Content-Type": "application/json"},
+                method="POST",
+            )
+            t0 = time.time()
+            with urllib.request.urlopen(request, timeout=request_timeout) as response:
+                body = json.loads(response.read().decode("utf-8"))
+            so_giay = round(time.time() - t0, 2)
+            raw_text = "".join(
+                part.get("text", "")
+                for part in body.get("candidates", [{}])[0].get("content", {}).get("parts", [])
+            ).strip()
+            result = json.loads(raw_text.strip().removeprefix("```json").removesuffix("```").strip())
+
+            usage = body.get("usageMetadata", {})
+            tokens = {
+                "prompt": usage.get("promptTokenCount", 0),
+                "completion": usage.get("candidatesTokenCount", 0),
+                "tong": usage.get("totalTokenCount", 0),
+            }
+            LAST_RUN.update(nguon="ai-that", model=model_name, so_giay=so_giay,
+                            tokens=tokens, chi_phi_usd=None, ly_do_fallback=None)
+            print(f"[✓] Gọi Gemini THÀNH CÔNG — model={model_name} · {so_giay}s"
+                  f" · {tokens['tong']} tokens")
+            luu_trace(model_name, so_giay, tokens, user_content, raw_text, len(safe_feedbacks))
+            return result
+        except Exception as e:
+            if isinstance(e, urllib.error.HTTPError):
+                try:
+                    detail = e.read().decode("utf-8", errors="replace")[:1000]
+                except Exception:
+                    detail = ""
+                loi_cuoi = f"HTTP {e.code}: {detail}"
+            else:
+                loi_cuoi = e
+            if lan < 3:
+                cho = 2 ** lan
+                print(f"[!] Lần {lan} lỗi Gemini: {e}")
+                print(f"    Thử lại sau {cho}s...")
+                time.sleep(cho)
+
+    reason = f"Gọi Gemini lỗi sau 3 lần: {loi_cuoi}"
+    LAST_RUN.update(nguon="fallback-dung-san", model=None, chi_phi_usd=None,
+                    ly_do_fallback=reason)
+    canh_bao_fallback(reason)
+    return run_fallback_engine(safe_feedbacks, transcript)
+
+
 def run_gemini_call(safe_feedbacks: List[Dict[str, Any]], transcript: List[Dict[str, Any]]) -> Dict[str, Any]:
     """Tên tương thích ngược cho evaluator và các script cũ."""
-    return run_deepseek_call(safe_feedbacks, transcript)
+    return run_gemini_api_call(safe_feedbacks, transcript)
+
+
+def run_selected_ai(safe_feedbacks: List[Dict[str, Any]], transcript: List[Dict[str, Any]]) -> Dict[str, Any]:
+    """Chọn Gemini hoặc DeepSeek theo cấu hình và key đang có."""
+    provider = os.environ.get("AI_PROVIDER", "").strip().lower()
+    provider_aliases = {
+        "google": "gemini",
+        "gemini": "gemini",
+        "deepseek": "deepseek",
+        "deep-seek": "deepseek",
+    }
+    if provider:
+        provider = provider_aliases.get(provider, provider)
+    else:
+        # Khi không khóa cứng provider, ưu tiên Gemini cho demo cá nhân,
+        # rồi dùng DeepSeek nếu đó là key duy nhất đang được khai báo.
+        if os.environ.get("GEMINI_API_KEY", "").strip():
+            provider = "gemini"
+        elif os.environ.get("DEEPSEEK_API_KEY", "").strip():
+            provider = "deepseek"
+        else:
+            provider = "gemini"
+    if provider == "gemini":
+        return run_gemini_api_call(safe_feedbacks, transcript)
+    if provider == "deepseek":
+        return run_deepseek_call(safe_feedbacks, transcript)
+    raise ValueError("AI_PROVIDER phải là 'gemini' hoặc 'deepseek'.")
 
 
 def canh_bao_fallback(ly_do: str):
@@ -206,9 +378,10 @@ def canh_bao_fallback(ly_do: str):
     print("!!  KHÔNG dùng lần chạy này để quay video CP3 hay ghi vào bảng đo.")
     print("!!")
     print("!!  Cách chạy AI thật:")
-    print("!!    1. Lấy key tại: https://platform.deepseek.com/api_keys")
-    print("!!    2. Dán vào dòng DEEPSEEK_API_KEY= trong codebase/.env")
-    print("!!    3. Chạy lại lệnh này")
+    print("!!    1. Chọn AI_PROVIDER=gemini hoặc AI_PROVIDER=deepseek trong codebase/.env")
+    print("!!    2. Điền key tương ứng: GEMINI_API_KEY hoặc DEEPSEEK_API_KEY")
+    print("!!    3. Hoặc bỏ trống AI_PROVIDER để pipeline tự chọn provider có key")
+    print("!!    4. Chạy lại lệnh này")
     print("!" * 65)
     print("")
 
@@ -559,7 +732,7 @@ def analyze_feedbacks(feedbacks: List[Dict[str, Any]], transcript: List[Dict[str
     with open(SAFETY_LOG_PATH, "w", encoding="utf-8") as f:
         json.dump(safety_log, f, ensure_ascii=False, indent=2)
 
-    ai_raw_output = run_deepseek_call(safe_feedbacks, transcript)
+    ai_raw_output = run_selected_ai(safe_feedbacks, transcript)
     final_clusters = build_final_clusters(ai_raw_output, feedbacks, transcript)
     tong_ky_tu = sum(c["kyTu"] for c in final_clusters)
     tong_canh = sum(c["canh"] for c in final_clusters)
@@ -636,7 +809,7 @@ def run_pipeline():
 
     # Bước 3: Gọi AI DeepSeek (hoặc Fallback Engine)
     print("\n[Bước 3/5] Kích hoạt Agent AI phân tích ngữ nghĩa, gom cụm và phân loại...")
-    ai_raw_output = run_deepseek_call(safe_feedbacks, transcript)
+    ai_raw_output = run_selected_ai(safe_feedbacks, transcript)
     
     # Bước 4: Chống hallucination, map timecode cứng và tính chi phí
     print("\n[Bước 4/5] Áp dụng Guardrails, đối chiếu timecode cứng và tính chi phí tối thiểu...")

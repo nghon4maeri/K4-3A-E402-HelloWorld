@@ -75,9 +75,11 @@
   }
   .top .act:hover { background: var(--soft); }
   .avatar {
-    width: 34px; height: 34px; border-radius: 50%; background: var(--primary); color: #fff;
-    display: grid; place-items: center; font-weight: 700; font-size: 14px; flex-shrink: 0;
+    width: 30px; height: 30px; border-radius: 8px; border: 1px solid var(--line);
+    background: var(--card); color: var(--muted); cursor: pointer; font-size: 14px;
+    display: grid; place-items: center; flex-shrink: 0;
   }
+  .avatar:hover { border-color: var(--primary); color: var(--primary); }
   @media (max-width: 900px) { .prog, .top .act .txt { display: none; } }
 
   /* ---------- LAYOUT ---------- */
@@ -131,21 +133,7 @@
     background: var(--card); border: 1px solid var(--line); border-radius: 14px;
     box-shadow: var(--shadow); overflow: hidden; max-width: 960px; margin: 0 auto;
   }
-  .slide {
-    background: #fff; border-bottom: 1px solid var(--line); padding: 22px 26px 26px; color: #0f2044;
-  }
-  .slide .kicker {
-    display: flex; justify-content: space-between; align-items: center; gap: 12px;
-    font-size: 11px; font-weight: 800; letter-spacing: .12em; color: #d61f4e; margin-bottom: 10px;
-  }
-  .slide .kicker .org { color: #8592b5; letter-spacing: .04em; font-weight: 700; }
-  .slide h1 { text-align: center; font-size: 26px; margin-bottom: 22px; color: #0f2044; }
-  .cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-  .col { display: flex; flex-direction: column; align-items: center; gap: 0; }
-  .box {
-    border: 1.5px solid #b9cbe8; border-radius: 8px; padding: 11px 10px; width: 100%;
-    text-align: center; font-size: 13.5px; font-weight: 600; background: #fff;
-  }
+ 
   .link { width: 2px; height: 20px; background: #3f6fb5; }
   .link.red { background: #d61f4e; }
   .out { border-radius: 8px; padding: 12px 10px; width: 100%; text-align: center; background: #f4f8fd; }
@@ -155,7 +143,7 @@
   .out .pic { height: 46px; display: grid; place-items: center; }
   @media (max-width: 720px) {
     .cols { grid-template-columns: 1fr; }
-    .slide h1 { font-size: 20px; }
+    
   }
 
   .undervideo { padding: 14px 18px; }
@@ -244,7 +232,7 @@
   </div>
   <button class="act" onclick="alert('Phần hỏi đáp với AI không thuộc phạm vi bài này.')">✦ <span class="txt">Đặt câu hỏi với AI</span></button>
   <button class="act" onclick="focusFeedback()">✍ <span class="txt">Gửi góp ý</span></button>
-  <span class="avatar">N</span>
+  <button class="avatar" onclick="toggleTheme()" title="Đổi nền sáng / tối">◐</button>
 </header>
 
 <div class="shell">
@@ -288,51 +276,7 @@
   <!-- ================= MAIN ================= -->
   <main class="main">
     <div class="stagewrap">
-      <!-- slide tĩnh minh hoạ nội dung bài, khớp khung hình đầu video -->
-      <div class="slide" id="slide">
-        <div class="kicker">
-          <span>NGÀY 01 · AI, MACHINE LEARNING, GENERATIVE AI &amp; LLM</span>
-          <span class="org">● VinUni · AI in Action 20K</span>
-        </div>
-        <h1>Ba yêu cầu, ba kiểu đầu ra</h1>
-        <div class="cols">
-          <div class="col">
-            <div class="box">✉ Phân loại email</div>
-            <div class="link"></div>
-            <div class="box">Xử lý ?</div>
-            <div class="link red"></div>
-            <div class="out">
-              <div class="cap">NHÃN</div>
-              <span class="chip">Thư rác</span>
-            </div>
-          </div>
-          <div class="col">
-            <div class="box">Viết trả lời khách</div>
-            <div class="link"></div>
-            <div class="box">Xử lý ?</div>
-            <div class="link red"></div>
-            <div class="out">
-              <div class="cap">ĐOẠN VĂN</div>
-              <div class="bars"><i style="width:88%"></i><i style="width:96%"></i><i style="width:70%"></i></div>
-            </div>
-          </div>
-          <div class="col">
-            <div class="box">Tạo ảnh minh họa</div>
-            <div class="link"></div>
-            <div class="box">Xử lý ?</div>
-            <div class="link red"></div>
-            <div class="out">
-              <div class="cap">ẢNH MỚI</div>
-              <div class="pic">
-                <svg width="92" height="44" viewBox="0 0 92 44" aria-hidden="true">
-                  <polyline points="4,40 30,14 50,30 68,10 88,40" fill="none" stroke="#d61f4e" stroke-width="2.4"/>
-                  <circle cx="74" cy="12" r="4" fill="#1d4ed8"/>
-                </svg>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+     
 
       <!-- player dùng chung với index.html -->
       <div id="playerMount"></div>
@@ -420,7 +364,7 @@ function notReady() {
 
 /* ---------- player dùng chung ---------- */
 var player = FRPlayer.create($('playerMount'), {
-  showTranscript: false,
+ 
   onTime: function (sec, line) {
     if (line) markProgress(line.cau);
   }
@@ -556,6 +500,14 @@ function goFeedbackRadar() {
     } catch (e) {}
   }
   location.href = 'index.html' + (list.length ? '?from=home' : '');
+}
+
+function toggleTheme(){
+  var cur = document.documentElement.getAttribute('data-theme');
+  var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  var next = cur ? (cur === 'dark' ? 'light' : 'dark') : (prefersDark ? 'light' : 'dark');
+  document.documentElement.setAttribute('data-theme', next);
+  try { localStorage.setItem('fr-theme', next); } catch(e){}
 }
 
 window.addEventListener('DOMContentLoaded', function () {
