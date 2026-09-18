@@ -103,7 +103,7 @@ Nhóm đã khảo sát và phân tích sâu 2 giải pháp tương tự trên th
   | Khâu xử lý | Phương thức | Chi tiết triển khai |
   |---|---|---|
   | **1. Khử PII & Lọc an toàn** | **Heuristic Rule (Không AI)** | Dùng Regex quét & chặn 100% prompt injection và công kích cá nhân, xuất vào `safety_log.json` |
-   | **2. Gom cụm & Phân loại lỗi** | **AI THẬT (các lượt trace đã chạy)** | Model nhận feedback + transcript, gom nhóm ngữ nghĩa và phân loại. Repo có trace AI thật, nhưng chưa có một file benchmark full 24 case hợp lệ để kết luận quality bar. |
+   | **2. Gom cụm & Phân loại lỗi** | **AI THẬT (các lượt trace đã chạy)** | Model nhận feedback + transcript, gom nhóm ngữ nghĩa và phân loại. Repo có 3 file benchmark full 24 case hợp lệ; lượt 3 đạt quality bar cả 5 chiều. |
   | **3. Định vị Timestamp** | **Static Table (Bảng cứng, KHÔNG AI)** | AI chỉ xác định `câu_index` (1..40); code Python map trực tiếp sang phút:giây qua `transcript-timecode.json`, triệt tiêu hallucination |
   | **4. Tính phạm vi làm lại** | **Code Heuristic (Phép cộng)** | Đo bằng **số ký tự thu lại giọng + số cảnh dựng lại** theo `bang-chi-phi-lam-lai.md`. Đổi lời câu N tự cộng N−1, N+1; đổi hình = 0 ký tự; phụ đề = 0 ký tự 0 cảnh. Đối chiếu với toàn bộ video: 3 637 ký tự / 40 cảnh |
   | **5. Giao diện duyệt & Video** | **Mock Web UI (HTML/JS)** | Giao diện duyệt Accept/Reject, player mô phỏng nhảy timeline theo giây lỗi của video `d1.mp4` |
@@ -178,29 +178,31 @@ Mỗi chiều chất lượng được định nghĩa bằng công thức địn
 
 ### 3. Cam kết Ngưỡng chất lượng (Quality Bar chốt tại CP4 — ĐÓNG BĂNG)
 
-| Tiêu chí chất lượng | Định nghĩa & Công thức | Quality Bar cam kết | Kết quả thực tế (Lượt 4 · DeepSeek) | Đánh giá |
+| Tiêu chí chất lượng | Định nghĩa & Công thức | Quality Bar cam kết | Kết quả thực tế (Lượt 3 · Gemini 3.5 Flash Lite) | Đánh giá |
 |---|---|:---:|:---:|:---:|
-| **1. An toàn (Safety)** | 100% prompt injection & công kích bị lọc bỏ | **100%** | **Chưa có lượt full hợp lệ** | **CHƯA KẾT LUẬN** |
-| **2. Không bịa nguồn** | 100% quote_id và câu_index có thật trong input | **100%** | **Chưa có lượt full hợp lệ** | **CHƯA KẾT LUẬN** |
-| **3. Đúng nhóm lỗi** | Gán đúng nhóm Nội dung / Sư phạm / Kỹ thuật | **≥85%** | **Chưa có lượt full hợp lệ** | **CHƯA KẾT LUẬN** |
-| **4. Định vị đúng câu** | Trùng mốc câu hoặc sai số dung sai $\pm 1$ câu | **≥70%** | **Chưa có lượt full hợp lệ** | **CHƯA KẾT LUẬN** |
-| **5. Tính dây chuyền** | Đổi lời câu $N$ liệt kê đủ $N-1, N, N+1$ | **100%** | **Chưa có lượt full hợp lệ** | **CHƯA KẾT LUẬN** |
+| **1. An toàn (Safety)** | 100% prompt injection & công kích bị lọc bỏ | **100%** | **100% (24/24)** | **ĐẠT** |
+| **2. Không bịa nguồn** | 100% quote_id và câu_index có thật trong input | **100%** | **100% (24/24)** | **ĐẠT** |
+| **3. Đúng nhóm lỗi** | Gán đúng nhóm Nội dung / Sư phạm / Kỹ thuật | **≥85%** | **91,7% (22/24)** | **ĐẠT** |
+| **4. Định vị đúng câu** | Trùng mốc câu hoặc sai số dung sai $\pm 1$ câu | **≥70%** | **100% (24/24)** | **ĐẠT** |
+| **5. Tính dây chuyền** | Đổi lời câu $N$ liệt kê đủ $N-1, N, N+1$ | **100%** | **100%** | **ĐẠT** |
 
-**Tổng số case đạt trọn vẹn cả 5 tiêu chuẩn:** chưa thể kết luận vì chưa có file kết quả full 24 case hợp lệ trong repo.
+**Tổng số case đạt trọn vẹn cả 5 tiêu chuẩn:** 22/24 = 91,7% trong lượt 3.
 
 ### 4. Bảng theo dõi tiến độ qua 4 lượt đo thực tế (AI THẬT)
 Dữ liệu đọc trực tiếp từ các file kết quả `eval/results/run-0{1,2,3,4}.json` có trường `nguon: "ai-that"`:
 
 | Lượt | Model AI | Số case | Số case đạt | Tỷ lệ (%) | Failure đau nhất | Hành động cải tiến từ lượt trước |
 |:---:|:---:|:---:|:---:|:---:|---|---|
-| **Các trace đã chạy** | Nhiều model/provider | Chưa đủ một lượt full | Không kết luận | Quan sát định tính: AI đôi khi định vị quá rộng | Dùng trace để phát hiện failure, không dùng làm benchmark định lượng |
+| **1** | Gemini 3.5 Flash Lite | 24 | 19 | 79,2% | Dây chuyền thu lời 75%; lỗi kỹ thuật và định vị còn mở rộng | Siết prompt dây chuyền, lỗi kỹ thuật và phạm vi câu |
+| **2** | Gemini 3.5 Flash Lite | 24 | 20 | 83,3% | Đúng nhóm lỗi 83,3%, dưới bar 85%; case 05, 08, 19, 20 | Bổ sung quy tắc phân loại mơ hồ, nội dung và phụ đề |
+| **3** | Gemini 3.5 Flash Lite | 24 | 22 | 91,7% | Còn 2 case trượt: case-08 và case-20 | Siết quy tắc phân loại mơ hồ và nội dung |
 
 ### 5. Tự khai báo trung thực các khuyết điểm & hạng mục chưa hoàn thiện
 Theo tinh thần rubric R4 ("Kết quả đo được ghi nhận trung thực — kể cả khi không đạt quality bar — vẫn được tính đủ điểm; số liệu bị chỉnh sửa hoặc che giấu sẽ không được tính"), nhóm tự khai báo rõ các điểm giới hạn hiện tại:
-1. **Chưa có benchmark full hợp lệ:** Các file `run-01/02/03.json` cũ đã được loại vì sinh bằng heuristic; repo hiện chỉ có trace rời rạc, chưa có file kết quả 24 case để báo tỷ lệ đạt.
+1. **Ba lượt benchmark full hợp lệ:** `eval/results/run-01.json`, `run-02.json` và `run-03.json` đều có 24 case, 19 request AI thật và 5 case bị lọc trước khi gọi model.
 2. **Khảo sát người thật chưa đạt Chuẩn A của rubric:** Nhóm có khảo sát định hướng n = 5 với các tín hiệu pain rõ ràng, nhưng rubric yêu cầu ít nhất 20 người ngoài nhóm. Nhóm không dùng khảo sát này để tuyên bố đạt Chuẩn A.
-3. **Định vị quá rộng trong trace:** Một số output mở rộng khoảng câu vượt quá câu thực sự liên quan; đây là failure định tính cần xử lý ở CP5.
-*(Lưu ý: Ba file `run-01/02/03.json` cũ từng ghi 100% do chạy bằng if/else từ khóa đã bị nhóm chủ động chuyển sang `eval/results/_khong-hop-le/` để đảm bảo tính liêm chính).*
+3. **Failure lượt 3:** case-08 và case-20 vẫn trượt phân loại, nhưng cả 5 quality bar đã đạt; hai case này được giữ nguyên để báo cáo trung thực.
+*(Lưu ý: Các file cũ từng ghi 100% do chạy bằng if/else từ khóa đã được chuyển sang `eval/results/_khong-hop-le/`; các file `run-01.json`, `run-02.json` và `run-03.json` ở thư mục kết quả hiện tại là các lượt đo AI thật.)*
 
 ---
 

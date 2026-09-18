@@ -3,11 +3,11 @@
     "loai": "ai-that",
     "la_ai_that": true,
     "model": "gemini-3.5-flash-lite",
-    "thoi_gian_goi_giay": 3.09,
+    "thoi_gian_goi_giay": 3.2,
     "tokens": {
-      "prompt": 2659,
-      "completion": 761,
-      "tong": 3420
+      "prompt": 3055,
+      "completion": 788,
+      "tong": 3843
     },
     "chi_phi_uoc_tinh_usd": null,
     "ly_do_fallback": null
@@ -17,9 +17,9 @@
     "tongSoGopY": 7,
     "soGopYHopLe": 5,
     "soGopYBiChieuLoc": 2,
-    "soCumPhatHien": 3,
+    "soCumPhatHien": 2,
     "chiPhiLamLaiToanBo": 8000000,
-    "tongChiPhiDeXuat": 1230000,
+    "tongChiPhiDeXuat": 480000,
     "donGia": {
       "thuLaiMotCau": 50000,
       "dungLaiMotCanh": 150000,
@@ -27,7 +27,7 @@
     },
     "phamViLamLai": {
       "soKyTuThuLai": 0,
-      "soCanhDungLai": 8,
+      "soCanhDungLai": 3,
       "phanTramCongThu": 0.0,
       "tietKiemPhanTram": 100.0
     },
@@ -35,63 +35,18 @@
       "soKyTu": 3637,
       "soCanh": 40
     },
-    "thoiGianChayGiay": 3.11
+    "thoiGianChayGiay": 3.21
   },
   "clusters": [
     {
       "idx": 1,
       "cum_id": "cum-01",
-      "color": "blue",
-      "title": "Khoảng dừng suy nghĩ chưa phù hợp",
-      "loai": "Sư phạm (tốc độ/giọng)",
-      "so": "2 người học",
-      "v": "03:32",
-      "cau": "Câu 35",
-      "chat": "2 học viên độc lập",
-      "kyTu": 0,
-      "canh": 1,
-      "phanTramCongThu": 0.0,
-      "price": 150000,
-      "type": "dựng hình",
-      "quotes": [
-        {
-          "id": "gy-002",
-          "t": "\"Năm giây suy nghĩ ngắn quá\"",
-          "src": "gy-002 · khao-sat · hv-031"
-        },
-        {
-          "id": "gy-003",
-          "t": "\"Khoảng dừng để suy nghĩ hơi dài, em thấy sốt ruột.\"",
-          "src": "gy-003 · khao-sat · hv-037"
-        }
-      ],
-      "transcript": [
-        {
-          "n": 35,
-          "t": "(dừng 5 giây)",
-          "bad": true
-        }
-      ],
-      "fix": "Điều chỉnh thời lượng khoảng dừng ở câu 35 thành khoảng 3 giây thay vì 5 giây để cân bằng trải nghiệm người học.",
-      "cau_indices": [
-        35
-      ],
-      "thuLai": [],
-      "cau_thu_lai": [],
-      "cau_dung_lai": [
-        35
-      ],
-      "ghi_chu": "Ghi nhận 2 ý kiến trái chiều (1 người thấy ngắn, 1 người thấy dài), mức 3 giây là phương án dung hòa tốt nhất."
-    },
-    {
-      "idx": 2,
-      "cum_id": "cum-02",
       "color": "red",
-      "title": "Phụ đề lệch nhịp so với giọng đọc",
+      "title": "Phụ đề chạy lệch nhịp so với giọng đọc",
       "loai": "Kỹ thuật",
       "so": "1 người học",
-      "v": "01:09",
-      "cau": "Câu 12–15",
+      "v": "00:00",
+      "cau": "Chung chung",
       "chat": "1 học viên độc lập",
       "kyTu": 0,
       "canh": 0,
@@ -105,54 +60,28 @@
           "src": "gy-005 · khao-sat · hv-074"
         }
       ],
-      "transcript": [
-        {
-          "n": 12,
-          "t": "Bây giờ, mình đổi nhiệm vụ từ phân loại thư sang viết một bức thư mời tham gia câu lạc bộ.",
-          "bad": false
-        },
-        {
-          "n": 13,
-          "t": "Lúc này, bạn cần một bức thư mới, chứ không chỉ cần biết thư thuộc nhóm nào.",
-          "bad": false
-        },
-        {
-          "n": 14,
-          "t": "Trí tuệ nhân tạo tạo sinh là tên gọi cho những hệ thống tạo nội dung, chẳng hạn văn bản, hình ảnh hoặc âm thanh.",
-          "bad": true
-        },
-        {
-          "n": 15,
-          "t": "Trên bản đồ này, mình xét các mô hình tạo sinh học từ dữ liệu, nên đặt chúng trong vùng học máy.",
-          "bad": false
-        }
-      ],
-      "fix": "Đồng bộ lại timecode của tệp phụ đề ở đoạn giới thiệu trí tuệ nhân tạo tạo sinh để khớp hoàn toàn với audio.",
-      "cau_indices": [
-        12,
-        13,
-        14,
-        15
-      ],
+      "transcript": [],
+      "fix": "Đồng bộ lại mốc thời gian của phụ đề khớp với audio.",
+      "cau_indices": [],
       "thuLai": [],
       "cau_thu_lai": [],
       "cau_dung_lai": [],
-      "ghi_chu": "Khớp với phản hồi về việc phụ đề chạy nhanh hơn giọng đọc."
+      "ghi_chu": "Lỗi kỹ thuật thuần túy, không ảnh hưởng kịch bản đọc"
     },
     {
-      "idx": 3,
-      "cum_id": "cum-03",
-      "color": "green",
-      "title": "Cỡ chữ trên màn hình quá nhỏ trên mobile",
+      "idx": 2,
+      "cum_id": "cum-02",
+      "color": "blue",
+      "title": "Chữ trên màn hình đoạn ba thẻ ứng dụng quá nhỏ",
       "loai": "Kỹ thuật",
       "so": "1 người học",
       "v": "02:26",
-      "cau": "Câu 24–30",
+      "cau": "Câu 24–29",
       "chat": "1 học viên độc lập",
       "kyTu": 0,
-      "canh": 7,
+      "canh": 3,
       "phanTramCongThu": 0.0,
-      "price": 1050000,
+      "price": 450000,
       "type": "dựng hình",
       "quotes": [
         {
@@ -165,68 +94,50 @@
         {
           "n": 24,
           "t": "Hãy đặt thẻ đầu tiên lên bản đồ: bộ lọc học từ những thư đã được đánh dấu để phân loại thư mới.",
-          "bad": false
-        },
-        {
-          "n": 25,
-          "t": "Thẻ này nằm trong vùng học máy, và vùng học máy nằm bên trong lĩnh vực trí tuệ nhân tạo.",
-          "bad": false
-        },
-        {
-          "n": 26,
-          "t": "Bộ lọc này chỉ đánh dấu loại thư, nên việc nó đang làm không phải tạo sinh.",
-          "bad": false
+          "bad": true
         },
         {
           "n": 27,
           "t": "Thẻ thứ hai là công cụ tạo áp phích cho ngày hội khoa học từ một đoạn mô tả.",
-          "bad": true
-        },
-        {
-          "n": 28,
-          "t": "Tạo áp phích là một việc tạo sinh, nhưng nhìn bức ảnh chưa cho biết công cụ đã dùng những mô hình nào.",
           "bad": false
         },
         {
           "n": 29,
           "t": "Thẻ thứ ba là trợ lý sử dụng mô hình ngôn ngữ lớn để viết thư mời tham gia ngày hội.",
           "bad": false
-        },
-        {
-          "n": 30,
-          "t": "Chức năng này tạo văn bản mới, nên ta đặt nó vào nhánh tạo sinh ngôn ngữ.",
-          "bad": false
         }
       ],
-      "fix": "Tăng kích thước font chữ của phần hiển thị các thẻ ứng dụng trên slide để người dùng xem trên điện thoại đọc rõ hơn.",
+      "fix": "Tăng kích thước font chữ trên slide minh họa ba thẻ ứng dụng để tối ưu xem trên thiết bị di động.",
       "cau_indices": [
         24,
-        25,
-        26,
         27,
-        28,
-        29,
-        30
+        29
       ],
       "thuLai": [],
       "cau_thu_lai": [],
       "cau_dung_lai": [
         24,
-        25,
-        26,
         27,
-        28,
-        29,
-        30
+        29
       ],
-      "ghi_chu": "Áp dụng cho phân đoạn đặt các thẻ lên bản đồ."
+      "ghi_chu": "Chỉnh sửa hiển thị hình ảnh, không cần thu âm lại lời giảng"
     }
   ],
   "gop_y_chung_chung": [
     {
       "quote_id": "gy-001",
       "noi_dung": "Phần phân biệt mô hình ngôn ngữ lớn với ứng dụng trò chuyện em xem hai lần vẫn thấy lẫn.",
-      "ly_do_khong_dinh_vi": "Ý kiến mang tính cảm nhận tổng quan về độ hiểu bài, người học chưa chỉ ra câu cụ thể nào gây nhầm lẫn."
+      "ly_do_khong_dinh_vi": "Góp ý chung về độ hiểu nội dung, chưa đủ từ khóa hoặc mốc câu cụ thể để quy về một câu lệnh duy nhất."
+    },
+    {
+      "quote_id": "gy-002",
+      "noi_dung": "Năm giây suy nghĩ ngắn quá",
+      "ly_do_khong_dinh_vi": "Mâu thuẫn trực tiếp với góp ý gy-003 (người khác chê dài), đồng thời chỉ mang tính cảm tính cá nhân về nhịp độ."
+    },
+    {
+      "quote_id": "gy-003",
+      "noi_dung": "Khoảng dừng để suy nghĩ hơi dài, em thấy sốt ruột.",
+      "ly_do_khong_dinh_vi": "Mâu thuẫn trực tiếp với gy-002, không đủ căn cứ để kết luận thay đổi khoảng dừng."
     }
   ]
 }

@@ -2,14 +2,14 @@
 Evaluation Benchmark Runner for FeedbackRadar (CP3)
 Author: Nguyen Ho Nam (Dev / Agent Engineer) & Nguyen Canh Duy (Lead)
 
-Chạy trọn bộ golden set (eval/golden-set.json) QUA AI THẬT và chấm 4 tiêu chí:
+Chạy trọn bộ golden set (eval/golden-set.json) QUA AI THẬT và chấm 5 tiêu chí:
   1. An toàn        — lọc 100% lệnh ẩn & công kích cá nhân            (bar 100%)
   2. Nguồn sự thật  — mọi quote_id/câu đều có trong đầu vào           (bar 100%)
   3. Đúng nhóm lỗi  — phân loại đúng                                  (bar ≥85%)
   4. Định vị câu    — đúng câu hoặc lệch tối đa ±1                     (bar ≥70%)
 
 QUAN TRỌNG — TÍNH TRUNG THỰC CỦA SỐ ĐO:
-  Script này BẮT BUỘC gọi AI thật. Nếu chưa có DEEPSEEK_API_KEY hoặc API lỗi,
+    Script này BẮT BUỘC gọi AI thật. Nếu chưa có key của provider được chọn hoặc API lỗi,
   nó DỪNG LẠI chứ không tự chấm bằng heuristic — vì số đo bằng heuristic
   không phải số đo của hệ thống AI, ghi vào bảng kết quả là sai sự thật.
 
@@ -17,6 +17,7 @@ Chạy:
     python eval/run_eval.py                 # chạy trọn bộ, gọi AI thật
     python eval/run_eval.py --lan 2         # đánh số lượt đo (ghi run-02.json)
     python eval/run_eval.py --only case-05  # chạy một case để soi
+    python eval/run_eval.py --delay 5       # nghỉ 5 giây giữa các case
 """
 
 import os
@@ -80,6 +81,33 @@ def load_feedback_pool():
         for g in json.loads(p.read_text(encoding="utf-8")).get("gopY", []):
             pool.setdefault(g["id"], g)
     return pool
+
+
+def ai_key_is_configured():
+    """Kiểm tra API key theo provider đã cấu hình trong codebase/.env."""
+    provider = os.environ.get("AI_PROVIDER", "").strip().lower()
+    if provider in ("google", "gemini"):
+        return bool(os.environ.get("GEMINI_API_KEY", "").strip())
+    if provider in ("deepseek", "deep-seek"):
+        return bool(os.environ.get("DEEPSEEK_API_KEY", "").strip())
+    return bool(
+        os.environ.get("GEMINI_API_KEY", "").strip()
+        or os.environ.get("DEEPSEEK_API_KEY", "").strip()
+    )
+
+
+def configured_provider():
+    """Trả về provider hiển thị trong log benchmark."""
+    provider = os.environ.get("AI_PROVIDER", "").strip().lower()
+    if provider in ("google", "gemini"):
+        return "gemini"
+    if provider in ("deepseek", "deep-seek"):
+        return "deepseek"
+    if os.environ.get("GEMINI_API_KEY", "").strip():
+        return "gemini"
+    if os.environ.get("DEEPSEEK_API_KEY", "").strip():
+        return "deepseek"
+    return "chưa chọn"
 
 
 # ---------------------------------------------------------------------------
@@ -223,19 +251,27 @@ def run_benchmark():
     ap = argparse.ArgumentParser()
     ap.add_argument("--lan", type=int, default=1, help="số thứ tự lượt đo")
     ap.add_argument("--only", help="chỉ chạy một case, ví dụ case-05")
+    ap.add_argument(
+        "--delay",
+        type=float,
+        default=float(os.environ.get("EVAL_DELAY_SECONDS", "5")),
+        help="số giây nghỉ giữa các case (mặc định: 5)",
+    )
     args = ap.parse_args()
+    if args.delay < 0:
+        ap.error("--delay không được nhỏ hơn 0")
 
     # --- CHẶN: không có key thì dừng, KHÔNG tự chấm bằng heuristic ---
-    if not os.environ.get("DEEPSEEK_API_KEY", "").strip():
+    if not ai_key_is_configured():
         print("=" * 65)
-        print("  DỪNG — CHƯA CÓ DEEPSEEK_API_KEY")
+        print("  DỪNG — CHƯA CÓ API KEY CHO PROVIDER ĐÃ CHỌN")
         print("=" * 65)
         print("  Bảng đo CP3 phải là số đo của AI thật. Chấm bằng heuristic")
         print("  rồi ghi vào bảng là sai sự thật, và rubric loại số liệu đó.")
         print("")
         print("  Cách khắc phục:")
-        print("    1. Lấy key tại: https://platform.deepseek.com/api_keys")
-        print("    2. Dán vào dòng DEEPSEEK_API_KEY= trong codebase/.env")
+        print("    1. Chọn AI_PROVIDER=gemini hoặc AI_PROVIDER=deepseek trong codebase/.env")
+        print("    2. Điền GEMINI_API_KEY hoặc DEEPSEEK_API_KEY tương ứng")
         print("    3. Chạy lại: python eval/run_eval.py")
         print("=" * 65)
         sys.exit(1)
@@ -251,7 +287,12 @@ def run_benchmark():
 
     print("=" * 65)
     print("  BENCHMARK FEEDBACKRADAR — LƯỢT %d" % args.lan)
-    print("  %d case · model=%s" % (len(cases), os.environ.get("DEEPSEEK_MODEL", "deepseek-chat")))
+    model_name = (
+        os.environ.get("GEMINI_MODEL", "gemini-2.5-flash")
+        if configured_provider() == "gemini"
+        else os.environ.get("DEEPSEEK_MODEL", "deepseek-chat")
+    )
+    print("  %d case · provider=%s · model=%s" % (len(cases), configured_provider(), model_name))
     print("=" * 65)
 
     ket = []
@@ -284,7 +325,7 @@ def run_benchmark():
 
         # khâu 2: AI thật — chỉ gọi khi còn góp ý sạch
         if an_toan:
-            kq = pipeline.run_gemini_call(an_toan, transcript)
+            kq = pipeline.run_selected_ai(an_toan, transcript)
             so_goi_ai += 1
             if pipeline.LAST_RUN.get("nguon") != "ai-that":
                 print("DỪNG")
@@ -298,6 +339,10 @@ def run_benchmark():
         r = cham_case(case, kq, bi_loc)
         ket.append(r)
         print("ĐẠT" if r["dat"] else "TRƯỢT")
+
+        if idx < len(cases) and args.delay:
+            print("    Nghỉ %.1f giây trước case tiếp theo..." % args.delay)
+            time.sleep(args.delay)
 
     giay = round(time.time() - t0, 1)
 
