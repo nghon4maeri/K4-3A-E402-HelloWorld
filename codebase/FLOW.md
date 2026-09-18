@@ -123,12 +123,29 @@ Tranh chấp      : gy-005 ↔ gy-006 phiếu 1–1 → ghi nhận cả hai, KH�
 
 | File | Nội dung |
 |---|---|
-| `index.html` | Mock bấm được — mở bằng trình duyệt, không cần server |
+| `home.html` | Trang học bài (mô phỏng VinUni) — học viên xem video d1 và gửi góp ý; nút 📡 ở thanh phải mang góp ý sang FeedbackRadar |
+| `index.html` | FeedbackRadar 4 màn — **cần chạy qua `run_local.py`** (gọi `/api/analyze`, đọc `clusters.json`) |
+| `player.js` / `player.css` | Player dùng chung cho cả hai trang: đọc `transcript-timecode.json`, tua theo câu, đánh dấu câu lỗi trên thanh thời gian |
+| `index.old.html` | Bản mock CP2 cũ, giữ lại để đối chiếu |
+| `UI-DESIGN.md` | Bản thiết kế giao diện: lý do từng quyết định, map trường dữ liệu, việc còn lại |
 | `FLOW.md` | Sơ đồ luồng này |
 
-## Còn thiếu để lên mức Working (trước CP3 — 16:00 17/9)
+**Mở demo:** `python run_local.py` → vào `http://localhost:8000/home.html` (góc nhìn học viên) hoặc `/index.html` (góc nhìn biên tập viên).
 
-- [ ] Lời gọi AI thật ở khâu (3) gom cụm và (4) định vị câu, log/trace lưu trong `eval/`
-- [ ] Nhúng `video-mau/d1.mp4` thật thay khung video mock
-- [ ] Đọc góp ý từ file JSON/CSV thay vì mảng `ISSUES` tĩnh
-- [ ] Bộ ~100 góp ý tự sinh + đáp án (yêu cầu "Đội tự lo" trong README của gói)
+## Đã xong (cập nhật 17/9)
+
+- [x] Lời gọi AI thật ở khâu (3) gom cụm — trace lưu trong `eval/results/trace-*.json`
+- [x] Nhúng `video-mau/d1.mp4` thật, nhảy tới đúng mốc giây của cụm đang xem
+- [x] Đọc góp ý từ CSV/JSON người dùng dán hoặc thả file, không còn mảng `ISSUES` tĩnh
+- [x] Bộ 100 góp ý tự sinh + đáp án — `eval/fixtures/gop-y-100.json`
+- [x] UI đo bằng **ký tự + cảnh**, bỏ hết quy đổi ra tiền (non-goal #4)
+- [x] Badge nguồn kết quả: phân biệt rõ AI thật với dữ liệu dựng sẵn
+
+- [x] Trang `home.html` — bối cảnh học viên xem bài và gửi góp ý, nối sang FeedbackRadar
+- [x] Thanh seek nối thật với `currentTime`; server hỗ trợ HTTP Range nên tua được video
+
+## Còn lại cho CP5
+
+- [ ] Ghi ngược quyết định gán thủ công (rổ "chưa định vị được") vào `clusters.json`
+- [ ] Server che nội dung công kích trước khi gửi về trình duyệt, thay vì chỉ ẩn ở UI
+- [ ] Góp ý ở `home.html` lưu trong `localStorage`; muốn nhiều máy cùng gửi thì cần endpoint ghi vào file

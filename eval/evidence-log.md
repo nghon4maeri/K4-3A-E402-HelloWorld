@@ -72,11 +72,13 @@ Kiểm chứng trên ví dụ có sẵn của ban tổ chức (`ket-qua-mau.json
 - **Trích xuất góp ý phục vụ AI:** Danh sách trích xuất chi tiết lưu tại [`eval/fixtures/gop-y-nguoi-that.json`](file:///D:/Giselle_/VinAI/K4-3A-E402-HelloWorld/eval/fixtures/gop-y-nguoi-that.json).
 - **Bộ câu hỏi chuẩn Mom Test:** Hỏi trực diện về hành vi và sự việc đã diễn ra trong thực tế (không hỏi ý kiến giả định tương lai).
 
-### 1. Kết quả định lượng từ người học thật (n = 5)
+### 1. Kết quả định lượng từ người học thật (n = 5, bằng chứng định hướng)
+
+> Đây là khảo sát thật nhưng chưa đạt Chuẩn A của rubric, vì rubric yêu cầu ít nhất 20 người ngoài nhóm. Các tỷ lệ dưới đây được báo cáo để chứng minh tín hiệu pain, không phải để tuyên bố đạt Chuẩn A.
 
 | Câu hỏi khảo sát (Mom Test) | Kết quả thực tế | Tỷ lệ | Ý nghĩa đối với bài toán FeedbackRadar |
 |---|---|---|---|
-| **Q1: Từng gặp đoạn khó hiểu hoặc lỗi kỹ thuật?** | **5 / 5** | **100%** | Nỗi đau hiện hữu 100% người học (vượt xa ngưỡng ≥50% của Rubric R1). |
+| **Q1: Từng gặp đoạn khó hiểu hoặc lỗi kỹ thuật?** | **5 / 5** | **100%** | Nỗi đau xuất hiện trong toàn bộ mẫu khảo sát nhỏ. |
 | **Q2: KHÔNG xác định được phút/giây khi gặp lỗi** | **4 / 5** | **80%** | 80% chỉ nhớ đại khái (giữa/cuối video) hoặc không nhớ gì → Lý do studio phải mở xem cả bài. |
 | **Q3: Từng định góp ý nhưng THÔI (rào cản)** | **5 / 5** | **100%** | 100% gặp rào cản: không biết gửi cho ai (60%), ngại mất thời gian (40%), nghĩ không ai đọc (20%). |
 | **Q4: Từng bỏ dở video vì âm thanh nhỏ/rè** | **3 / 5** | **60%** | Lỗi kỹ thuật ảnh hưởng trực tiếp đến tỷ lệ hoàn thành bài học. |
@@ -105,14 +107,14 @@ Các phản hồi về trải nghiệm tệ nhất khi xem video bài giảng đ
    > *"Khó hiểu vì chưa đủ kiến thức, ví dụ slide chưa rõ ràng"*
    > *(Lỗi Slide/Visual chưa trực quan kết hợp với thiếu ví dụ dẫn dắt).*
 
-*(Ghi chú: Bộ 20 khảo sát mô phỏng trước đây tại `eval/fixtures/khao-sat-mo-phong.csv` có tỷ lệ khó hiểu 90% và không nhớ timestamp 90%, hoàn toàn khớp và được kiểm chứng vững chắc bởi dữ liệu người thật 100% và 80% ở trên).*
+*(Ghi chú: Bộ 20 khảo sát mô phỏng trước đây tại `eval/fixtures/khao-sat-mo-phong.csv` chỉ dùng để đối chiếu, không được dùng thay cho khảo sát người thật.)* 
 
 ---
 
 ## Đánh giá Bằng chứng (Evidence Evaluation Summary)
 
 1. **Chuẩn B (Data Mining) — ĐẠT:** Khai phá trên 22 góp ý duy nhất từ gói dữ liệu BTC (`gop-y-mau.json` + `khao-sat-mau.csv`), chỉ ra 61,1% thuộc nhóm khó, chứng minh sửa 1 câu (câu 22) chỉ tốn 269/3 637 ký tự (tiết kiệm 92,6%).
-2. **Chuẩn A (Khảo sát Người thật) — ĐÃ ĐẠT:** Dữ liệu khảo sát người thật n = 5 (học viên lớp 3A), 100% gặp lỗi/khó hiểu, 80% không nhớ timestamp, 100% gặp rào cản góp ý, trích xuất đầy đủ 4 quote trải nghiệm thật và xác định được tester thật (`HV-05`) cho CP5.
+2. **Khảo sát người thật — bằng chứng định hướng, chưa đạt Chuẩn A:** Dữ liệu khảo sát người thật n = 5 (học viên lớp 3A) cho thấy 100% gặp lỗi/khó hiểu, 80% không nhớ timestamp và 100% gặp rào cản góp ý. Rubric yêu cầu tối thiểu 20 người ngoài nhóm; nhóm không dùng n = 5 để tuyên bố đạt Chuẩn A.
 
 ## Kế hoạch hành động tiếp theo
 - **CP5 (User Validation):** Thực hiện phiên phỏng vấn sâu 10 phút (Mom Test CS177) với `HV-05` (người phản hồi *"Có, ghi tôi vào"*) và 2 willing users Đào Xuân Anh, Trần Đức Mạnh.

@@ -3,23 +3,23 @@
     "loai": "ai-that",
     "la_ai_that": true,
     "model": "deepseek-chat",
-    "thoi_gian_goi_giay": 4.67,
+    "thoi_gian_goi_giay": 3.96,
     "tokens": {
-      "prompt": 3353,
-      "completion": 945,
-      "tong": 4298
+      "prompt": 3362,
+      "completion": 750,
+      "tong": 4112
     },
-    "chi_phi_uoc_tinh_usd": 0.003964,
+    "chi_phi_uoc_tinh_usd": 0.003965,
     "ly_do_fallback": null
   },
   "metadata": {
     "kichBanId": "d1",
-    "tongSoGopY": 7,
+    "tongSoGopY": 6,
     "soGopYHopLe": 5,
-    "soGopYBiChieuLoc": 2,
-    "soCumPhatHien": 4,
+    "soGopYBiChieuLoc": 1,
+    "soCumPhatHien": 3,
     "chiPhiLamLaiToanBo": 8000000,
-    "tongChiPhiDeXuat": 1830000,
+    "tongChiPhiDeXuat": 1800000,
     "donGia": {
       "thuLaiMotCau": 50000,
       "dungLaiMotCanh": 150000,
@@ -35,18 +35,18 @@
       "soKyTu": 3637,
       "soCanh": 40
     },
-    "thoiGianChayGiay": 6.5
+    "thoiGianChayGiay": 6.95
   },
   "clusters": [
     {
       "idx": 1,
       "cum_id": "cum-01",
       "color": "violet",
-      "title": "Phân biệt mô hình ngôn ngữ lớn và ứng dụng trò chuyện còn gây lẫn",
+      "title": "Nhầm lẫn giữa mô hình ngôn ngữ lớn và ứng dụng trò chuyện",
       "loai": "Nội dung",
       "so": "1 người học",
-      "v": "01:48",
-      "cau": "Câu 18–39",
+      "v": "02:01",
+      "cau": "Câu 20–39",
       "chat": "1 học viên độc lập",
       "kyTu": 268,
       "canh": 3,
@@ -57,20 +57,15 @@
         {
           "id": "gy-001",
           "t": "\"Phần phân biệt mô hình ngôn ngữ lớn với ứng dụng trò chuyện em xem hai lần vẫn thấy lẫn.\"",
-          "src": "gy-001 · khao-sat · hv-011"
+          "src": "gy-001 · khao-sat · hv-311"
+        },
+        {
+          "id": "gy-002",
+          "t": "\"Xem lại đoạn đó em vẫn chưa rõ app chat khác model chỗ nào.\"",
+          "src": "gy-002 · khao-sat · hv-311"
         }
       ],
       "transcript": [
-        {
-          "n": 18,
-          "t": "Mô hình ngôn ngữ lớn học cách dùng và kết hợp từ ngữ từ lượng lớn dữ liệu, để xử lý văn bản.",
-          "bad": false
-        },
-        {
-          "n": 19,
-          "t": "Các mô hình ngôn ngữ có khả năng tạo sinh có thể viết thư, giải thích bài học hoặc tóm tắt tài liệu.",
-          "bad": false
-        },
         {
           "n": 20,
           "t": "Ứng dụng trò chuyện nhận câu hỏi của bạn và có thể sử dụng mô hình ngôn ngữ lớn để tạo câu trả lời.",
@@ -97,10 +92,8 @@
           "bad": false
         }
       ],
-      "fix": "Thu thêm 1-2 câu chốt ngay sau câu 23 để nhấn mạnh: ứng dụng trò chuyện là giao diện, còn mô hình ngôn ngữ lớn là thành phần xử lý văn bản bên trong; có thể chèn một ví dụ ngắn so sánh trực tiếp.",
+      "fix": "Thêm 1 câu chốt ngắn phân biệt rõ: ứng dụng trò chuyện là giao diện, còn mô hình ngôn ngữ lớn là thành phần xử lý bên trong; có thể chèn ngay sau câu 23.",
       "cau_indices": [
-        18,
-        19,
         20,
         21,
         22,
@@ -122,7 +115,7 @@
         23,
         24
       ],
-      "ghi_chu": "Người học xem lại hai lần vẫn thấy lẫn, nên cần câu chốt rõ ràng hơn."
+      "ghi_chu": "Cùng một người gửi (hv-311) hai góp ý cho cùng vấn đề, chỉ tính 1 người."
     },
     {
       "idx": 2,
@@ -141,14 +134,14 @@
       "type": "dựng hình",
       "quotes": [
         {
-          "id": "gy-002",
-          "t": "\"Năm giây suy nghĩ ngắn quá\"",
-          "src": "gy-002 · khao-sat · hv-031"
+          "id": "gy-003",
+          "t": "\"Khoảng dừng 5 giây ngắn quá em chưa kịp nghĩ.\"",
+          "src": "gy-003 · khao-sat · hv-412"
         },
         {
-          "id": "gy-003",
-          "t": "\"Khoảng dừng để suy nghĩ hơi dài, em thấy sốt ruột.\"",
-          "src": "gy-003 · khao-sat · hv-037"
+          "id": "gy-004",
+          "t": "\"Khoảng dừng suy nghĩ hơi dài, em thấy sốt ruột.\"",
+          "src": "gy-004 · khao-sat · hv-518"
         }
       ],
       "transcript": [
@@ -158,7 +151,7 @@
           "bad": true
         }
       ],
-      "fix": "Điều chỉnh khoảng dừng ở câu 35 về khoảng 3 giây, hoặc thêm đồng hồ đếm ngược trên màn hình để người học biết thời gian suy nghĩ.",
+      "fix": "Điều chỉnh khoảng dừng 5 giây thành khoảng 7-8 giây, kèm đồng hồ đếm ngược hoặc hiệu ứng đếm thời gian để người học biết thời lượng suy nghĩ.",
       "cau_indices": [
         35
       ],
@@ -167,43 +160,13 @@
       "cau_dung_lai": [
         35
       ],
-      "ghi_chu": "Hai người học có ý kiến trái chiều: một người thấy ngắn, một người thấy dài; nên chọn mức trung dung."
+      "ghi_chu": "Hai người học có phản hồi trái chiều: một người thấy ngắn, một người thấy dài; cần cân bằng và thêm tín hiệu trực quan."
     },
     {
       "idx": 3,
       "cum_id": "cum-03",
-      "color": "green",
-      "title": "Phụ đề lệch nhịp so với giọng đọc",
-      "loai": "Kỹ thuật",
-      "so": "1 người học",
-      "v": "00:00",
-      "cau": "Chung chung",
-      "chat": "1 học viên độc lập",
-      "kyTu": 0,
-      "canh": 0,
-      "phanTramCongThu": 0.0,
-      "price": 30000,
-      "type": "sửa phụ đề",
-      "quotes": [
-        {
-          "id": "gy-005",
-          "t": "\"Phụ đề có chỗ chạy nhanh hơn giọng đọc một chút.\"",
-          "src": "gy-005 · khao-sat · hv-074"
-        }
-      ],
-      "transcript": [],
-      "fix": "Rà soát và chỉnh lại timing phụ đề toàn video, ưu tiên các đoạn có tốc độ nói nhanh.",
-      "cau_indices": [],
-      "thuLai": [],
-      "cau_thu_lai": [],
-      "cau_dung_lai": [],
-      "ghi_chu": "Góp ý không chỉ rõ đoạn cụ thể nên không gán câu index."
-    },
-    {
-      "idx": 4,
-      "cum_id": "cum-04",
       "color": "red",
-      "title": "Chữ trên màn hình nhỏ, khó đọc trên điện thoại",
+      "title": "Chữ trên màn hình đoạn ba thẻ ứng dụng quá nhỏ",
       "loai": "Kỹ thuật",
       "so": "1 người học",
       "v": "02:26",
@@ -216,9 +179,9 @@
       "type": "dựng hình",
       "quotes": [
         {
-          "id": "gy-006",
-          "t": "\"Chữ trên màn hình ở đoạn ba thẻ ứng dụng bị nhỏ, xem trên điện thoại không đọc được.\"",
-          "src": "gy-006 · khao-sat · hv-080"
+          "id": "gy-005",
+          "t": "\"Chữ trên màn hình đoạn ba thẻ ứng dụng nhỏ quá, xem điện thoại không đọc nổi.\"",
+          "src": "gy-005 · khao-sat · hv-620"
         }
       ],
       "transcript": [
@@ -258,7 +221,7 @@
           "bad": false
         }
       ],
-      "fix": "Phóng to chữ trên slide ở đoạn ba thẻ ứng dụng, tăng cỡ chữ tối thiểu để đọc được trên màn hình điện thoại.",
+      "fix": "Phóng to chữ và biểu tượng trên slide phần ba thẻ ứng dụng, tăng cỡ chữ tối thiểu để đọc được trên điện thoại.",
       "cau_indices": [
         24,
         25,
@@ -279,7 +242,7 @@
         29,
         30
       ],
-      "ghi_chu": "Người học chỉ rõ đoạn ba thẻ ứng dụng, tương ứng các câu 24-30."
+      "ghi_chu": "Góp ý chỉ rõ đoạn ba thẻ ứng dụng, tương ứng các câu 24-30."
     }
   ],
   "gop_y_chung_chung": []

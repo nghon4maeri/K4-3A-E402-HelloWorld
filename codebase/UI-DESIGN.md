@@ -1,8 +1,40 @@
 # FeedbackRadar — Bản thiết kế giao diện (UI Design Spec)
 
 > **Dành cho:** người code `codebase/index.html` và người chấm R2/R3/R5.
-> **Trạng thái:** thiết kế mục tiêu cho CP5 — mô tả UI **nên** trông và hành xử thế nào, đối chiếu với `index.html` hiện tại.
-> **Nguồn dữ liệu duy nhất:** `clusters.json` do `pipeline.py` sinh ra. Mọi con số trên màn hình phải đọc từ file này, không hard-code.
+> **Trạng thái: ĐÃ TRIỂN KHAI.** Toàn bộ P0 và P1 đã code vào [index.html](index.html) (17/9).
+> Bản cũ lưu ở `index.old.html` để đối chiếu. Phần P2/P3 còn lại ghi ở §9.
+> **Nguồn dữ liệu duy nhất:** `clusters.json` do `pipeline.py` sinh ra. Mọi con số trên màn hình đọc từ file này, không hard-code.
+
+---
+
+## 0b. Hai trang, một player
+
+Sản phẩm có **hai trang**, nối với nhau bằng góp ý:
+
+```
+home.html                                    index.html
+(trang học bài — học viên xem & góp ý)       (FeedbackRadar — biên tập viên xử lý)
+┌───────────────────────────┐                ┌──────────────────────────┐
+│ sidebar bài · slide       │                │ 1 Nhập → 2 Phân tích     │
+│ ┌───── player.js ───────┐ │   localStorage │ → 3 Cụm → 4 Duyệt        │
+│ │  d1.mp4 + transcript  │ │  'fr-handoff'  │ ┌──── player.js ──────┐  │
+│ └───────────────────────┘ │ ─────────────► │ │ cùng file, chấm đỏ  │  │
+│ ô "Góp ý về video này"    │                │ │ tại câu đổi lời     │  │
+│ rail phải: 📡 FeedbackRadar│               │ └─────────────────────┘  │
+└───────────────────────────┘                └──────────────────────────┘
+        ▲                                              │
+        └──────────── nút ← ở topbar ──────────────────┘
+```
+
+| File | Vai trò |
+|---|---|
+| [home.html](home.html) | Trang học bài mô phỏng VinUni. Học viên xem video, gửi góp ý. Nút 📡 ở thanh phải mang góp ý sang FeedbackRadar (kèm badge đếm số góp ý đang chờ). |
+| [player.js](player.js) · [player.css](player.css) | Player dùng chung. Tự đọc `transcript-timecode.json` nên câu đang đọc, mốc giây và chấm đánh dấu luôn khớp dữ liệu thật. Một chỗ sửa, hai nơi đổi. |
+| [index.html](index.html) | FeedbackRadar. Ở màn cụm vấn đề, player hiện chấm **đỏ** tại câu đổi lời và **cam** tại câu thu lại theo dây chuyền — bấm chấm là nhảy thẳng tới đó. |
+
+**Bàn giao góp ý:** `home.html` ghi `localStorage['fr-handoff'] = {from, kichBan, gopY[], at}`; `index.html` gọi `takeHandoff()` lúc khởi động, đổ sẵn vào ô nhập rồi xoá key. Biên tập viên chỉ việc bấm Phân tích.
+
+**Phục vụ video:** `run_local.py` map tiền tố `/data/` sang thư mục `data/` của repo (video mẫu nằm ngoài `codebase/`) và hỗ trợ **HTTP Range** — không có Range thì `<video>` không tua được và Safari từ chối phát.
 
 ---
 
@@ -12,19 +44,19 @@ Một biên tập viên video mở FeedbackRadar, dán 30 góp ý của học vi
 
 ---
 
-## 1. Năm lỗi của UI hiện tại cần sửa (đọc từ code)
+## 1. Năm lỗi của UI cũ — và cách đã sửa
 
-Đây là phần quan trọng nhất của tài liệu này — bản thiết kế bên dưới tồn tại để sửa đúng năm điểm sau.
+Đây là lý do bản thiết kế này tồn tại. Cột cuối ghi nơi kiểm chứng trong bản mới.
 
-| # | Vấn đề trong [index.html](index.html) | Vì sao nghiêm trọng | Sửa ở mục nào |
+| # | Vấn đề trong bản cũ (`index.old.html`) | Vì sao nghiêm trọng | Đã sửa |
 |---|---|---|---|
-| **1** | UI hiển thị **chi phí bằng tiền** (`fmt()` → "600k", "1830000đ") ở [index.html:546](index.html#L546), [index.html:611](index.html#L611), KPI "Chi phí sửa tối thiểu" | **Vi phạm trực tiếp non-goal #4 trong [spec.md](../spec.md) §4**: "Không tự ý quy đổi chi phí ra tiền VNĐ". Pipeline đã trả sẵn `kyTu`, `canh`, `phanTramCongThu` — UI lại bỏ qua và hiện `price`. Người chấm R2 đối chiếu spec ↔ build sẽ thấy build vi phạm chính non-goal của mình. | §4, §5.3 |
-| **2** | Không hiển thị `nguon_ket_qua` | `clusters.json` có sẵn `la_ai_that`, `model`, `tokens`, `thoi_gian_goi_giay`. Console cảnh báo rất to khi chạy fallback ([pipeline.py:197](pipeline.py#L197)) nhưng **UI im lặng** — người xem demo không biết đang nhìn AI thật hay dữ liệu dựng sẵn. | §3.1 |
-| **3** | Rổ "góp ý chung chung" bị **hard-code** ở [index.html:295](index.html#L295) ("Video hơi chán, làm nhanh lên ạ" · gy-008) | Pipeline trả `result.gop_y_chung_chung` thật kèm `ly_do_khong_dinh_vi`, UI không đọc. Đây là bằng chứng cho HAX **G10** trong spec §4b — đang là đồ giả. | §5.4 |
-| **4** | Màn hình 1 (AI phân tích) là **animation giả 850ms/bước** ([index.html:576](index.html#L576)), chạy song song chứ không phản ánh tiến trình thật | Dòng log ghi cứng "30 góp ý → nội dung 8 · sư phạm 12 · kỹ thuật 8" bất kể input. Nếu người chấm dán 7 dòng, UI vẫn khoe "30 góp ý". | §3.2 |
-| **5** | Thiếu chỗ thể hiện **đếm theo người ≠ đếm theo góp ý** và **mâu thuẫn 50/50** | KB-04 và KB-05 trong spec §5 là hai kịch bản đặc sắc nhất của đội, nhưng UI chỉ hiện chuỗi `"3 học viên độc lập"` phẳng, không phân biệt "3 góp ý / 1 người". | §5.2 |
+| **1** | UI hiển thị **chi phí bằng tiền** (`fmt()` → "600k", "1830000đ"), KPI "Chi phí sửa tối thiểu" | **Vi phạm trực tiếp non-goal #4 trong [spec.md](../spec.md) §4**: "Không tự ý quy đổi chi phí ra tiền VNĐ". Pipeline đã trả sẵn `kyTu`, `canh`, `phanTramCongThu` — UI lại bỏ qua và hiện `price`. Người chấm R2 đối chiếu spec ↔ build sẽ thấy build vi phạm chính non-goal của mình. | ✅ `fmt()` bị xoá hẳn, thay bằng `scopeMeter()`. `price`/`donGia` không còn xuất hiện ngoài một dòng comment ghi lý do không dùng. Cả `build_docx` trong [run_local.py](run_local.py) cũng đổi cột "Chi phí" → "Phạm vi". |
+| **2** | Không hiển thị `nguon_ket_qua` | `clusters.json` có sẵn `la_ai_that`, `model`, `tokens`. Console cảnh báo rất to khi chạy fallback ([pipeline.py:197](pipeline.py#L197)) nhưng **UI im lặng** — người xem demo không biết đang nhìn AI thật hay dữ liệu dựng sẵn. | ✅ `renderSourceBadge()` — badge xanh ở topbar khi AI thật, badge đỏ nhấp nháy khi fallback. |
+| **3** | Rổ "góp ý chung chung" bị **hard-code** ("Video hơi chán, làm nhanh lên ạ" · gy-008) | Pipeline trả `result.gop_y_chung_chung` thật kèm `ly_do_khong_dinh_vi`, UI không đọc. Đây là bằng chứng cho HAX **G10** trong spec §4b — đang là đồ giả. | ✅ `renderUnloc()` đọc dữ liệu thật, hiện lý do từng dòng, thêm nút gán thủ công. |
+| **4** | Màn hình 1 là **animation giả 850ms/bước**, log ghi cứng "30 góp ý" bất kể input | Người chấm dán 7 dòng, UI vẫn khoe "30 góp ý". | ✅ `renderPipe()` — skeleton khi đang chờ, điền số thật từ response. Lỗi hiện khối đỏ có nút Thử lại, không còn `alert()`. |
+| **5** | Thiếu chỗ thể hiện **đếm theo người ≠ đếm theo góp ý** và **mâu thuẫn 50/50** | KB-04 và KB-05 trong spec §5 là hai kịch bản đặc sắc nhất của đội, nhưng UI chỉ hiện chuỗi `"3 học viên độc lập"` phẳng. | ✅ `groupByPerson()` gom quote theo `nguoiGui`, khung cam khi 1 người gửi nhiều góp ý. `isConflict()` bật layout hai cột đối lập. |
 
-Ngoài ra, các lỗi nhỏ: tiêu đề vẫn ghi `CP2 Mock`, text nhắc "Gemini" ([index.html:244](index.html#L244)) trong khi pipeline đã chuyển DeepSeek, `v2saving` tính bằng công thức vô nghĩa `cost*ISSUES.length` ([index.html:693](index.html#L693)).
+Các lỗi nhỏ cũng đã xử: tiêu đề bỏ "CP2 Mock", bỏ chữ "Gemini" (pipeline đã chuyển DeepSeek), và công thức `v2saving = cost*ISSUES.length` vô nghĩa được thay bằng phần trăm thật so với 3 637 ký tự.
 
 ---
 
@@ -294,19 +326,23 @@ Bảng này để người chấm R3 đối chiếu trực tiếp spec §6 ↔ p
 
 ## 9. Thứ tự làm — chia theo giá trị chấm điểm
 
-| Ưu tiên | Việc | Đổi được gì |
-|:---:|---|---|
-| **P0** | Bỏ hết hiển thị tiền → ScopeMeter ký tự/cảnh (§4) | Gỡ vi phạm non-goal #4 — R2 |
-| **P0** | Badge nguồn kết quả AI thật / dựng sẵn (§3.1) | Liêm chính — R4, R5 |
-| **P0** | Rổ chung chung đọc dữ liệu thật (§5.4) | G10 hết là đồ giả — R2, R3 |
-| **P1** | Kịch bản gốc phân 3 loại câu (§5.3) | Cho thấy failure dây chuyền — R4 |
-| **P1** | Bằng chứng nhóm theo người (§5.2) | KB-04 lên được UI — R3 |
-| **P1** | Màn 2 hiện số thật, bỏ animation giả (§3.2) | R5 |
-| **P2** | Master–detail + phím tắt (§5.1) | Trải nghiệm demo |
-| **P2** | Nhúng `d1.mp4` thật thay player mock | Còn nợ trong [FLOW.md](FLOW.md) |
-| **P3** | Dark mode, tabular-nums, mở banner lọc (§5.5, §7) | Hoàn thiện |
+| Ưu tiên | Việc | Đổi được gì | Trạng thái |
+|:---:|---|---|:---:|
+| **P0** | Bỏ hết hiển thị tiền → ScopeMeter ký tự/cảnh (§4) | Gỡ vi phạm non-goal #4 — R2 | ✅ xong |
+| **P0** | Badge nguồn kết quả AI thật / dựng sẵn (§3.1) | Liêm chính — R4, R5 | ✅ xong |
+| **P0** | Rổ chung chung đọc dữ liệu thật (§5.4) | G10 hết là đồ giả — R2, R3 | ✅ xong |
+| **P1** | Kịch bản gốc phân 3 loại câu (§5.3) | Cho thấy failure dây chuyền — R4 | ✅ xong |
+| **P1** | Bằng chứng nhóm theo người (§5.2) | KB-04 lên được UI — R3 | ✅ xong |
+| **P1** | Màn 2 hiện số thật, bỏ animation giả (§3.2) | R5 | ✅ xong |
+| **P2** | Master–detail + phím tắt A/R/J/K (§5.1) | Trải nghiệm demo | ✅ xong |
+| **P2** | Nhúng `d1.mp4` thật thay player mock | Còn nợ trong [FLOW.md](FLOW.md) | ✅ xong — [player.js](player.js) dùng chung, tua thật, có fallback |
+| **P3** | Dark mode, tabular-nums, mở banner lọc (§5.5, §7) | Hoàn thiện | ✅ xong |
+| **+** | Trang học bài [home.html](home.html) + player dùng chung (§0b) | Cho thấy góp ý **từ đâu ra** — trọn vòng học viên → biên tập viên | ✅ xong |
 
-P0 + P1 là toàn bộ phần trả nợ giữa spec và build — làm xong là UI "nói đúng những gì spec.md đã hứa".
+**Còn lại cho CP5:**
+- Ẩn/hiện góp ý công kích mới chỉ ẩn ở tầng UI — nội dung vẫn nằm trong `safety_log.json` gửi về trình duyệt. Muốn chặt hơn thì server phải che trước khi gửi.
+- Gán thủ công ở rổ "chưa định vị được" hiện mới lưu trong state trình duyệt, chưa ghi ngược vào `clusters.json`.
+- Góp ý gửi ở `home.html` lưu trong `localStorage` của từng máy. Muốn nhiều người cùng gửi vào một chỗ thì cần thêm endpoint ghi ra file.
 
 ---
 

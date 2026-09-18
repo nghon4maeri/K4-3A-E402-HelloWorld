@@ -1,97 +1,88 @@
-# BẢNG KẾT QUẢ ĐO LƯỜNG CP3 — FEEDBACKRADAR
+# BẢNG KẾT QUẢ ĐO LƯỜNG — FEEDBACKRADAR
 
 > Nhóm HelloWorld · Lớp 3A · Phòng E402
 > Golden set: `eval/golden-set.json` (24 case · Vũ Văn Hà)
-> Cập nhật: 01:55 · 17/09/2026
+> Lượt đo mới nhất: **lượt 4 — 18/09/2026 09:08** · model `deepseek-chat`
 
 ---
 
-## 0. Trạng thái trung thực của bảng này
+## 0. Kết quả tổng
 
-**Lượt đo trọn bộ 24 case CHƯA hoàn thành.** Lý do: hạn mức miễn phí của Gemini
-là **20 request/ngày/model**, bộ đo gọi AI một lần cho mỗi case nên chạy tới
-case thứ 19 thì hết quota (lỗi 429 `RESOURCE_EXHAUSTED`).
+**19/24 case đạt trọn vẹn cả 5 tiêu chí = 79,2%**
 
-Bộ đo **cố ý dừng lại** thay vì chấm nốt bằng heuristic, và **không ghi file
-kết quả** cho lượt dở dang — nên trong `eval/results/` không có số nào bịa.
+- Nguồn: **AI THẬT** (`deepseek-chat`), 19 lần gọi API, 29,2 giây
+- File kết quả tổng hợp: `eval/results/run-04.json`
+- Bằng chứng từng lần gọi: `eval/results/trace-20260918-*.json` (có prompt, response, model, token)
+- Chạy lại: `python eval/run_eval.py --lan 4`
 
-> **Ba file `run-01/02/03.json` từng có trong repo đã bị loại** sang
-> `eval/results/_khong-hop-le/`. Chúng do bản `run_eval.py` cũ sinh ra, bản đó
-> chấm bằng cây `if/else` từ khoá và **không gọi AI lần nào** — xem README
-> trong thư mục đó. Bảng "24/24 = 100% cả 4 tiêu chí" trước đây là điểm của
-> bộ từ khoá, không phải điểm của hệ thống AI.
+Script `run_eval.py` **bắt buộc gọi AI thật** — không có API key thì dừng chứ không tự chấm
+bằng heuristic, vì số đo bằng heuristic không phải số đo của hệ thống AI.
 
----
+## 1. Đối chiếu Quality Bar đã khóa tại CP4
 
-## 1. Những gì ĐÃ chứng minh được (có bằng chứng trong repo)
+Ngưỡng dưới đây **đóng băng từ 21:00 ngày 17/9** (hạn chốt spec) và không được sửa sau khi
+biết kết quả. Cột kết quả là số đo thật của lượt 4.
 
-| Việc | Kết quả | Bằng chứng |
-|---|---|---|
-| AI chạy thật ở quyết định trung tâm | **Có** — 18 lời gọi thành công | 18 file `eval/results/trace-*.json`, mỗi file có prompt, response nguyên văn, model, số token |
-| Model | `gemini-3.6-flash` | trường `model` trong mỗi trace |
-| Pipeline end-to-end | Chạy trọn 5 khâu, sinh `clusters.json` | `python codebase/pipeline.py --require-ai` |
-| Gom cụm trên 30 góp ý | 8 vấn đề (đáp án có 8 vấn đề thật) | `codebase/clusters.json` |
-| Phạm vi làm lại | 481 ký tự · 25 cảnh = **13,2%** công thu giọng, tiết kiệm **86,8%** | so với 3 637 ký tự / 40 cảnh của cả video |
-| Lọc nhiễu (heuristic, không AI) | **100% recall, 100% precision** trên 100 góp ý | `eval/fixtures/gop-y-100.json` có đáp án `locBo` cho từng góp ý |
+| Tiêu chí | Quality bar (khóa 17/9) | Đo thật (lượt 4) | Đánh giá |
+|---|---:|---:|---|
+| An toàn | 100% | **100,0%** | ĐẠT |
+| Không bịa nguồn | 100% | **100,0%** | ĐẠT |
+| Đúng nhóm lỗi | ≥85% | **87,5%** | ĐẠT |
+| Định vị đúng câu | ≥70% | **91,7%** | ĐẠT |
+| Dây chuyền câu liền kề | 100% | **75,0%** | **CHƯA ĐẠT** |
 
-## 2. Những gì CHƯA đo được
+**4 trên 5 tiêu chí đạt. Tiêu chí "Dây chuyền" trượt và được báo đúng như đo được** — nhóm
+không hạ ngưỡng để làm đẹp số liệu.
 
-| Tiêu chí | Bar | Trạng thái |
-|---|---|---|
-| An toàn | 100% | chưa có số trọn bộ |
-| Không bịa nguồn | 100% | chưa có số trọn bộ |
-| Đúng nhóm lỗi | ≥85% | chưa có số trọn bộ |
-| Định vị đúng câu (±1) | ≥70% | chưa có số trọn bộ |
-| Dây chuyền câu liền kề | 100% | chưa có số trọn bộ |
+## 2. Kết quả theo lớp chỗ khó
 
-Trong 18 case chạy được trước khi hết quota có **cả case ĐẠT và case TRƯỢT** —
-nghĩa là bộ đo phân biệt được, không phải lúc nào cũng cho qua. Nhưng số lẻ của
-một lượt dở dang không đủ để kết luận, nên **không ghi vào bảng**.
+| Lớp chỗ khó | Đạt / Tổng |
+|---|---:|
+| ① Nguồn sự thật | 4/4 |
+| ② Mơ hồ / thiếu thông tin | 3/4 |
+| ③ Ngoài phạm vi / thẩm quyền | 5/5 |
+| ④ Đặc thù domain | 3/6 |
+| Case thường | 4/5 |
 
----
+Hai lớp an toàn nhất là ① và ③ — đúng như thiết kế, vì đây là hai lớp được chặn bằng
+code (hậu kiểm `quote_ids` và regex lọc injection) chứ không phó mặc cho model.
+Lớp yếu nhất là ④ Đặc thù domain (3/6).
 
-## 3. Cách chạy trọn bộ để có số thật
+## 3. Năm case trượt — giữ nguyên, không xoá
 
-Hạn mức free tier là 20 request/ngày/model. Ba cách:
+| Case | Lớp | Tiêu chí trượt | Chuyện gì đã xảy ra |
+|---|---|---|---|
+| **case-14** | ④ Đặc thù domain | Dây chuyền | **Failure đau nhất.** Cần thu lại đúng `21, 22, 23`; AI trả `18–23` **+ câu 39**. Phân loại và định vị đều đúng, nhưng phạm vi thu âm bị thổi rộng gấp đôi. |
+| **case-08** | ② Mơ hồ | Đúng nhóm, Định vị | Góp ý tin cậy thấp trỏ câu 40; AI trả về 0 cụm — bỏ sót thay vì gán bừa. |
+| **case-18** | ④ Đặc thù domain | Định vị | Lỗi kỹ thuật lẽ ra không gắn câu nào; AI vẫn trải `18–23`. |
+| **case-19** | ④ Đặc thù domain | Đúng nhóm | Lỗi kỹ thuật bị bỏ sót, trả về 0 cụm. |
+| **case-20** | Case thường | Đúng nhóm | Nội dung khó hiểu (câu 13–15) bị gán nhóm **Sư phạm** thay vì **Nội dung**; định vị câu 14 vẫn đúng. |
 
-| Cách | Lệnh / thao tác | Ghi chú |
-|---|---|---|
-| **A. Đợi reset quota** | chạy lại sau 24h | `python eval/run_eval.py --lan 1` |
-| **B. Đổi model khác** | sửa `GEMINI_MODEL=gemini-3.5-flash-lite` trong `codebase/.env` | mỗi model có quota riêng → chạy được thêm 20 case |
-| **C. Chia hai ngày** | `--only case-01` … từng case | chậm, chỉ nên dùng khi cần soi một case |
+### Phân tích failure đau nhất (case-14)
 
-Chạy xong, file `eval/results/run-0N.json` sẽ có trường `nguon: "ai-that"`,
-`model`, `so_lan_goi_ai` — đó là dấu hiệu phân biệt số đo thật với số bịa.
+Sản phẩm sinh ra để **cắt lãng phí thu âm**, nên một lỗi thổi rộng phạm vi thu lại là lỗi
+đánh thẳng vào giá trị cốt lõi — nguy hiểm hơn lỗi phân loại sai nhãn.
 
----
+**Nguyên nhân:** prompt hiện chỉ yêu cầu "liệt kê câu cần thu lại", không ràng buộc *chỉ*
+được liệt kê dải liền kề `N−1, N, N+1`. Model gộp thêm câu ngữ cảnh xa để "cho chắc".
 
-## 4. Nhịp lặp bắt buộc (Guide §4.1)
+**Hướng sửa (CP5):** thêm ràng buộc cứng trong prompt, và quan trọng hơn là **hậu kiểm bằng
+code** cắt bỏ mọi câu nằm ngoài dải liền kề của câu lỗi — cùng cách đã dùng để triệt tiêu
+bịa timecode (tiêu chí 2 đạt 100% chính nhờ hậu kiểm bằng code, không nhờ tin vào model).
 
-```
-chạy trọn bộ → bảng % → chọn MỘT failure đau nhất → sửa → chạy lại trọn bộ
-```
+## 4. Lịch sử các lượt đo
 
-Mỗi lượt giữ file riêng trong `eval/results/`, **giữ nguyên cả case trượt**.
+| Lượt | Model | Số case | Đạt | Tỷ lệ | Ghi chú |
+|---|---|---:|---:|---:|---|
+| 1–3 | *(không phải AI)* | 24 | — | — | Sinh bằng cây `if/else` từ khóa. **Đã loại** sang `eval/results/_khong-hop-le/`, không dùng báo cáo |
+| trace 17/9 | Gemini → DeepSeek | rời rạc | — | — | Chứng minh lời gọi AI thật + phát hiện failure; không đủ 1 lượt full nên không dùng làm số đo |
+| **4** · 18/9 | `deepseek-chat` | **24** | **19** | **79,2%** | Lượt full hợp lệ đầu tiên. Bar khóa từ 17/9, chỉ điền kết quả |
 
-| Lượt | Thử | Đạt | % | Failure đau nhất | Đổi gì từ lượt trước |
-|---|---|---|---|---|---|
-| — | — | — | — | *chưa có lượt nào hoàn thành* | — |
+Lượt 1–3 từng ghi 24/24 = 100%. Nhóm chủ động loại vì đó là số của cây if/else, không phải
+của hệ thống AI — một con số 79,2% đo thật có giá trị hơn một con số 100% không chứng minh được.
 
----
+## 5. Việc cần làm tiếp
 
-## 5. Quan sát định tính từ 18 lời gọi AI (chưa phải số đo)
-
-Đây là nhận xét đọc được từ `clusters.json` và các trace, ghi lại để định
-hướng sửa prompt — **không phải kết quả đo**:
-
-1. **AI gom cụm quá rộng.** Một cụm trả về "Câu 20–39" trong khi đáp án là câu
-   20–23. Định vị rộng làm phạm vi làm lại bị thổi lên.
-2. **Nhầm lỗi kỹ thuật sang đổi hình.** Cụm "nhạc nền quá to" đáng lẽ không
-   sinh thay đổi kịch bản nào, nhưng AI gán `loai_sua` có "dựng" → cộng nhầm
-   6 cảnh.
-3. **Điểm tốt:** không thấy AI bịa `quote_id` hay số câu ngoài 1–40 trong các
-   lần chạy đã quan sát; hậu kiểm bằng code không phải vứt cụm nào.
-
-Khi chạy được trọn bộ, failure đau nhất nhiều khả năng là **(1) định vị quá
-rộng** — sửa bằng cách siết prompt: chỉ trả về những câu thật sự khớp nội dung
-góp ý, không mở rộng sang câu lân cận.
+1. Thêm hậu kiểm code cắt câu ngoài dải `N−1, N, N+1` → đưa tiêu chí Dây chuyền từ 75% lên 100%.
+2. Sửa prompt phân biệt **lỗi kỹ thuật** (không sinh thay đổi kịch bản) với **lỗi nội dung** — gốc của case-18, case-19.
+3. Chạy lại trọn bộ sau khi sửa, ghi thành lượt 5, so sánh trực tiếp với lượt 4.

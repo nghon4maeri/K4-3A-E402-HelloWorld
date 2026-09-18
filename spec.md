@@ -103,7 +103,7 @@ Nhóm đã khảo sát và phân tích sâu 2 giải pháp tương tự trên th
   | Khâu xử lý | Phương thức | Chi tiết triển khai |
   |---|---|---|
   | **1. Khử PII & Lọc an toàn** | **Heuristic Rule (Không AI)** | Dùng Regex quét & chặn 100% prompt injection và công kích cá nhân, xuất vào `safety_log.json` |
-   | **2. Gom cụm & Phân loại lỗi** | **AI THẬT (các lượt trace đã chạy)** | Model nhận feedback + transcript, gom nhóm ngữ nghĩa và phân loại. Repo có trace AI thật, nhưng chưa có một file benchmark full 24 case hợp lệ để kết luận quality bar. |
+   | **2. Gom cụm & Phân loại lỗi** | **AI THẬT (`deepseek-chat`)** | Model nhận feedback + transcript, gom nhóm ngữ nghĩa và phân loại. Đã chạy trọn bộ 24 case golden set qua AI thật: **19/24 = 79,2%** (`eval/results/run-04.json` + 24 file trace kèm prompt/response/token). |
   | **3. Định vị Timestamp** | **Static Table (Bảng cứng, KHÔNG AI)** | AI chỉ xác định `câu_index` (1..40); code Python map trực tiếp sang phút:giây qua `transcript-timecode.json`, triệt tiêu hallucination |
   | **4. Tính phạm vi làm lại** | **Code Heuristic (Phép cộng)** | Đo bằng **số ký tự thu lại giọng + số cảnh dựng lại** theo `bang-chi-phi-lam-lai.md`. Đổi lời câu N tự cộng N−1, N+1; đổi hình = 0 ký tự; phụ đề = 0 ký tự 0 cảnh. Đối chiếu với toàn bộ video: 3 637 ký tự / 40 cảnh |
   | **5. Giao diện duyệt & Video** | **Mock Web UI (HTML/JS)** | Giao diện duyệt Accept/Reject, player mô phỏng nhảy timeline theo giây lỗi của video `d1.mp4` |
@@ -178,28 +178,44 @@ Mỗi chiều chất lượng được định nghĩa bằng công thức địn
 
 ### 3. Cam kết Ngưỡng chất lượng (Quality Bar chốt tại CP4 — ĐÓNG BĂNG)
 
-| Tiêu chí chất lượng | Định nghĩa & Công thức | Quality Bar cam kết | Kết quả thực tế (Lượt 4 · DeepSeek) | Đánh giá |
+| Tiêu chí chất lượng | Định nghĩa & Công thức | Quality Bar cam kết (ĐÓNG BĂNG 17/9) | Kết quả đo thật (lượt 4 · 18/9 09:08) | Đánh giá |
 |---|---|:---:|:---:|:---:|
-| **1. An toàn (Safety)** | 100% prompt injection & công kích bị lọc bỏ | **100%** | **Chưa có lượt full hợp lệ** | **CHƯA KẾT LUẬN** |
-| **2. Không bịa nguồn** | 100% quote_id và câu_index có thật trong input | **100%** | **Chưa có lượt full hợp lệ** | **CHƯA KẾT LUẬN** |
-| **3. Đúng nhóm lỗi** | Gán đúng nhóm Nội dung / Sư phạm / Kỹ thuật | **≥85%** | **Chưa có lượt full hợp lệ** | **CHƯA KẾT LUẬN** |
-| **4. Định vị đúng câu** | Trùng mốc câu hoặc sai số dung sai $\pm 1$ câu | **≥70%** | **Chưa có lượt full hợp lệ** | **CHƯA KẾT LUẬN** |
-| **5. Tính dây chuyền** | Đổi lời câu $N$ liệt kê đủ $N-1, N, N+1$ | **100%** | **Chưa có lượt full hợp lệ** | **CHƯA KẾT LUẬN** |
+| **1. An toàn (Safety)** | 100% prompt injection & công kích bị lọc bỏ | **100%** | **100,0%** | **ĐẠT** |
+| **2. Không bịa nguồn** | 100% quote_id và câu_index có thật trong input | **100%** | **100,0%** | **ĐẠT** |
+| **3. Đúng nhóm lỗi** | Gán đúng nhóm Nội dung / Sư phạm / Kỹ thuật | **≥85%** | **87,5%** | **ĐẠT** |
+| **4. Định vị đúng câu** | Trùng mốc câu hoặc sai số dung sai $\pm 1$ câu | **≥70%** | **91,7%** | **ĐẠT** |
+| **5. Tính dây chuyền** | Đổi lời câu $N$ liệt kê đủ $N-1, N, N+1$ | **100%** | **75,0%** | **CHƯA ĐẠT** |
 
-**Tổng số case đạt trọn vẹn cả 5 tiêu chuẩn:** chưa thể kết luận vì chưa có file kết quả full 24 case hợp lệ trong repo.
+**Tổng số case đạt trọn vẹn cả 5 tiêu chuẩn: 19/24 = 79,2%** — đo bằng AI thật (`deepseek-chat`, 19 lần gọi, 29,2s), file kết quả `eval/results/run-04.json`, trace từng case tại `eval/results/trace-20260918-*.json`.
+
+**5 case trượt giữ nguyên để phân tích (không xoá, không sửa đáp án):**
+
+| Case | Lớp chỗ khó | Tiêu chí trượt | Chuyện gì đã xảy ra |
+|---|---|---|---|
+| **case-14** | ④ Đặc thù domain | Dây chuyền | **Failure đau nhất.** Đáp án đúng là thu lại đúng 3 câu `21, 22, 23`; AI trả về khoảng `18–23` **cộng thêm câu 39** rời rạc. Định vị và phân loại đều đúng, nhưng phạm vi thu âm bị thổi rộng gấp đôi — đúng loại lãng phí mà sản phẩm sinh ra để cắt. |
+| **case-08** | ② Mơ hồ | Đúng nhóm + Định vị | Góp ý độ tin cậy thấp trỏ câu 40; AI trả về 0 cụm (bỏ sót thay vì gán bừa — sai an toàn hơn sai nguy hiểm). |
+| **case-18** | ④ Đặc thù domain | Định vị | Lỗi kỹ thuật (không đổi kịch bản) đáng lẽ không gắn câu nào; AI vẫn trải câu `18–23`. |
+| **case-19** | ④ Đặc thù domain | Đúng nhóm | Lỗi kỹ thuật bị bỏ sót, trả về 0 cụm. |
+| **case-20** | Case thường | Đúng nhóm | Nội dung khó hiểu (câu 13–15) bị gán nhầm nhóm **Sư phạm** thay vì **Nội dung**; định vị câu 14 vẫn đúng. |
+
+**Phân tích nguyên nhân tiêu chí 5 chưa đạt:** prompt hiện chỉ yêu cầu "liệt kê câu cần thu lại" mà không ràng buộc *chỉ* được liệt kê đúng dải liền kề $N-1, N, N+1$. Model có xu hướng gộp thêm câu ngữ cảnh xa để "cho chắc". Hướng sửa ở CP5: thêm ràng buộc cứng trong prompt + hậu kiểm bằng code cắt bỏ câu nằm ngoài dải liền kề của câu lỗi.
 
 ### 4. Bảng theo dõi tiến độ qua 4 lượt đo thực tế (AI THẬT)
 Dữ liệu đọc trực tiếp từ các file kết quả `eval/results/run-0{1,2,3,4}.json` có trường `nguon: "ai-that"`:
 
 | Lượt | Model AI | Số case | Số case đạt | Tỷ lệ (%) | Failure đau nhất | Hành động cải tiến từ lượt trước |
 |:---:|:---:|:---:|:---:|:---:|---|---|
-| **Các trace đã chạy** | Nhiều model/provider | Chưa đủ một lượt full | Không kết luận | Quan sát định tính: AI đôi khi định vị quá rộng | Dùng trace để phát hiện failure, không dùng làm benchmark định lượng |
+| **Lượt 1–3** *(đã loại)* | — | 24 | *(không tính)* | *(không tính)* | Kết quả sinh bằng cây `if/else` từ khóa, không phải AI | Chủ động chuyển sang `eval/results/_khong-hop-le/`, không dùng báo cáo |
+| **Trace rời rạc 17/9** | Gemini → DeepSeek | Không đủ 1 lượt full | Không kết luận | Không kết luận | Quan sát định tính: AI định vị quá rộng | Dùng để phát hiện failure và sửa prompt, không dùng làm số đo |
+| **Lượt 4** · 18/9 09:08 | `deepseek-chat` | **24** | **19** | **79,2%** | **case-14** — thu lại `18–23 + 39` thay vì đúng `21, 22, 23` (thổi rộng phạm vi thu âm) | Chạy trọn bộ 24 case qua AI thật, ghi file kết quả tổng hợp `run-04.json` + 24 trace; giữ nguyên 5 case trượt |
 
 ### 5. Tự khai báo trung thực các khuyết điểm & hạng mục chưa hoàn thiện
 Theo tinh thần rubric R4 ("Kết quả đo được ghi nhận trung thực — kể cả khi không đạt quality bar — vẫn được tính đủ điểm; số liệu bị chỉnh sửa hoặc che giấu sẽ không được tính"), nhóm tự khai báo rõ các điểm giới hạn hiện tại:
-1. **Chưa có benchmark full hợp lệ:** Các file `run-01/02/03.json` cũ đã được loại vì sinh bằng heuristic; repo hiện chỉ có trace rời rạc, chưa có file kết quả 24 case để báo tỷ lệ đạt.
-2. **Khảo sát người thật chưa đạt Chuẩn A của rubric:** Nhóm có khảo sát định hướng n = 5 với các tín hiệu pain rõ ràng, nhưng rubric yêu cầu ít nhất 20 người ngoài nhóm. Nhóm không dùng khảo sát này để tuyên bố đạt Chuẩn A.
-3. **Định vị quá rộng trong trace:** Một số output mở rộng khoảng câu vượt quá câu thực sự liên quan; đây là failure định tính cần xử lý ở CP5.
+1. **Quality bar 5 chiều: đạt 4, trượt 1.** Tiêu chí "Tính dây chuyền" cam kết 100% nhưng đo thật chỉ **75%**. Nhóm **không hạ ngưỡng** để làm đẹp số — bar đã đóng băng từ 21:00 17/9 và giữ nguyên; kết quả trượt được báo đúng như đo được.
+2. **Tổng thể 19/24 = 79,2%**, tức 5 case trượt vẫn nằm trong repo với đầy đủ trace để đối chiếu, không xoá case khó để nâng tỷ lệ.
+3. **Khảo sát người thật chưa đạt Chuẩn A của rubric:** Nhóm có khảo sát định hướng n = 5 với các tín hiệu pain rõ ràng, nhưng rubric yêu cầu ít nhất 20 người ngoài nhóm. Nhóm không dùng khảo sát này để tuyên bố đạt Chuẩn A.
+4. **Định vị quá rộng — failure hệ thống chưa sửa xong:** case-14 và case-18 cho thấy model có xu hướng trải rộng khoảng câu vượt quá phần thực sự liên quan. Đây là failure còn tồn tại tại thời điểm nộp, hướng xử lý đã ghi ở §7.3.
+5. **Lượt đo 4 chạy sau hạn chốt spec (09:08 ngày 18/9):** ngưỡng "đạt" đã khoá trước từ 21:00 17/9 và không bị chỉnh sửa; lượt này chỉ điền kết quả đo vào ngưỡng đã cam kết.
 *(Lưu ý: Ba file `run-01/02/03.json` cũ từng ghi 100% do chạy bằng if/else từ khóa đã bị nhóm chủ động chuyển sang `eval/results/_khong-hop-le/` để đảm bảo tính liêm chính).*
 
 ---
@@ -211,7 +227,7 @@ Theo tinh thần rubric R4 ("Kết quả đo được ghi nhận trung thực �
 |---|---|---|---|---|
 | **Nguyễn Cảnh Duy** | **2A202602815** | Đội trưởng / AI Lead | Quản trị tiến độ, điều phối luồng pipeline, quay video demo 30s, tổng hợp slide PDF 6 trang cho CP5 | `demo-slides.pdf`, video demo dự phòng, nộp form CP4 & CP5 |
 | **Nguyễn Văn Chiến** | **2A202602926** | Product & Spec Lead | Khảo sát Mom Test người dùng thật, viết AI Spec & Canvas, phụ trách kịch bản demo 30s và user validation | `spec.md`, `codebase/demo-script.md`, `validation/feedback-log.md` |
-| **Nguyễn Hồ Nam** | **2A202602788** | Dev / Agent Engineer | Xây dựng pipeline AI thật, bộ lọc Heuristic an toàn, đóng gói server local và bảo đảm không lộ API key | `codebase/pipeline.py`, `codebase/config_prompt.py`, `codebase/run_local.py` |
+| **Nguyễn Hồ Nam** | **2A202602788** | Dev / Agent Engineer | Xây dựng pipeline AI thật (DeepSeek/Gemini), bộ lọc Heuristic an toàn, đóng gói server local và bảo đảm không lộ API key | `codebase/pipeline.py`, `codebase/config_prompt.py`, `codebase/run_local.py` |
 | **Vũ Văn Hà** | **2A202602589** | Eval & Prompt Engineer | Xây dựng Golden Set 24 case phủ 4 lớp bẫy, script benchmark tự động, đo lường và lập bảng kết quả đối chiếu Quality Bar | `eval/golden-set.json`, `eval/run_eval.py`, `eval/BANGKETQUA.md` |
 
 ### 2. Kế hoạch kiểm thử & nghiệm thu cho CP5 (LEC 6 & LAB 6)
@@ -228,6 +244,7 @@ Theo tinh thần rubric R4 ("Kết quả đo được ghi nhận trung thực �
 
 | Thời điểm | Đổi gì | Vì sao |
 |---|---|---|
+| **18/9 09:08** | **Chạy trọn bộ benchmark 24 case qua AI thật — điền kết quả vào Quality Bar** | Đóng lỗ hổng lớn nhất còn lại của CP4: repo trước đó chỉ có trace rời rạc. Lượt 4 (`deepseek-chat`) đạt **19/24 = 79,2%**; 4/5 tiêu chí đạt bar, riêng **Tính dây chuyền 75% < bar 100% — CHƯA ĐẠT**. **Không sửa ngưỡng "đạt"** (đã đóng băng 21:00 17/9), chỉ điền số đo. Giữ nguyên toàn bộ 5 case trượt và trace để đối chiếu. |
 | **17/9 18:25** | **Cập nhật bằng chứng khảo sát người thật** | Tích hợp dữ liệu từ `Hello-World-form.csv`, ẩn danh thành `khao-sat-that-an-danh.csv` (n = 5), trích xuất `gop-y-nguoi-that.json`. Ghi nhận đây là bằng chứng định hướng; chưa đạt ngưỡng Chuẩn A của rubric (≥20 người). Bổ sung tester `HV-05` vào kế hoạch CP5. |
 | **17/9 17:35** | **Hoàn thiện AI Spec toàn diện & Đóng băng Quality Bar (CP4)** | Khóa chính thức Quality Bar 5 chiều; bổ sung Bảng 8 kịch bản rủi ro chi tiết (§5); hoàn thiện phân tích so sánh 2 sản phẩm tương tự (§3); bổ sung bảng phân công nhân sự và kế hoạch kiểm thử CP5 (§8); tự khai báo rõ 3 điểm hạn chế trung thực theo rubric. |
 | 17/9 08:57 | Đổi nhà cung cấp AI: Gemini → DeepSeek | Hết quota free tier Gemini nên các lượt trace sau dùng DeepSeek. Không ghi nhận đây là benchmark full vì repo chưa có file kết quả 24 case hợp lệ. |
