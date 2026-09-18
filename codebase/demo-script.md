@@ -9,7 +9,7 @@ Người phụ trách: Nguyễn Văn Chiến (viết) · Nguyễn Cảnh Duy (qu
 
 ## Chuẩn bị trước khi bấm quay (làm hết, rồi mới quay)
 
-1. Điền key: copy `codebase/.env.example` → `codebase/.env`, dán `GEMINI_API_KEY` (lấy miễn phí tại aistudio.google.com/apikey)
+1. Điền key: copy `codebase/.env.example` → `codebase/.env`, chọn `AI_PROVIDER=gemini` cho demo cá nhân và dán `GEMINI_API_KEY` (hoặc chọn `AI_PROVIDER=deepseek` rồi dán `DEEPSEEK_API_KEY` khi demo cùng đội)
 2. Chạy thử một lần cho chắc: `python codebase/pipeline.py --require-ai`
 3. **Xoá `codebase/clusters.json`** đi — để lúc quay sinh lại từ đầu, mới là thật
 4. Mở sẵn 2 cửa sổ cạnh nhau:
@@ -25,7 +25,7 @@ Người phụ trách: Nguyễn Văn Chiến (viết) · Nguyễn Cảnh Duy (qu
 |---|---|---|
 | 0–3 | Terminal đang mở sẵn, gõ lệnh | `python codebase/pipeline.py --require-ai` |
 | 3–8 | Enter, để chạy | `[1/5] Lọc nhiễu — 27 sạch \| 3 bị lọc` rồi liệt kê mã bị lọc |
-| 8–14 | AI chạy thật | `[2/5] Gọi AI…` → `model=gemini-2.5-flash · 6.2s · 4813 tokens` |
+| 8–14 | AI chạy thật | `[Bước 3/5]` → `model=<model đang chọn> · thời gian · tokens` |
 | 14–18 | Hậu kiểm + kết quả | `[3/5] Hậu kiểm chống bịa` → danh sách vấn đề, mỗi cái kèm số người + số ký tự |
 | 18–22 | Chuyển sang trình duyệt, F5 | Banner xanh: **"Đang dùng kết quả AI THẬT — đọc từ clusters.json"** |
 | 22–27 | Bấm vào một vấn đề | Mở ra thấy mã `gy-xxx` gốc, câu kịch bản, mốc thời gian |
@@ -66,7 +66,7 @@ Người phụ trách: Nguyễn Văn Chiến (viết) · Nguyễn Cảnh Duy (qu
 
 | Hỏng gì | Làm gì |
 |---|---|
-| Hết quota / lỗi 429 | Đổi `GEMINI_MODEL=gemini-2.0-flash` trong `.env` |
+| Hết quota / lỗi 429 | Đổi model Gemini trong `.env`, hoặc chuyển `AI_PROVIDER=deepseek` và điền `DEEPSEEK_API_KEY` |
 | AI trả JSON lỗi | Pipeline tự thử lại 3 lần; vẫn lỗi thì chạy lại lệnh |
 | Không kịp quay | Quay riêng terminal 15 giây cũng được — miễn thấy `model=` và kết quả |
 | Mạng chậm lúc demo live | Đã có `clusters.json` sinh sẵn, UI vẫn hiện kết quả AI thật |

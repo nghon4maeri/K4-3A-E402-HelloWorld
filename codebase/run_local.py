@@ -44,14 +44,19 @@ def load_transcript() -> list:
 
 
 def parse_csv_feedbacks(text: str) -> list:
-    """Parse CSV (từ form khảo sát xuất ra) -> danh sách feedback chuẩn.
-    Hỗ trợ cột: id (tuỳ chọn), nguoiGui, noiDung, thoiDiem (tuỳ chọn), diemSo (tuỳ chọn)."""
-    reader = csv.DictReader(io.StringIO(text.strip()))
+    """Parse CSV feedback chuẩn hoặc CSV khảo sát -> danh sách feedback chuẩn."""
+    reader = csv.DictReader(io.StringIO(text.lstrip("\ufeff").strip()))
     if not reader.fieldnames:
         raise ValueError("CSV rỗng hoặc không có hàng tiêu đề.")
     # Chuẩn hoá tên cột (bỏ dấu cách, thường hoá) để chấp nhận "Nội dung" / "noi dung"...
-    def norm(s): return s.strip().lower().replace(" ", "_")
+    def norm(s): return re.sub(r"\s+", "_", s.strip().lower().lstrip("\ufeff"))
     mapping = {norm(h): h for h in reader.fieldnames if h.strip()}
+    text_columns = (
+        "y_kien_nguyen_van",
+        "gop_y_nguyen_van",
+        "noi_dung_trai_nghiem",
+        "noiDung",
+    )
     feedbacks = []
     for idx, row in enumerate(reader, start=1):
         def get(key):
@@ -59,16 +64,27 @@ def parse_csv_feedbacks(text: str) -> list:
             if not header:
                 return ""
             return (row.get(header) or "").strip()
-        noi_dung = get("noiDung")
+
+        noi_dung = next((get(key) for key in text_columns if get(key)), "")
+        if not noi_dung:
+            # Survey CSVs may contain only closed-ended answers. Keep their
+            # question/value pairs so the analyzer still receives evidence.
+            pairs = []
+            for header in reader.fieldnames:
+                key = norm(header)
+                value = (row.get(header) or "").strip()
+                if value and key not in {"ma_nguoi", "ho_ten", "thoi_diem"}:
+                    pairs.append(f"{header}: {value}")
+            noi_dung = "; ".join(pairs)
         if not noi_dung:
             continue
         item = {
-            "id": get("id") or f"gy-{idx:03d}",
+            "id": get("id") or get("ma_nguoi") or f"gy-{idx:03d}",
             "kenh": "khao-sat",
-            "nguoiGui": get("nguoiGui") or f"hv-{idx:03d}",
+            "nguoiGui": get("nguoiGui") or get("ma_nguoi") or f"hv-{idx:03d}",
             "noiDung": noi_dung,
         }
-        thoi_diem = get("thoiDiem")
+        thoi_diem = get("thoiDiem") or get("thoi_diem")
         if thoi_diem:
             item["thoiDiem"] = thoi_diem
         diem_so = get("diemSo")
@@ -82,7 +98,7 @@ def parse_csv_feedbacks(text: str) -> list:
 
 
 def parse_json_feedbacks(text: str) -> list:
-    """Parse JSON (export Discord hoặc paste nguyên cấu trúc sample-feedback.json)."""
+    """Parse JSON feedback chuẩn hoặc JSON export từ khảo sát."""
     data = json.loads(text)
     if isinstance(data, dict):
         items = data.get("gopY", [])
@@ -93,13 +109,18 @@ def parse_json_feedbacks(text: str) -> list:
         for idx, it in enumerate(items, start=1):
             if not isinstance(it, dict):
                 continue
-            noi_dung = str(it.get("noiDung", "")).strip()
+            noi_dung = str(
+                it.get("noiDung")
+                or it.get("gop_y_nguyen_van")
+                or it.get("noi_dung_trai_nghiem")
+                or ""
+            ).strip()
             if not noi_dung:
                 continue
             item = {
-                "id": it.get("id") or f"gy-{idx:03d}",
+                "id": it.get("id") or it.get("ma_hoc_vien") or f"gy-{idx:03d}",
                 "kenh": it.get("kenh", "tin-nhan"),
-                "nguoiGui": it.get("nguoiGui", f"hv-{idx:03d}"),
+                "nguoiGui": it.get("nguoiGui") or it.get("ma_hoc_vien") or f"hv-{idx:03d}",
                 "noiDung": noi_dung,
             }
             for k in ("thoiDiem", "diemSo"):

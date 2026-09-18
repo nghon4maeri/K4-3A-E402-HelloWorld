@@ -125,7 +125,8 @@ Nhiệm vụ của bạn là nhận danh sách các góp ý của người học
 3. ĐỊNH VỊ CÂU (Sentence Index): Xác định chính xác danh sách câu_index (từ 1 đến 40) bị ảnh hưởng trực tiếp bởi vấn đề.
    CHÚ Ý QUAN TRỌNG:
    - KHÔNG ĐƯỢC BỊA GIÂY HAY TIMECODE! Bạn CHỈ ĐƯỢC CHỌN các số nguyên trong khoảng 1 đến 40 đại diện cho `cau_index`.
-   - Đối với các góp ý quá mơ hồ ("đoạn giữa clip xem mông lung", "video chán quá"), KHÔNG ĐƯỢC gán bừa vào bất kỳ câu nào. Hãy cho `cau_index: []` và phân vào nhóm "góp ý chung chung".
+    - Chỉ cho `cau_index: []` khi chính các quote trong cụm không có mốc/câu/từ khóa đủ để định vị. Nếu quote nói rõ nội dung như nhạc nền, phụ đề, slide chữ nhỏ, câu định nghĩa hoặc khoảng dừng, phải đối chiếu transcript và chọn câu 1–40 tương ứng.
+    - Mỗi cụm có quote_ids, cau_index, cau_trong_tam, loai_sua và de_xuat_sua; không được bỏ trống các trường này. Nếu không định vị được, đưa quote vào `gop_y_chung_chung` thay vì tạo cụm thiếu dữ liệu.
    - Mọi `quote_id` trong kết quả BẮT BUỘC phải nằm trong danh sách ID đầu vào (ví dụ: "gy-002", "gy-003"...). TUYỆT ĐỐI KHÔNG tự sáng tác ra quote_id!
    - Đếm đúng số người học độc lập (`so_nguoi`): Nếu cùng một người gửi nhiều góp ý cho cùng vấn đề, chỉ tính là 1 người.
 4. ĐỀ XUẤT SỬA TỐI THIỂU (`de_xuat_sua`):
