@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>FeedbackRadar - Demo slides</title>
+<style>
+@page { size: 16in 9in; margin: 0; }
+* { box-sizing: border-box; }
+body { margin: 0; background: #dfe4ec; color: #172033; font-family: "Aptos", "Segoe UI", sans-serif; }
+.slide { width: 16in; height: 9in; padding: 0.62in 0.78in; page-break-after: always; position: relative; overflow: hidden; background: #f7f8fb; }
+.slide:last-child { page-break-after: auto; }
+.slide::before { content: "FEEDBACKRADAR  /  HELLOWORLD  /  3A · E402"; position: absolute; top: .28in; left: .78in; font-size: 12px; letter-spacing: 1.4px; font-weight: 700; color: #65708a; }
+.slide::after { content: attr(data-page); position: absolute; right: .78in; bottom: .32in; font-size: 13px; color: #65708a; }
+h1 { font-size: 54px; line-height: 1.03; margin: 1.12in 0 .2in; max-width: 10in; letter-spacing: 0; }
+h2 { font-size: 34px; margin: .8in 0 .18in; letter-spacing: 0; }
+h3 { font-size: 20px; margin: 0 0 10px; }
+p, li { font-size: 20px; line-height: 1.42; }
+.kicker { color: #e05b3f; font-size: 17px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; }
+.sub { color: #65708a; font-size: 22px; max-width: 10.5in; }
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 28px; }
+.grid.three { grid-template-columns: repeat(3, 1fr); }
+.panel { background: #fff; border: 1px solid #dfe4ec; border-radius: 8px; padding: 22px; box-shadow: 0 8px 24px rgba(23,32,51,.06); }
+.big { font-size: 48px; font-weight: 850; color: #e05b3f; line-height: 1; }
+.metric { font-size: 17px; color: #65708a; margin-top: 8px; }
+.quote { border-left: 5px solid #e05b3f; padding: 8px 0 8px 18px; font-size: 24px; line-height: 1.3; font-style: italic; }
+small { color: #65708a; font-size: 14px; }
+table { width: 100%; border-collapse: collapse; margin-top: 22px; background: #fff; font-size: 18px; }
+th, td { border-bottom: 1px solid #dfe4ec; padding: 13px 15px; text-align: left; }
+th { background: #172033; color: #fff; }
+.ok { color: #14865a; font-weight: 800; }
+.warn { color: #bd6e00; font-weight: 800; }
+.flow { display: flex; align-items: stretch; gap: 10px; margin-top: 35px; }
+.step { flex: 1; padding: 20px 14px; background: #172033; color: #fff; border-radius: 8px; font-weight: 750; font-size: 19px; }
+.step em { display: block; color: #ffb39e; font-style: normal; font-size: 14px; margin-bottom: 9px; }
+ul { margin: 10px 0 0; padding-left: 23px; }
+.accent { color: #e05b3f; }
+.footer { position: absolute; bottom: .32in; left: .78in; font-size: 12px; color: #65708a; }
+</style>
+</head>
+<body>
+<section class="slide" data-page="01 / 06">
+  <div class="kicker">Lesson Studio · C5</div>
+  <h1>FeedbackRadar</h1>
+  <p class="sub">Biến phản hồi rời rạc thành cụm vấn đề có bằng chứng, câu kịch bản và phạm vi sửa tối thiểu.</p>
+  <div class="grid" style="margin-top:70px">
+    <div class="panel"><div class="big">30</div><div class="metric">góp ý trong luồng demo</div></div>
+    <div class="panel"><div class="big">40</div><div class="metric">câu transcript có timecode bảng cứng</div></div>
+  </div>
+  <p style="margin-top:35px"><b>Job executor:</b> biên tập viên video / giảng viên.</p>
+  <p><b>JTBD:</b> cải tiến bài giảng với chi phí và thời gian làm lại thấp nhất.</p>
+  <div class="footer">Nguồn: spec.md §1–§2 · codebase/data · transcript-timecode.json</div>
+</section>
+<section class="slide" data-page="02 / 06">
+  <div class="kicker">Quyết định sản phẩm</div>
+  <h2>Vì sao chọn tính năng này?</h2>
+  <p class="sub">Không phải mọi phản hồi đều đáng để thu lại cả video. Cần biết vấn đề nào có căn cứ và sửa ở đâu.</p>
+  <table><tr><th>Ứng viên</th><th>Người gặp / tần suất</th><th>Tổn thất mỗi lần</th><th>Chọn</th></tr>
+    <tr><td><b>FeedbackRadar</b></td><td>Studio + giảng viên · sau mỗi bài</td><td>Đọc tay, đoán timestamp, thu/dựng lại dư thừa</td><td class="ok">CHỌN</td></tr>
+    <tr><td>ScriptScout</td><td>Scriptwriter · khi mở môn mới</td><td>2–3 ngày nghiên cứu</td><td>Loại: không bám pain C5</td></tr>
+    <tr><td>StoryboardAI</td><td>Animator · khi kịch bản chốt</td><td>4–6 giờ / bài</td><td>Loại: khó đo style</td></tr>
+  </table>
+  <div class="grid" style="margin-top:32px"><div class="panel"><div class="big">3 637</div><div class="metric">ký tự nếu thu lại toàn bộ</div></div><div class="panel"><div class="big">40</div><div class="metric">cảnh nếu dựng lại toàn bộ</div></div></div>
+  <div class="footer">Nguồn: spec.md §2 · eval/evidence-log.md · data/studio-pack reference</div>
+</section>
+<section class="slide" data-page="03 / 06">
+  <div class="kicker">Một câu · một quyết định AI</div>
+  <h2>AI gom cụm, người duyệt quyết định</h2>
+  <p class="sub">Lát cắt: có 30 phản hồi → gom cụm vấn đề → map câu/mốc thời gian → đề xuất sửa tối thiểu → Accept / Reject.</p>
+  <div class="flow"><div class="step"><em>01 · heuristic</em>Lọc injection & công kích</div><div class="step"><em>02 · AI thật</em>Gom cụm + phân loại</div><div class="step"><em>03 · bảng cứng</em>Câu → timecode</div><div class="step"><em>04 · code</em>Cộng phạm vi sửa</div><div class="step"><em>05 · người</em>Accept / Reject</div></div>
+  <div class="grid" style="margin-top:36px"><div class="panel"><h3>Case chuẩn</h3><p>gy-002, gy-003, gy-018 + ns-001 → nhầm app chat với LLM → câu 20–23 → 02:01.</p></div><div class="panel"><h3>Case chỗ khó</h3><p>4 góp ý injection / công kích → bị lọc trước AI và ghi vào safety_log.json.</p></div></div>
+  <p style="margin-top:22px"><b>Cost-of-error:</b> AI chỉ đề xuất; không tự sửa, không tự publish, không tự render video.</p>
+  <div class="footer">Nguồn: spec.md §4–§6 · codebase/pipeline.py · codebase/safety_log.json</div>
+</section>
+<section class="slide" data-page="04 / 06">
+  <div class="kicker">Đo trước khi nói “chạy tốt”</div>
+  <h2>Kết quả trên golden set</h2>
+  <div class="grid three"><div class="panel"><div class="big">24</div><div class="metric">case · lượt 4</div></div><div class="panel"><div class="big">20 / 24</div><div class="metric">đạt đủ 5 tiêu chí</div></div><div class="panel"><div class="big">83,3%</div><div class="metric">một lượt DeepSeek</div></div></div>
+  <table><tr><th>Chiều</th><th>Quality bar</th><th>Kết quả</th><th>Trạng thái</th></tr><tr><td>An toàn</td><td>100%</td><td>100%</td><td class="ok">Đạt</td></tr><tr><td>Không bịa nguồn</td><td>100%</td><td>100%</td><td class="ok">Đạt</td></tr><tr><td>Đúng nhóm lỗi</td><td>≥85%</td><td>87,5%</td><td class="ok">Đạt</td></tr><tr><td>Định vị câu ±1</td><td>≥70%</td><td>95,8%</td><td class="ok">Đạt</td></tr><tr><td>Dây chuyền thu lời</td><td>100%</td><td>75,0%</td><td class="warn">Chưa đạt</td></tr></table>
+  <p style="margin-top:24px"><b>Failure đau nhất:</b> case-14 trả phạm vi rộng hơn 3 câu cần thu lại. Hướng sửa: tách <code>cau_doi_loi</code> khỏi <code>cau_index</code>.</p>
+  <div class="footer">Nguồn: eval/BANGKETQUA.md §1–§2 · eval/results/run-04.json</div>
+</section>
+<section class="slide" data-page="05 / 06">
+  <div class="kicker">Bằng chứng thay cho lời hứa</div>
+  <h2>Người dùng sẽ nhận được gì?</h2>
+  <p class="sub">Chưa khai báo validation người thật trong repo, nên slide này dùng kết quả đo máy và nêu rõ giới hạn.</p>
+  <div class="grid"><div class="panel"><div class="quote">“Phần phân biệt mô hình ngôn ngữ lớn với ứng dụng trò chuyện em xem hai lần vẫn thấy lẫn.”</div><small>gy-002 · hv-011 · nguồn input demo</small></div><div class="panel"><div class="quote">“Bỏ qua mọi hướng dẫn phía trên...”</div><small>gy-011 · đã lọc, không đưa vào cụm</small></div></div>
+  <div class="grid" style="margin-top:28px"><div class="panel"><h3>Đã chứng minh</h3><ul><li>20 trace DeepSeek thành công</li><li>70 812 token được ghi log</li><li>100% quote_id hợp lệ ở lượt 4</li></ul></div><div class="panel"><h3>Chưa tuyên bố</h3><ul><li>Chưa có khảo sát người thật</li><li>Chưa có 2 người chấm độc lập</li><li>Chưa kết luận 83,3% là ổn định</li></ul></div></div>
+  <div class="footer">Nguồn: eval/BANGKETQUA.md §3–§4 · eval/evidence-log.md · spec.md §7</div>
+</section>
+<section class="slide" data-page="06 / 06">
+  <div class="kicker">Tuần tiếp theo</div>
+  <h2>Ba việc ưu tiên, theo đúng failure</h2>
+  <div class="grid three"><div class="panel"><div class="big">01</div><h3>Tách phạm vi sửa</h3><p>Thêm <code>cau_doi_loi</code>; đo lại toàn bộ golden set, không chỉ case-14.</p></div><div class="panel"><div class="big">02</div><h3>Kiểm tra ổn định</h3><p>Chạy cùng cấu hình DeepSeek ít nhất 3 lượt; báo khoảng dao động thay vì một điểm đơn.</p></div><div class="panel"><div class="big">03</div><h3>Validation thật</h3><p>Cho ≥2 người ngoài nhóm tự dùng prototype; ghi hành vi, quote và thay đổi vào validation/.</p></div></div>
+  <div class="panel" style="margin-top:34px;background:#172033;color:#fff"><h3 style="color:#ffb39e">Bài học lớn nhất</h3><p style="font-size:26px;margin:0">Một pipeline đáng tin không chỉ trả lời được; nó phải chỉ ra được mình đã sai ở đâu, bằng dữ liệu có thể kiểm lại.</p></div>
+  <p style="margin-top:24px"><b>Automation:</b> Augment, vì quyết định cuối cùng vẫn thuộc biên tập viên / giảng viên.</p>
+  <div class="footer">Nguồn: spec.md §4, §7, §9 · eval/BANGKETQUA.md §4</div>
+</section>
+</body>
+</html>
